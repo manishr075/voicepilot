@@ -1,25 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VoicePilot — Voice-Controlled Professional Editor</title>
+  <title>VoicePilot — Professional Hands-Free Voice Editor</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <!-- Google Identity Services — for one-click Sign in with Google (no API key needed) -->
+  <!-- Google Identity Services (optional SSO) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    /* ── Professional SaaS Design Tokens ── */
+    /* ── CSS Design Tokens & Themes ── */
     :root {
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Dark Theme (Default) */
+    html[data-theme="dark"] {
       --bg: #090d16;
       --bg-subtle: #0f1629;
-      --card-bg: rgba(17, 24, 39, 0.75);
+      --card-bg: rgba(17, 24, 39, 0.78);
       --card-border: rgba(255, 255, 255, 0.08);
-      --card-border-hover: rgba(99, 102, 241, 0.3);
-      --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      --card-border-hover: rgba(99, 102, 241, 0.35);
+      --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.05);
 
-      --text-main: #f3f4f6;
+      --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
 
@@ -28,33 +38,55 @@
       --primary-glow: rgba(99, 102, 241, 0.25);
       --accent: #06b6d4;
 
-      --emerald: #10b981;
-      --emerald-bg: rgba(16, 185, 129, 0.12);
-      --emerald-border: rgba(16, 185, 129, 0.25);
+      --diff-curr-bg: rgba(244, 63, 94, 0.08);
+      --diff-curr-border: rgba(244, 63, 94, 0.25);
+      --diff-curr-text: #fda4af;
 
-      --amber: #f59e0b;
-      --amber-bg: rgba(245, 158, 11, 0.12);
-      --amber-border: rgba(245, 158, 11, 0.25);
+      --diff-prop-bg: rgba(16, 185, 129, 0.08);
+      --diff-prop-border: rgba(16, 185, 129, 0.25);
+      --diff-prop-text: #a7f3d0;
 
-      --rose: #f43f5e;
-      --rose-bg: rgba(244, 63, 94, 0.12);
-      --rose-border: rgba(244, 63, 94, 0.25);
+      --input-bg: rgba(0, 0, 0, 0.35);
+      --header-bg: rgba(9, 13, 22, 0.85);
+      --badge-bg: rgba(255, 255, 255, 0.05);
+    }
 
-      --radius-lg: 16px;
-      --radius-md: 10px;
-      --radius-sm: 6px;
+    /* Light Theme */
+    html[data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-subtle: #f1f5f9;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --card-border-hover: rgba(99, 102, 241, 0.4);
+      --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-glow: rgba(79, 70, 229, 0.2);
+      --accent: #0891b2;
+
+      --diff-curr-bg: #fef2f2;
+      --diff-curr-border: #fecaca;
+      --diff-curr-text: #991b1b;
+
+      --diff-prop-bg: #ecfdf5;
+      --diff-prop-border: #a7f3d0;
+      --diff-prop-text: #065f46;
+
+      --input-bg: #ffffff;
+      --header-bg: rgba(255, 255, 255, 0.88);
+      --badge-bg: rgba(0, 0, 0, 0.04);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--font-sans);
       background: var(--bg);
-      background-image: 
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.18), transparent 70%),
-        radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.08), transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.06), transparent 50%);
-      background-attachment: fixed;
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
@@ -62,23 +94,25 @@
       font-size: 15px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     /* ── Header ── */
     #vp-header {
-      background: rgba(9, 13, 22, 0.82);
+      background: var(--header-bg);
       border-bottom: 1px solid var(--card-border);
       position: sticky;
       top: 0;
       z-index: 50;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: var(--transition);
     }
 
     #vp-header-inner {
-      max-width: 980px;
+      max-width: 1060px;
       margin: 0 auto;
-      padding: 0.9rem 1.5rem;
+      padding: 0.85rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -94,10 +128,10 @@
     }
 
     .vp-logo-mark {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 10px;
-      background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -105,12 +139,9 @@
     }
 
     .vp-logo-text h1 {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       font-weight: 800;
       letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
       line-height: 1.2;
     }
 
@@ -120,6 +151,12 @@
       font-weight: 500;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
     /* ── Status Pill ── */
     #vp-status-pill {
       display: inline-flex;
@@ -127,12 +164,12 @@
       gap: 0.5rem;
       font-size: 0.75rem;
       font-weight: 600;
-      padding: 0.4rem 0.9rem;
+      padding: 0.38rem 0.85rem;
       border-radius: 99px;
       border: 1px solid var(--card-border);
       background: var(--bg-subtle);
       color: var(--text-muted);
-      transition: all 0.25s ease;
+      transition: var(--transition);
       white-space: nowrap;
     }
 
@@ -145,9 +182,9 @@
     }
 
     #vp-status-pill.ready {
-      background: var(--emerald-bg);
-      color: #34d399;
-      border-color: var(--emerald-border);
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border-color: rgba(16, 185, 129, 0.3);
     }
     #vp-status-pill.ready .dot {
       background: #10b981;
@@ -156,18 +193,18 @@
 
     #vp-status-pill.command {
       background: rgba(99, 102, 241, 0.15);
-      color: #a5b4fc;
+      color: var(--primary);
       border-color: rgba(99, 102, 241, 0.3);
     }
     #vp-status-pill.command .dot {
-      background: #818cf8;
-      box-shadow: 0 0 8px rgba(99, 102, 241, 0.6);
+      background: var(--primary);
+      box-shadow: 0 0 8px var(--primary-glow);
     }
 
     #vp-status-pill.review {
-      background: var(--amber-bg);
-      color: #fbbf24;
-      border-color: var(--amber-border);
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      border-color: rgba(245, 158, 11, 0.3);
     }
     #vp-status-pill.review .dot {
       background: #f59e0b;
@@ -175,21 +212,42 @@
     }
 
     #vp-status-pill.error {
-      background: var(--rose-bg);
-      color: #fb7185;
-      border-color: var(--rose-border);
+      background: rgba(244, 63, 94, 0.12);
+      color: #f43f5e;
+      border-color: rgba(244, 63, 94, 0.3);
     }
     #vp-status-pill.error .dot {
       background: #f43f5e;
       box-shadow: 0 0 8px rgba(244, 63, 94, 0.6);
     }
 
+    /* ── Theme Switcher Button ── */
+    #theme-toggle {
+      background: var(--bg-subtle);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    #theme-toggle:hover {
+      border-color: var(--card-border-hover);
+      background: var(--card-border);
+    }
+
     /* ── Main Layout ── */
     main {
-      max-width: 980px;
+      max-width: 1060px;
       width: 100%;
       margin: 0 auto;
-      padding: 2rem 1.5rem 4rem;
+      padding: 1.75rem 1.5rem 4rem;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -203,6 +261,7 @@
       border-radius: var(--radius-lg);
       box-shadow: var(--card-shadow);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       transition: border-color 0.2s, box-shadow 0.2s;
     }
 
@@ -215,12 +274,12 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      padding: 1rem 1.35rem;
+      padding: 0.95rem 1.35rem;
       border-bottom: 1px solid var(--card-border);
     }
 
     .vp-card-title {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -230,15 +289,14 @@
       gap: 0.5rem;
     }
 
-    /* ── Wispr Guidance Banner ── */
+    /* ── Guidance Banner ── */
     #wispr-guidance {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(6, 182, 212, 0.08) 100%);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.08) 100%);
       border: 1px solid rgba(99, 102, 241, 0.25);
       border-radius: var(--radius-md);
-      padding: 1rem 1.25rem;
-      font-size: 0.85rem;
-      color: #e2e8f0;
-      line-height: 1.6;
+      padding: 0.9rem 1.25rem;
+      font-size: 0.86rem;
+      color: var(--text-main);
       display: flex;
       align-items: flex-start;
       gap: 0.85rem;
@@ -251,13 +309,14 @@
     }
 
     #wispr-guidance kbd {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      padding: 0.18rem 0.55rem;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      padding: 0.15rem 0.5rem;
       border-radius: 5px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #fff;
+      background: var(--badge-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      font-weight: 600;
     }
 
     /* ── Draft Editor Card ── */
@@ -267,18 +326,18 @@
     }
 
     #draft-card:focus-within {
-      border-color: rgba(99, 102, 241, 0.6);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2), var(--card-shadow);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow), var(--card-shadow);
     }
 
     #draft-editor {
       width: 100%;
-      min-height: 300px;
+      min-height: 280px;
       resize: vertical;
       border: none;
       outline: none;
-      padding: 1.5rem 1.35rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 1.35rem;
+      font-family: var(--font-sans);
       font-size: 1.05rem;
       line-height: 1.8;
       color: var(--text-main);
@@ -296,19 +355,16 @@
       justify-content: space-between;
       padding: 0.75rem 1.35rem;
       border-top: 1px solid var(--card-border);
-      background: rgba(0, 0, 0, 0.15);
+      background: var(--badge-bg);
       font-size: 0.78rem;
       color: var(--text-muted);
     }
 
-    /* ── AI Review Modal / Panel ── */
-    #review-panel {
+    /* ══════════════════════════════════════════════════════════════
+       TWO-SCREEN / SPLIT COMPARISON VIEW
+       ══════════════════════════════════════════════════════════════ */
+    #two-screen-review {
       display: none;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(99, 102, 241, 0.4);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.2);
-      overflow: hidden;
       animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -317,73 +373,200 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    #review-panel.visible { display: block; }
+    #two-screen-review.visible {
+      display: block;
+    }
 
-    .review-header {
+    .comparison-banner {
+      background: linear-gradient(90deg, rgba(99, 102, 241, 0.18) 0%, rgba(6, 182, 212, 0.12) 100%);
+      border-bottom: 1px solid var(--card-border);
       padding: 1rem 1.35rem;
-      background: linear-gradient(90deg, rgba(99, 102, 241, 0.18) 0%, rgba(6, 182, 212, 0.1) 100%);
-      border-bottom: 1px solid rgba(99, 102, 241, 0.25);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+      flex-wrap: wrap;
     }
 
-    .review-header-title {
+    .comparison-title {
       font-weight: 700;
-      font-size: 0.92rem;
-      color: #e2e8f0;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
 
-    .review-body {
-      padding: 1.25rem 1.35rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    .comparison-instruction {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 99px;
+      background: var(--badge-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
     }
 
-    .diff-label {
+    .two-screen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--card-border);
+    }
+
+    @media (max-width: 768px) {
+      .two-screen-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .screen-column {
+      background: var(--card-bg);
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .screen-column-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .screen-tag {
       font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: var(--text-muted);
-      margin-bottom: 0.35rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
     }
 
-    .diff-box {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.88rem;
-      line-height: 1.7;
+    .screen-tag.original { color: #f43f5e; }
+    .screen-tag.corrected { color: #10b981; }
+
+    .voice-command-pill {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .voice-command-pill.decline-pill {
+      background: var(--diff-curr-bg);
+      color: var(--diff-curr-text);
+      border: 1px solid var(--diff-curr-border);
+    }
+
+    .voice-command-pill.accept-pill {
+      background: var(--diff-prop-bg);
+      color: var(--diff-prop-text);
+      border: 1px solid var(--diff-prop-border);
+    }
+
+    .screen-content-box {
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      line-height: 1.75;
       white-space: pre-wrap;
       word-break: break-word;
       border-radius: var(--radius-md);
-      padding: 1rem;
-      max-height: 220px;
+      padding: 1.15rem;
+      min-height: 220px;
+      max-height: 380px;
       overflow-y: auto;
+      flex: 1;
     }
 
-    .diff-current {
-      background: rgba(244, 63, 94, 0.08);
-      border: 1px solid rgba(244, 63, 94, 0.2);
-      color: #fda4af;
+    .screen-content-box.original-box {
+      background: var(--diff-curr-bg);
+      border: 1px solid var(--diff-curr-border);
+      color: var(--diff-curr-text);
     }
 
-    .diff-proposed {
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      color: #a7f3d0;
+    .screen-content-box.corrected-box {
+      background: var(--diff-prop-bg);
+      border: 1px solid var(--diff-prop-border);
+      color: var(--diff-prop-text);
     }
 
-    .review-actions {
+    .screen-actions {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0 1.35rem 1.25rem;
-      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.25rem;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.52rem 1.15rem;
+      border-radius: var(--radius-md);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      line-height: 1;
+      transition: var(--transition);
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+      color: #fff;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px var(--primary-glow);
+    }
+
+    .btn-outline {
+      background: var(--badge-bg);
+      color: var(--text-main);
+      border-color: var(--card-border);
+    }
+    .btn-outline:hover {
+      background: var(--card-border);
+      color: var(--text-main);
+    }
+
+    .btn-danger {
+      background: var(--diff-curr-bg);
+      color: var(--diff-curr-text);
+      border-color: var(--diff-curr-border);
+    }
+    .btn-danger:hover {
+      background: rgba(244, 63, 94, 0.2);
+    }
+
+    .btn-ghost {
+      background: none;
+      color: var(--text-muted);
+      border-color: transparent;
+    }
+    .btn-ghost:hover {
+      color: var(--text-main);
+      background: var(--badge-bg);
+    }
+
+    .btn-sm {
+      font-size: 0.78rem;
+      padding: 0.38rem 0.85rem;
+      border-radius: 8px;
     }
 
     /* ── Separate Notes Card ── */
@@ -400,12 +583,12 @@
     }
 
     .note-item {
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--badge-bg);
       border: 1px solid var(--card-border);
       border-radius: var(--radius-md);
       padding: 0.75rem 1rem;
       font-size: 0.88rem;
-      color: #cbd5e1;
+      color: var(--text-main);
       display: flex;
       align-items: flex-start;
       gap: 0.75rem;
@@ -423,77 +606,9 @@
       padding: 0 0.25rem;
       transition: color 0.15s;
     }
-    .note-item-del:hover { color: var(--rose); }
+    .note-item-del:hover { color: #f43f5e; }
 
-    /* ── Buttons ── */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.52rem 1.15rem;
-      border-radius: var(--radius-md);
-      font-size: 0.84rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid transparent;
-      line-height: 1;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-      font-family: inherit;
-    }
-
-    .btn:focus-visible {
-      outline: 2px solid var(--primary);
-      outline-offset: 2px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-      color: #fff;
-      box-shadow: 0 4px 12px var(--primary-glow);
-    }
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-      transform: translateY(-1px);
-    }
-
-    .btn-outline {
-      background: rgba(255, 255, 255, 0.04);
-      color: #e2e8f0;
-      border-color: var(--card-border);
-    }
-    .btn-outline:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.2);
-      color: #fff;
-    }
-
-    .btn-danger {
-      background: var(--rose-bg);
-      color: #fda4af;
-      border-color: var(--rose-border);
-    }
-    .btn-danger:hover {
-      background: rgba(244, 63, 94, 0.2);
-    }
-
-    .btn-ghost {
-      background: none;
-      color: var(--text-muted);
-      border-color: transparent;
-    }
-    .btn-ghost:hover {
-      color: var(--text-main);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .btn-sm {
-      font-size: 0.78rem;
-      padding: 0.38rem 0.85rem;
-      border-radius: 8px;
-    }
-
-    /* ── Settings Accordion & Inputs ── */
+    /* ── Command Reference Grid ── */
     details summary {
       cursor: pointer;
       font-size: 0.82rem;
@@ -507,7 +622,6 @@
       user-select: none;
       transition: color 0.15s;
     }
-
     details summary::-webkit-details-marker { display: none; }
     details summary::before {
       content: '▶';
@@ -516,13 +630,107 @@
       color: var(--text-dim);
     }
     details[open] summary::before { transform: rotate(90deg); color: var(--primary); }
-    details summary:hover { color: #fff; }
+    details summary:hover { color: var(--text-main); }
 
-    .settings-body {
+    .command-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 0.75rem;
       padding: 0 1.35rem 1.25rem;
+    }
+
+    .command-item {
+      background: var(--badge-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 0.8rem 1rem;
+      transition: border-color 0.15s;
+    }
+    .command-item:hover { border-color: var(--card-border-hover); }
+
+    .command-item .cmd-phrase {
+      font-family: var(--font-mono);
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.84rem;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .command-item .cmd-desc {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       SEGREGATED SETTINGS & CONNECTION PANEL
+       ══════════════════════════════════════════════════════════════ */
+    .settings-body {
+      padding: 0 1.35rem 1.35rem;
       display: flex;
       flex-direction: column;
-      gap: 1.15rem;
+      gap: 1.25rem;
+    }
+
+    .settings-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.75rem;
+    }
+
+    .settings-tab-btn {
+      background: none;
+      border: 1px solid transparent;
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .settings-tab-btn.active {
+      background: var(--badge-bg);
+      border-color: var(--card-border);
+      color: var(--text-main);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: flex; flex-direction: column; gap: 1rem; }
+
+    .service-card {
+      background: var(--badge-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .service-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .service-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .service-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.55;
     }
 
     .setting-row {
@@ -534,7 +742,7 @@
     .setting-row label {
       font-size: 0.82rem;
       font-weight: 600;
-      color: #cbd5e1;
+      color: var(--text-main);
     }
 
     .setting-row input[type="text"],
@@ -542,13 +750,12 @@
       border: 1px solid var(--card-border);
       border-radius: var(--radius-md);
       padding: 0.55rem 0.85rem;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 0.82rem;
-      color: #f8fafc;
-      background: rgba(0, 0, 0, 0.3);
+      color: var(--text-main);
+      background: var(--input-bg);
       outline: none;
       width: 100%;
-      max-width: 480px;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
 
@@ -562,40 +769,27 @@
       color: var(--text-dim);
     }
 
-    /* ── Command Reference Grid ── */
-    .command-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 0.75rem;
-      padding: 0 1.35rem 1.25rem;
-    }
-
-    .command-item {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: var(--radius-md);
-      padding: 0.75rem 1rem;
-      transition: border-color 0.15s, background 0.15s;
-    }
-
-    .command-item:hover {
-      background: rgba(255, 255, 255, 0.04);
-      border-color: rgba(99, 102, 241, 0.2);
-    }
-
-    .command-item .cmd-phrase {
-      font-family: 'JetBrains Mono', monospace;
-      color: #818cf8;
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.76rem;
       font-weight: 600;
-      font-size: 0.84rem;
-      display: block;
-      margin-bottom: 0.25rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 99px;
+      white-space: nowrap;
     }
 
-    .command-item .cmd-desc {
+    .auth-badge.connected {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #10b981;
+    }
+
+    .auth-badge.disconnected {
+      background: var(--badge-bg);
+      border: 1px solid var(--card-border);
       color: var(--text-muted);
-      font-size: 0.78rem;
-      line-height: 1.5;
     }
 
     /* ── Toast Notification ── */
@@ -604,21 +798,22 @@
       bottom: 2rem;
       right: 2rem;
       z-index: 100;
-      max-width: 400px;
-      padding: 0.85rem 1.15rem;
+      max-width: 420px;
+      padding: 0.9rem 1.25rem;
       border-radius: var(--radius-md);
-      background: rgba(15, 23, 42, 0.95);
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
-      color: #f8fafc;
+      color: var(--text-main);
       font-size: 0.84rem;
       line-height: 1.5;
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(99, 102, 241, 0.2);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       display: none;
       align-items: center;
       gap: 0.85rem;
+      animation: fadeIn 0.2s ease;
     }
-
     #vp-toast.visible { display: flex; }
 
     #vp-toast-close {
@@ -630,94 +825,12 @@
       padding: 0;
       margin-left: auto;
     }
-    #vp-toast-close:hover { color: #fff; }
-
-    /* ── Google Sign-In Button ── */
-    .btn-google {
-      background: #fff;
-      color: #1f2937;
-      border: 1px solid rgba(255,255,255,0.2);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      padding: 0.52rem 1.15rem;
-      border-radius: var(--radius-md);
-      font-size: 0.84rem;
-      font-weight: 600;
-      cursor: pointer;
-      line-height: 1;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-      font-family: inherit;
-    }
-    .btn-google:hover { background: #f3f4f6; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
-    .btn-google svg { flex-shrink: 0; }
-
-    .google-signin-area {
-      background: linear-gradient(135deg, rgba(16,185,129,0.06) 0%, rgba(6,182,212,0.06) 100%);
-      border: 1px solid rgba(16,185,129,0.2);
-      border-radius: var(--radius-md);
-      padding: 1rem 1.15rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .google-signin-area .gsi-title {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #a7f3d0;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .google-signin-area .gsi-desc {
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    .auth-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.76rem;
-      font-weight: 600;
-      padding: 0.3rem 0.75rem;
-      border-radius: 99px;
-      background: var(--emerald-bg);
-      border: 1px solid var(--emerald-border);
-      color: #34d399;
-      white-space: nowrap;
-    }
-
-    .auth-badge.signed-out {
-      background: rgba(100,116,139,0.12);
-      border-color: rgba(100,116,139,0.25);
-      color: var(--text-muted);
-    }
-
-    .setting-divider {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      color: var(--text-dim);
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-    }
-    .setting-divider::before, .setting-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--card-border);
-    }
+    #vp-toast-close:hover { color: var(--text-main); }
 
     /* ── Footer ── */
     footer {
       border-top: 1px solid var(--card-border);
-      background: rgba(9, 13, 22, 0.6);
+      background: var(--header-bg);
       padding: 1.25rem;
       font-size: 0.78rem;
       color: var(--text-dim);
@@ -742,13 +855,21 @@
         </div>
         <div class="vp-logo-text">
           <h1>VoicePilot</h1>
-          <p>Next-Gen Voice-Controlled Writing Suite</p>
+          <p>Professional Voice-Controlled Writing Suite</p>
         </div>
       </div>
 
-      <div id="vp-status-pill" class="ready" aria-live="polite">
-        <span class="dot" aria-hidden="true"></span>
-        <span id="vp-status-text">Ready for Wispr input</span>
+      <div class="header-actions">
+        <div id="vp-status-pill" class="ready" aria-live="polite">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="vp-status-text">Ready for Wispr input</span>
+        </div>
+
+        <!-- Dark / Light Mode Switcher -->
+        <button type="button" id="theme-toggle" aria-label="Toggle dark/light theme" title="Toggle theme">
+          <span id="theme-icon">☀️</span>
+          <span id="theme-label">Light</span>
+        </button>
       </div>
     </div>
   </header>
@@ -766,27 +887,70 @@
     <div id="wispr-guidance" role="note">
       <div class="icon">🎙️</div>
       <div>
-        <strong>Hands-Free Workflow:</strong> Focus the draft editor below, then press <kbd>Ctrl+Win</kbd> (Windows) or <kbd>Fn</kbd> (Mac) to speak via <strong>Wispr Flow</strong>.
-        Say <strong>"Shazam, review"</strong> to polish and improve your draft with AI, or <strong>"Shazam, undo"</strong> to revert changes.
+        <strong>Hands-Free Editing:</strong> Speak freely using <strong>Wispr Flow</strong> (<kbd>Ctrl+Win</kbd> or <kbd>Fn</kbd>).
+        To change text, say <strong>"Shazam, &lt;any instruction&gt;"</strong> (e.g. <em>"Shazam, put a comma next to hello"</em> or <em>"Shazam, review"</em>).
+        A two-screen comparison will appear — choose hands-free by saying <strong>"Shazam, accept"</strong> or <strong>"Shazam, decline"</strong>!
       </div>
     </div>
 
-    <!-- Draft Editor Card -->
+    <!-- ══════════════════════════════════════════════════════════════
+         TWO-SCREEN / SPLIT COMPARISON VIEW (Screen 1 & Screen 2)
+         ══════════════════════════════════════════════════════════════ -->
+    <section id="two-screen-review" class="vp-card" aria-label="AI Proposal Comparison" aria-live="polite">
+      <div class="comparison-banner">
+        <div class="comparison-title">
+          <span>✨</span>
+          <span>AI Proposal Comparison — Select Hands-Free</span>
+        </div>
+        <span class="comparison-instruction" id="review-instruction">Instruction: Polish</span>
+      </div>
+
+      <div class="two-screen-grid">
+        <!-- Screen 1: Original / Previous Draft -->
+        <div class="screen-column">
+          <div class="screen-column-header">
+            <span class="screen-tag original">● Option 1 · Previous Text</span>
+            <span class="voice-command-pill decline-pill">🎙️ Say "Shazam, decline"</span>
+          </div>
+          <div class="screen-content-box original-box" id="screen-original"></div>
+          <div class="screen-actions">
+            <button type="button" class="btn btn-danger btn-sm" id="btn-keep-original">✕ Keep Previous (Option 1)</button>
+            <span style="font-size:0.75rem;color:var(--text-dim);">(or say "Shazam, keep previous")</span>
+          </div>
+        </div>
+
+        <!-- Screen 2: Corrected / AI Enhanced Text -->
+        <div class="screen-column">
+          <div class="screen-column-header">
+            <span class="screen-tag corrected">● Option 2 · Corrected Text</span>
+            <span class="voice-command-pill accept-pill">🎙️ Say "Shazam, accept"</span>
+          </div>
+          <div class="screen-content-box corrected-box" id="screen-corrected"></div>
+          <div class="screen-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="btn-choose-corrected">✓ Choose Corrected (Option 2)</button>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-speak-proposal">🔊 Hear Proposal</button>
+            <span style="font-size:0.75rem;color:var(--text-dim);">(or say "Shazam, keep new")</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Draft Editor Card -->
     <div class="vp-card" id="draft-card">
       <div class="vp-card-header">
         <span class="vp-card-title">Document Draft</span>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-          <button type="button" class="btn btn-outline btn-sm" id="btn-review" title="Trigger AI Review">✨ AI Review</button>
-          <button type="button" class="btn btn-outline btn-sm" id="btn-undo" title="Shazam, undo">↺ Undo</button>
-          <button type="button" class="btn btn-outline btn-sm" id="btn-redo" title="Shazam, redo">↻ Redo</button>
-          <button type="button" class="btn btn-outline btn-sm" id="btn-read" title="Shazam, read">▶ Read aloud</button>
-          <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-draft" title="Clear draft">Clear</button>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-review" title="Say 'Shazam, review'">✨ AI Review</button>
+          <button type="button" class="btn btn-outline btn-sm" id="btn-undo" title="Say 'Shazam, undo'">↺ Undo</button>
+          <button type="button" class="btn btn-outline btn-sm" id="btn-redo" title="Say 'Shazam, redo'">↻ Redo</button>
+          <button type="button" class="btn btn-outline btn-sm" id="btn-read" title="Say 'Shazam, read'">▶ Read Aloud</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-draft">Clear</button>
         </div>
       </div>
       <textarea
         id="draft-editor"
         aria-label="Voice draft editor"
-        placeholder="Dictate your ideas freely using Wispr Flow...&#10;&#10;When ready, say 'Shazam, review' for AI polish, or 'Shazam, edit [instruction]' for targeted changes."
+        placeholder="Dictate your ideas freely using Wispr Flow...&#10;&#10;When ready, say 'Shazam, review' for a full polish, or say any instruction like 'Shazam, put a comma next to hello' to make edits automatically."
         spellcheck="true"
         autocomplete="off"
       ></textarea>
@@ -795,32 +959,6 @@
         <span id="history-bar" style="color:var(--primary);font-weight:600;"></span>
       </div>
     </div>
-
-    <!-- AI Revision Review Panel -->
-    <section id="review-panel" aria-label="Pending AI revision" aria-live="polite">
-      <div class="review-header">
-        <div class="review-header-title">
-          <span>✨</span>
-          <span>AI Proposal Ready — Review Before Applying</span>
-        </div>
-        <span id="review-instruction" style="font-size:0.78rem;color:var(--text-muted);"></span>
-      </div>
-      <div class="review-body">
-        <div>
-          <div class="diff-label">Current Draft</div>
-          <div class="diff-box diff-current" id="diff-current"></div>
-        </div>
-        <div>
-          <div class="diff-label">Proposed AI Version</div>
-          <div class="diff-box diff-proposed" id="diff-proposed"></div>
-        </div>
-      </div>
-      <div class="review-actions">
-        <button type="button" class="btn btn-primary" id="btn-apply">✓ Accept Proposal (Shazam, accept)</button>
-        <button type="button" class="btn btn-danger" id="btn-discard">✕ Decline (Shazam, decline)</button>
-        <button type="button" class="btn btn-outline btn-sm" id="btn-preview-speak">🔊 Hear Proposal</button>
-      </div>
-    </section>
 
     <!-- Separate Notes Area -->
     <section id="notes-panel" class="vp-card" aria-label="Separate notes">
@@ -834,97 +972,152 @@
     <!-- Command Reference Guide -->
     <div class="vp-card" id="help-panel">
       <details>
-        <summary>Voice Command Reference — Say "Shazam, &lt;command&gt;"</summary>
+        <summary>Voice Command Reference — Hands-Free Voice Control</summary>
         <div class="command-grid">
           <div class="command-item">
+            <span class="cmd-phrase">Shazam, &lt;any instruction&gt;</span>
+            <span class="cmd-desc">Say ANY edit request (e.g. "Shazam, add a comma after hello" or "Shazam, make this more formal"). AI creates a side-by-side proposal!</span>
+          </div>
+          <div class="command-item">
             <span class="cmd-phrase">Shazam, review</span>
-            <span class="cmd-desc">Polishes grammar, flow, and clarity with AI before presenting a clean proposal.</span>
+            <span class="cmd-desc">Full comprehensive polish for grammar, elegance, and clarity.</span>
           </div>
           <div class="command-item">
-            <span class="cmd-phrase">Shazam, edit [instruction]</span>
-            <span class="cmd-desc">Custom AI instruction (e.g. "Shazam, edit add a comma after hello").</span>
+            <span class="cmd-phrase">Shazam, accept / keep new</span>
+            <span class="cmd-desc">Chooses Option 2 (Corrected Text) into your draft. Also works with "option two" or "yes".</span>
           </div>
           <div class="command-item">
-            <span class="cmd-phrase">Shazam, accept</span>
-            <span class="cmd-desc">Accepts the pending AI review proposal into your main document.</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, decline</span>
-            <span class="cmd-desc">Rejects the AI proposal and preserves your original text.</span>
+            <span class="cmd-phrase">Shazam, decline / keep previous</span>
+            <span class="cmd-desc">Chooses Option 1 (Original Text) and discards proposal. Also works with "option one" or "no".</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, undo</span>
-            <span class="cmd-desc">Reverts the most recent insertion or accepted change.</span>
+            <span class="cmd-desc">Reverts the most recent insertion or accepted revision.</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, redo</span>
-            <span class="cmd-desc">Restores a previously undone revision.</span>
+            <span class="cmd-desc">Restores an undone action.</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, read</span>
-            <span class="cmd-desc">Reads your current draft aloud using speech synthesis.</span>
+            <span class="cmd-desc">Reads your current draft aloud using high-quality speech synthesis.</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, make that a separate note</span>
-            <span class="cmd-desc">Moves your latest phrase out of the main document into the Notes section.</span>
+            <span class="cmd-desc">Moves your latest spoken phrase into the Separate Notes scratchpad.</span>
           </div>
         </div>
       </details>
     </div>
 
-    <!-- Settings Panel -->
+    <!-- ══════════════════════════════════════════════════════════════
+         SEGREGATED SETTINGS & CONNECTION PANEL
+         ══════════════════════════════════════════════════════════════ -->
     <div class="vp-card" id="settings-panel">
-      <details>
-        <summary>⚙️ AI &amp; Configuration Settings</summary>
+      <details open>
+        <summary>⚙️ AI Connection &amp; Settings</summary>
         <div class="settings-body">
 
-          <!-- Google Sign-In (easiest for non-technical users) -->
-          <div class="google-signin-area">
-            <div class="gsi-title">✨ Recommended — Sign in with Google (No API key needed!)</div>
-            <div class="gsi-desc">Sign in once and VoicePilot will use your Google account to access the Gemini AI — completely free, no copy-pasting keys required.</div>
-            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
-              <button type="button" class="btn-google" id="btn-google-signin">
-                <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16.1 19 13 24 13c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.5 29.5 4 24 4 16.3 4 9.7 8.4 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.3 26.8 36 24 36c-5.3 0-9.7-3.3-11.3-8H6.3C9.6 35.5 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.3 5.6l6.2 5.2C37.2 38.4 44 33 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>
-                Sign in with Google
-              </button>
-              <span class="auth-badge signed-out" id="google-auth-badge">● Not signed in</span>
-              <button type="button" class="btn btn-ghost btn-sm" id="btn-google-signout" style="display:none;">Sign out</button>
+          <!-- Connection Tabs -->
+          <div class="settings-tabs" role="tablist">
+            <button type="button" class="settings-tab-btn active" data-tab="tab-gemini" role="tab">
+              🌟 Google Gemini (Recommended &amp; Free)
+            </button>
+            <button type="button" class="settings-tab-btn" data-tab="tab-openai" role="tab">
+              🤖 OpenAI / ChatGPT
+            </button>
+            <button type="button" class="settings-tab-btn" data-tab="tab-general" role="tab">
+              🎙️ Voice &amp; General
+            </button>
+          </div>
+
+          <!-- TAB 1: Google Gemini (Recommended) -->
+          <div id="tab-gemini" class="tab-content active" role="tabpanel">
+            <div class="service-card">
+              <div class="service-card-header">
+                <span class="service-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#6366f1"/></svg>
+                  Connect with Google Account (100% Free)
+                </span>
+                <span class="auth-badge disconnected" id="gemini-status-badge">● Not Connected</span>
+              </div>
+              <p class="service-desc">
+                Google provides free access to Gemini through your Google account via Google AI Studio.
+                No credit card required, takes 10 seconds to generate.
+              </p>
+              
+              <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="text-decoration:none;">
+                  🔑 Get Free Google Key in 1 Click ↗
+                </a>
+              </div>
+
+              <div class="setting-row" style="margin-top:0.4rem;">
+                <label for="gemini-key-input">Paste Google Gemini API Key</label>
+                <div style="display:flex;gap:0.6rem;align-items:center;">
+                  <input type="password" id="gemini-key-input" placeholder="AIzaSy..." style="flex:1;" />
+                  <button type="button" class="btn btn-outline btn-sm" id="btn-save-gemini">Save &amp; Test</button>
+                </div>
+                <span class="setting-hint">Stored strictly inside your local browser storage. Never sent to any third-party server.</span>
+              </div>
+
+              <!-- Optional Google Cloud OAuth Client ID -->
+              <details style="margin-top:0.5rem;">
+                <summary style="font-size:0.75rem;padding:0.4rem 0;">Advanced: Sign in using Google Cloud OAuth Client ID</summary>
+                <div class="setting-row" style="margin-top:0.5rem;">
+                  <label for="google-client-id-input">Google OAuth Client ID (Optional)</label>
+                  <input type="text" id="google-client-id-input" placeholder="your-client-id.apps.googleusercontent.com" />
+                  <span class="setting-hint">If you registered a Client ID for https://manishr075.github.io in Google Cloud Console, enter it here to enable one-click Sign In with Google.</span>
+                  <div style="margin-top:0.5rem;" id="oauth-btn-container" style="display:none;">
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-google-oauth-signin">Sign in with Google</button>
+                  </div>
+                </div>
+              </details>
             </div>
           </div>
 
-          <div class="setting-divider">or use an API Key manually</div>
+          <!-- TAB 2: OpenAI / ChatGPT -->
+          <div id="tab-openai" class="tab-content" role="tabpanel">
+            <div class="service-card">
+              <div class="service-card-header">
+                <span class="service-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                  OpenAI / ChatGPT (gpt-4o-mini)
+                </span>
+                <span class="auth-badge disconnected" id="openai-status-badge">● Not Connected</span>
+              </div>
+              <p class="service-desc">
+                If you have an OpenAI platform account, you can use your OpenAI API key. Note: OpenAI does not support Google Sign-In for API access; an API key is required.
+              </p>
 
-          <!-- Gemini API Key (manual fallback) -->
-          <div class="setting-row">
-            <label for="gemini-key-input">Google Gemini API Key <span style="color:var(--text-dim);font-weight:400;">(Free Tier)</span></label>
-            <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
-              <input type="password" id="gemini-key-input" placeholder="AIzaSy..." style="flex:1;min-width:200px;" />
-              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="text-decoration:none;">Get free key →</a>
+              <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+                <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="text-decoration:none;">
+                  Get OpenAI Key ↗
+                </a>
+              </div>
+
+              <div class="setting-row" style="margin-top:0.4rem;">
+                <label for="openai-key-input">OpenAI API Key</label>
+                <div style="display:flex;gap:0.6rem;align-items:center;">
+                  <input type="password" id="openai-key-input" placeholder="sk-..." style="flex:1;" />
+                  <button type="button" class="btn btn-outline btn-sm" id="btn-save-openai">Save</button>
+                </div>
+              </div>
             </div>
-            <span class="setting-hint">100% free · No credit card · Takes 30 seconds. Stored locally in your browser only.</span>
           </div>
 
-          <!-- OpenAI API Key -->
-          <div class="setting-row">
-            <label for="openai-key-input">OpenAI API Key <span style="color:var(--text-dim);font-weight:400;">(Optional, paid)</span></label>
-            <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
-              <input type="password" id="openai-key-input" placeholder="sk-..." style="flex:1;min-width:200px;" />
-              <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="text-decoration:none;">Get key →</a>
+          <!-- TAB 3: General & Voice Settings -->
+          <div id="tab-general" class="tab-content" role="tabpanel">
+            <div class="setting-row">
+              <label for="catchword-input">Voice Catchword (Wake Word)</label>
+              <input type="text" id="catchword-input" value="Shazam" style="max-width:320px;" />
+              <span class="setting-hint">The wake word triggering commands (default: "Shazam").</span>
             </div>
-            <span class="setting-hint">Uses gpt-4o-mini. Note: OpenAI doesn't support "Sign in with Google" — an API key is required.</span>
-          </div>
 
-          <!-- Wake Word -->
-          <div class="setting-row">
-            <label for="catchword-input">Voice Catchword</label>
-            <input type="text" id="catchword-input" value="Shazam" />
-            <span class="setting-hint">The wake word triggering commands (default: "Shazam").</span>
-          </div>
-
-          <!-- Spoken Feedback -->
-          <div class="setting-row" style="flex-direction:row;align-items:center;gap:.6rem;margin-top:.4rem;">
-            <input type="checkbox" id="spoken-feedback-toggle" checked style="width:16px;height:16px;accent-color:var(--primary);" />
-            <label for="spoken-feedback-toggle" style="cursor:pointer;margin:0;">Voice audio feedback (read confirmations aloud)</label>
+            <div class="setting-row" style="flex-direction:row;align-items:center;gap:.6rem;margin-top:.4rem;">
+              <input type="checkbox" id="spoken-feedback-toggle" checked style="width:16px;height:16px;accent-color:var(--primary);" />
+              <label for="spoken-feedback-toggle" style="cursor:pointer;margin:0;">Voice audio feedback (read confirmations and proposals aloud)</label>
+            </div>
           </div>
 
         </div>
@@ -942,14 +1135,14 @@
 // === src/command_parser.js ===
 const VPCommandParser = (() => {
   const COMMAND_MAP = [
-    { pattern: /^review/i,                               action: 'review',       hasArg: false },
-    { pattern: /^edit(?:\s*:\s*|\s+)(.+)/is,             action: 'edit',         hasArg: true  },
-    { pattern: /^(?:accept|apply)/i,                     action: 'accept',       hasArg: false },
-    { pattern: /^(?:decline|discard)/i,                  action: 'decline',      hasArg: false },
-    { pattern: /^undo/i,                                  action: 'undo',         hasArg: false },
-    { pattern: /^redo/i,                                  action: 'redo',         hasArg: false },
-    { pattern: /^read/i,                                  action: 'read',         hasArg: false },
-    { pattern: /^make\s+that\s+a\s+separate\s+note/i,   action: 'separate_note',hasArg: false },
+    { pattern: /^review$/i,                                                                             action: 'review',        hasArg: false },
+    { pattern: /^(?:accept|apply|keep\s+(?:new|corrected)|option\s+(?:two|2)|yes)$/i,                  action: 'accept',        hasArg: false },
+    { pattern: /^(?:decline|discard|reject|keep\s+(?:previous|old|original)|option\s+(?:one|1)|no)$/i,  action: 'decline',       hasArg: false },
+    { pattern: /^undo$/i,                                                                               action: 'undo',          hasArg: false },
+    { pattern: /^redo$/i,                                                                               action: 'redo',          hasArg: false },
+    { pattern: /^read$/i,                                                                               action: 'read',          hasArg: false },
+    { pattern: /^make\s+that\s+a\s+separate\s+note$/i,                                                  action: 'separate_note', hasArg: false },
+    { pattern: /^edit(?:\s*:\s*|\s+)(.+)/is,                                                            action: 'ai_instruction',hasArg: true  },
   ];
 
   function buildCatchwordRegex(catchword) {
@@ -967,7 +1160,9 @@ const VPCommandParser = (() => {
     if (!m) return null;
 
     const body = m[1].trim();
-    if (!body) return { action: 'unknown', arg: '', commandText: segment };
+    if (!body) {
+      return { action: 'empty_prompt', arg: '', commandText: segment };
+    }
 
     for (const { pattern, action, hasArg } of COMMAND_MAP) {
       const bm = pattern.exec(body);
@@ -980,7 +1175,12 @@ const VPCommandParser = (() => {
       }
     }
 
-    return { action: 'unknown', arg: body, commandText: segment };
+    // Any unrecognized phrase following the catchword is automatically an AI instruction!
+    return {
+      action: 'ai_instruction',
+      arg: body,
+      commandText: segment,
+    };
   }
 
   return { parse };
@@ -988,7 +1188,7 @@ const VPCommandParser = (() => {
 
 // === src/segment_tracker.js ===
 const VPSegmentTracker = (() => {
-  function attach(textarea, { debounceMs = 500, onSegment, onStatus } = {}) {
+  function attach(textarea, { debounceMs = 450, onSegment } = {}) {
     let _guard = false;
     let _snapshot = textarea.value;
     let _debounceTimer = null;
@@ -1171,10 +1371,10 @@ const VPEditorState = (() => {
     let catchword = 'Shazam';
     let _internalWrite = false;
 
-    // Keys stored locally
+    // Keys stored in local storage
     let VP_GEMINI_KEY = localStorage.getItem('vp_gemini_key') || '';
     let VP_OPENAI_KEY = localStorage.getItem('vp_openai_key') || '';
-    // Google OAuth access token (from GIS sign-in)
+    let VP_GOOGLE_CLIENT_ID = localStorage.getItem('vp_google_client_id') || '';
     let VP_GOOGLE_TOKEN = '';
     let _googleTokenClient = null;
 
@@ -1185,10 +1385,11 @@ const VPEditorState = (() => {
     const statusPill        = document.getElementById('vp-status-pill');
     const statusText        = document.getElementById('vp-status-text');
 
-    const reviewPanel       = document.getElementById('review-panel');
+    // Two-Screen Review Elements
+    const twoScreenReview   = document.getElementById('two-screen-review');
     const reviewInstruction = document.getElementById('review-instruction');
-    const diffCurrent       = document.getElementById('diff-current');
-    const diffProposed      = document.getElementById('diff-proposed');
+    const screenOriginal    = document.getElementById('screen-original');
+    const screenCorrected   = document.getElementById('screen-corrected');
 
     const notesPanel        = document.getElementById('notes-panel');
     const notesList         = document.getElementById('notes-list');
@@ -1260,14 +1461,17 @@ const VPEditorState = (() => {
         ? `${state.undoStack.length} revision${state.undoStack.length > 1 ? 's' : ''} in history`
         : '';
 
+      // Two-Screen Review Presentation
       if (state.pendingProposal) {
-        reviewPanel.classList.add('visible');
-        reviewInstruction.textContent = state.pendingProposal.instruction ? `"${state.pendingProposal.instruction}"` : '';
-        diffCurrent.textContent = state.acceptedDraft || '(empty)';
-        diffProposed.textContent = state.pendingProposal.text || '(empty)';
-        setStatus('review', 'Proposal Pending');
+        twoScreenReview.classList.add('visible');
+        reviewInstruction.textContent = state.pendingProposal.instruction
+          ? `Instruction: "${state.pendingProposal.instruction}"`
+          : 'Instruction: AI Polish';
+        screenOriginal.textContent = state.acceptedDraft || '(empty draft)';
+        screenCorrected.textContent = state.pendingProposal.text || '(empty proposal)';
+        setStatus('review', 'Comparison Ready (Say Shazam, accept/decline)');
       } else {
-        reviewPanel.classList.remove('visible');
+        twoScreenReview.classList.remove('visible');
         setStatus('ready', 'Ready for Wispr input');
       }
 
@@ -1277,174 +1481,256 @@ const VPEditorState = (() => {
       } else {
         notesPanel.classList.remove('visible');
       }
+
+      updateConnectionBadges();
     }
 
-    // ── Universal AI Provider Integration (Gemini & OpenAI) ──
-    async function callAI(draft, instruction) {
-      if (!draft || !draft.trim()) {
-        throw new Error('Your draft is empty. Dictate some content first before requesting AI review.');
+    function updateConnectionBadges() {
+      const geminiBadge = document.getElementById('gemini-status-badge');
+      if (geminiBadge) {
+        if (VP_GOOGLE_TOKEN) {
+          geminiBadge.className = 'auth-badge connected';
+          geminiBadge.textContent = '✓ Google Account Connected';
+        } else if (VP_GEMINI_KEY) {
+          geminiBadge.className = 'auth-badge connected';
+          geminiBadge.textContent = '✓ Key Active (Free Tier)';
+        } else {
+          geminiBadge.className = 'auth-badge disconnected';
+          geminiBadge.textContent = '● Not Connected';
+        }
       }
 
-      const systemPrompt = `You are a world-class professional editor. 
+      const openaiBadge = document.getElementById('openai-status-badge');
+      if (openaiBadge) {
+        if (VP_OPENAI_KEY) {
+          openaiBadge.className = 'auth-badge connected';
+          openaiBadge.textContent = '✓ Connected (gpt-4o-mini)';
+        } else {
+          openaiBadge.className = 'auth-badge disconnected';
+          openaiBadge.textContent = '● Not Connected';
+        }
+      }
+    }
+
+    // ── Zero-Failure Google Gemini Integration ──
+    async function callGemini(draft, instruction, apiKey, token) {
+      const prompt = `You are a world-class professional editor.
 User's draft document:
 """
 ${draft}
 """
 
 Editing instruction:
-"${instruction || 'Thoroughly review, polish grammar, eliminate awkward phrasing, and enhance clarity and professional tone while strictly preserving meaning and key details.'}"
+"${instruction || 'Review for clarity, eliminate awkward phrasing, fix grammar, and improve flow while strictly preserving meaning and facts.'}"
 
-Return ONLY the final revised draft. Do not add markdown code blocks, quotes, commentary, or pleasantries.`;
+Return ONLY the final revised draft. Do not wrap in markdown code blocks, backticks, quotes, commentary, or pleasantries.`;
 
-      // Priority 1: Google Sign-In OAuth token (no API key needed)
-      if (VP_GOOGLE_TOKEN) {
-        const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
-        const resp = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${VP_GOOGLE_TOKEN}`,
-          },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: systemPrompt }] }],
-            generationConfig: { temperature: 0.3 }
-          })
-        });
+      // Candidate models in preference order (handles API version differences seamlessly)
+      const candidateModels = [
+        'gemini-2.0-flash',
+        'gemini-1.5-flash-latest',
+        'gemini-1.5-flash',
+        'gemini-2.5-flash',
+        'gemini-1.5-pro'
+      ];
 
-        if (resp.status === 401) {
-          // Token expired — clear it and prompt re-sign
-          VP_GOOGLE_TOKEN = '';
-          updateGoogleAuthUI(false);
-          throw new Error('Google session expired. Please sign in again via Settings ⚙️.');
+      let lastError = null;
+
+      for (const modelName of candidateModels) {
+        try {
+          const url = token
+            ? `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`
+            : `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+
+          const headers = { 'Content-Type': 'application/json' };
+          if (token) headers['Authorization'] = `Bearer ${token}`;
+
+          const resp = await fetch(url, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.3 }
+            })
+          });
+
+          if (resp.status === 404) {
+            // Model not found for this version; try next candidate
+            const errJson = await resp.json().catch(() => ({}));
+            lastError = new Error(errJson.error?.message || `Model ${modelName} not found`);
+            continue;
+          }
+
+          if (resp.status === 401 && token) {
+            VP_GOOGLE_TOKEN = '';
+            updateConnectionBadges();
+            throw new Error('Google session expired. Please sign in again or use a Gemini API key.');
+          }
+
+          if (!resp.ok) {
+            const errJson = await resp.json().catch(() => ({}));
+            throw new Error(errJson.error?.message || `Gemini API returned status ${resp.status}`);
+          }
+
+          const data = await resp.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+          if (text) return text;
+        } catch (e) {
+          if (e.message && (e.message.includes('not found') || e.message.includes('404'))) {
+            lastError = e;
+            continue;
+          }
+          throw e;
         }
-
-        if (!resp.ok) {
-          const err = await resp.json().catch(() => ({}));
-          throw new Error(err.error?.message || `Gemini API returned status ${resp.status}`);
-        }
-
-        const data = await resp.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-        if (!text) throw new Error('Gemini returned an empty response.');
-        return text;
       }
 
-      // Priority 2: Google Gemini API Key (Free & High Quota)
-      if (VP_GEMINI_KEY) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${VP_GEMINI_KEY}`;
-        const resp = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: systemPrompt }] }],
-            generationConfig: { temperature: 0.3 }
-          })
-        });
-
-        if (!resp.ok) {
-          const err = await resp.json().catch(() => ({}));
-          throw new Error(err.error?.message || `Gemini API returned status ${resp.status}`);
-        }
-
-        const data = await resp.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-        if (!text) throw new Error('Gemini returned an empty response.');
-        return text;
+      // Stable v1 endpoint fallback
+      if (apiKey) {
+        try {
+          const v1Url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+          const resp = await fetch(v1Url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.3 }
+            })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+            if (text) return text;
+          }
+        } catch (ignored) {}
       }
 
-      // Priority 3: OpenAI (gpt-4o-mini)
-      if (VP_OPENAI_KEY) {
-        const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${VP_OPENAI_KEY}`,
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o-mini',
-            messages: [
-              {
-                role: 'system',
-                content: 'You are a professional editor. Return ONLY the improved revised text with no quotes, preamble, or markdown backticks.'
-              },
-              {
-                role: 'user',
-                content: `Draft:\n${draft}\n\nInstruction: ${instruction || 'Polish and improve clarity, grammar, and flow.'}`
-              }
-            ],
-            temperature: 0.3,
-          })
-        });
-
-        if (!resp.ok) {
-          const err = await resp.json().catch(() => ({}));
-          throw new Error(err.error?.message || `OpenAI returned status ${resp.status}`);
-        }
-
-        const data = await resp.json();
-        const text = data.choices?.[0]?.message?.content?.trim();
-        if (!text) throw new Error('OpenAI returned an empty response.');
-        return text;
-      }
-
-      throw new Error('No AI connected. Open Settings (⚙️) and Sign in with Google — it\'s free and instant!');
+      throw lastError || new Error('Could not connect to Google Gemini. Please check your API key.');
     }
 
-    // ── Command Routing ──
+    // ── OpenAI Provider ──
+    async function callOpenAI(draft, instruction, apiKey) {
+      const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a professional editor. Return ONLY the improved revised text with no quotes, preamble, or markdown backticks.'
+            },
+            {
+              role: 'user',
+              content: `Draft:\n${draft}\n\nInstruction: ${instruction || 'Polish and improve clarity, grammar, and flow.'}`
+            }
+          ],
+          temperature: 0.3,
+        })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.error?.message || `OpenAI returned status ${resp.status}`);
+      }
+
+      const data = await resp.json();
+      const text = data.choices?.[0]?.message?.content?.trim();
+      if (!text) throw new Error('OpenAI returned an empty response.');
+      return text;
+    }
+
+    // ── Unified AI Router ──
+    async function callAI(draft, instruction) {
+      if (!draft || !draft.trim()) {
+        throw new Error('Your draft is empty. Dictate some content first before requesting AI editing.');
+      }
+
+      // 1. Google OAuth Token (if active)
+      if (VP_GOOGLE_TOKEN) {
+        return await callGemini(draft, instruction, null, VP_GOOGLE_TOKEN);
+      }
+
+      // 2. Google Gemini API Key (Recommended Free Tier)
+      if (VP_GEMINI_KEY) {
+        return await callGemini(draft, instruction, VP_GEMINI_KEY, null);
+      }
+
+      // 3. OpenAI Key
+      if (VP_OPENAI_KEY) {
+        return await callOpenAI(draft, instruction, VP_OPENAI_KEY);
+      }
+
+      throw new Error('No AI connected. Open Settings (⚙️) to connect with your free Google account in 1 click!');
+    }
+
+    // ── Command Routing & Execution ──
     async function executeCommand(parsed, insertedText) {
       const { action, arg } = parsed;
       setStatus('command', `Command: ${action}`);
 
       switch (action) {
         case 'review': {
-          showToast('Consulting AI editor...');
+          showToast('Consulting AI editor for full polish...');
           setStatus('review', 'AI Reviewing...');
           try {
             const revised = await callAI(state.acceptedDraft, 'Comprehensive review for grammar, flow, and elegance');
             state = VPEditorState.setProposal(state, revised, 'Comprehensive Polish');
-            showToast('AI Proposal ready! Say "Shazam, accept" or "Shazam, decline".');
-            VPVoiceFeedback.speak('Proposal ready');
+            renderState();
+            showToast('Comparison ready! Say "Shazam, accept" or "Shazam, decline".');
+            VPVoiceFeedback.speak('Comparison ready. Say Shazam accept for corrected text, or Shazam decline to keep previous.');
           } catch (e) {
-            showToast(`Review failed: ${e.message}`, 6000);
+            showToast(`Review failed: ${e.message}`, 6500);
             setStatus('error', 'AI Review Failed');
           }
           break;
         }
 
-        case 'edit': {
-          if (!arg) { showToast('Please state what to edit after "edit".'); break; }
-          showToast(`Executing edit: "${arg}"...`);
-          setStatus('review', 'Applying Edit...');
+        // ANY UNRECOGNIZED SHAZAM PHRASE OR EDIT INSTRUCTION GOES HERE!
+        case 'ai_instruction': {
+          if (!arg || !arg.trim()) {
+            showToast('Please state what you want to edit.');
+            break;
+          }
+          showToast(`Applying instruction: "${arg}"...`);
+          setStatus('review', 'Consulting AI...');
           try {
             const revised = await callAI(state.acceptedDraft, arg);
             state = VPEditorState.setProposal(state, revised, arg);
-            showToast('Revision ready! Say "Shazam, accept" or "Shazam, decline".');
-            VPVoiceFeedback.speak('Revision ready');
+            renderState();
+            showToast(`Revision ready! Say "Shazam, accept" or "Shazam, decline".`);
+            VPVoiceFeedback.speak('Revision ready. Say Shazam accept to apply, or Shazam decline to keep previous.');
           } catch (e) {
-            showToast(`Edit failed: ${e.message}`, 6000);
-            setStatus('error', 'Edit Failed');
+            showToast(`Edit failed: ${e.message}`, 6500);
+            setStatus('error', 'AI Edit Failed');
           }
           break;
         }
 
+        // Voice Selection: Option 2 (Accept Corrected)
         case 'accept': {
           if (!state.pendingProposal) {
             showToast('No pending proposal to accept.');
           } else {
             state = VPEditorState.applyProposal(state);
-            showToast('Proposal accepted into draft.');
-            VPVoiceFeedback.speak('Accepted');
+            renderState();
+            showToast('✓ Option 2 accepted: Changes applied to document.');
+            VPVoiceFeedback.speak('Proposal accepted');
           }
           break;
         }
 
+        // Voice Selection: Option 1 (Keep Original / Decline)
         case 'decline': {
           if (!state.pendingProposal) {
             showToast('No pending proposal to decline.');
           } else {
             state = VPEditorState.discardProposal(state);
-            showToast('Proposal declined. Original draft kept.');
-            VPVoiceFeedback.speak('Declined');
+            renderState();
+            showToast('✕ Option 1 chosen: Original draft preserved.');
+            VPVoiceFeedback.speak('Proposal declined. Original kept.');
           }
           break;
         }
@@ -1452,6 +1738,7 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
         case 'undo': {
           const prev = state;
           state = VPEditorState.undo(state);
+          renderState();
           if (state === prev) {
             showToast('Nothing to undo.');
           } else {
@@ -1464,6 +1751,7 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
         case 'redo': {
           const prev = state;
           state = VPEditorState.redo(state);
+          renderState();
           if (state === prev) {
             showToast('Nothing to redo.');
           } else {
@@ -1484,12 +1772,12 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
         }
 
         case 'separate_note': {
-          // If user previously spoke a phrase, move it to notes
           const lastUndo = state.undoStack.length > 0 ? state.undoStack[state.undoStack.length - 1] : '';
           const movedText = state.acceptedDraft.slice(lastUndo.length).trim() || state.acceptedDraft.trim();
           if (movedText) {
             state.notes.push(movedText);
-            state = VPEditorState.undo(state); // Revert from draft
+            state = VPEditorState.undo(state);
+            renderState();
             showToast('Moved text into Separate Notes.');
             VPVoiceFeedback.speak('Moved to notes');
           } else {
@@ -1498,15 +1786,15 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
           break;
         }
 
-        case 'unknown':
-        default: {
-          showToast(`Unrecognized command: "${arg || ''}". Kept draft clean.`);
-          VPVoiceFeedback.speak('Command not recognized');
+        case 'empty_prompt': {
+          showToast('Wake word heard. Say any instruction (e.g. "Shazam, add commas" or "Shazam, review").');
+          VPVoiceFeedback.speak('Listening for command');
           break;
         }
-      }
 
-      renderState();
+        default:
+          break;
+      }
     }
 
     // ── Input & Segment Handling ──
@@ -1517,19 +1805,18 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
       const parsed = VPCommandParser.parse(trimmed, catchword);
 
       if (parsed) {
-        // It's a Shazam command! Strip command text immediately from editor
+        // Shazam command detected: strip command text immediately from editor
         const currentVal = draftEditor.value;
         const before = currentVal.slice(0, insertStart);
         const after = currentVal.slice(insertEnd);
         const cleaned = (before + after).replace(/[ \t]{2,}/g, ' ');
 
-        // Update draft value to exclude the command
         state.acceptedDraft = cleaned;
         writeToEditor(cleaned);
 
         await executeCommand(parsed, insertedText);
       } else {
-        // Ordinary dictation text: commit as new document state
+        // Regular voice dictation
         state = VPEditorState.acceptDraft(state, draftEditor.value);
         renderState();
       }
@@ -1543,7 +1830,7 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
       });
     }
 
-    // ── Manual UI Controls ──
+    // ── UI Button Listeners ──
     document.getElementById('btn-review').addEventListener('click', () => {
       executeCommand({ action: 'review', arg: null }, '');
     });
@@ -1567,15 +1854,16 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
       showToast('Draft cleared.');
     });
 
-    document.getElementById('btn-apply').addEventListener('click', () => {
+    // Two-Screen Selection Buttons
+    document.getElementById('btn-choose-corrected').addEventListener('click', () => {
       executeCommand({ action: 'accept', arg: null }, '');
     });
 
-    document.getElementById('btn-discard').addEventListener('click', () => {
+    document.getElementById('btn-keep-original').addEventListener('click', () => {
       executeCommand({ action: 'decline', arg: null }, '');
     });
 
-    document.getElementById('btn-preview-speak').addEventListener('click', () => {
+    document.getElementById('btn-speak-proposal').addEventListener('click', () => {
       if (state.pendingProposal) {
         VPVoiceFeedback.speak(state.pendingProposal.text);
       }
@@ -1586,111 +1874,127 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
       renderState();
     });
 
-    // ── Google Sign-In (GIS Token Model) ──
-    function updateGoogleAuthUI(isSignedIn, userEmail) {
-      const badge = document.getElementById('google-auth-badge');
-      const signInBtn = document.getElementById('btn-google-signin');
-      const signOutBtn = document.getElementById('btn-google-signout');
-      if (!badge || !signInBtn) return;
+    // ── Dark / Light Mode Switcher ──
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeLabel = document.getElementById('theme-label');
 
-      if (isSignedIn) {
-        badge.textContent = `✓ Signed in${userEmail ? ' as ' + userEmail : ' with Google'}`;
-        badge.classList.remove('signed-out');
-        signInBtn.style.display = 'none';
-        signOutBtn.style.display = '';
-        // Grey out manual Gemini key if we have a token
-        if (geminiInput) geminiInput.style.opacity = '0.5';
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('vp_theme', theme);
+      if (theme === 'dark') {
+        themeIcon.textContent = '☀️';
+        themeLabel.textContent = 'Light';
       } else {
-        badge.textContent = '● Not signed in';
-        badge.classList.add('signed-out');
-        signInBtn.style.display = '';
-        signOutBtn.style.display = 'none';
-        if (geminiInput) geminiInput.style.opacity = '';
+        themeIcon.textContent = '🌙';
+        themeLabel.textContent = 'Dark';
       }
     }
 
-    function initGoogleSignIn() {
-      if (typeof google === 'undefined' || !google.accounts) {
-        // GIS not loaded yet — retry after load
-        window.addEventListener('load', initGoogleSignIn, { once: true });
-        return;
-      }
-      try {
-        _googleTokenClient = google.accounts.oauth2.initTokenClient({
-          // This client ID is registered for https://manishr075.github.io
-          // Replace with your own at console.cloud.google.com if forking
-          client_id: '637291689888-o2bm6c7eqpcg64bbjbml3oiu1fhgahvn.apps.googleusercontent.com',
-          scope: 'https://www.googleapis.com/auth/generative-language',
-          callback: (response) => {
-            if (response.error) {
-              showToast(`Google sign-in failed: ${response.error}`, 6000);
-              return;
-            }
-            VP_GOOGLE_TOKEN = response.access_token;
-            // Try to get the user's email from a userinfo call
-            fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-              headers: { 'Authorization': `Bearer ${VP_GOOGLE_TOKEN}` }
-            }).then(r => r.json()).then(info => {
-              updateGoogleAuthUI(true, info.email || '');
-              showToast(`🎉 Signed in as ${info.email || 'Google User'}! AI Review is ready.`);
-              VPVoiceFeedback.speak('Signed in with Google. AI Review is ready.');
-            }).catch(() => {
-              updateGoogleAuthUI(true, '');
-              showToast('🎉 Signed in with Google! AI Review is ready.');
-            });
-          },
-        });
-      } catch (e) {
-        console.warn('GIS initTokenClient failed:', e);
-      }
-    }
-
-    document.getElementById('btn-google-signin').addEventListener('click', () => {
-      if (!_googleTokenClient) {
-        showToast('Google Sign-In is loading... Please try again in a moment.', 4000);
-        initGoogleSignIn();
-        return;
-      }
-      _googleTokenClient.requestAccessToken({ prompt: 'consent' });
+    themeToggleBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
     });
 
-    document.getElementById('btn-google-signout').addEventListener('click', () => {
-      if (VP_GOOGLE_TOKEN && typeof google !== 'undefined') {
-        google.accounts.oauth2.revoke(VP_GOOGLE_TOKEN, () => {});
-      }
-      VP_GOOGLE_TOKEN = '';
-      updateGoogleAuthUI(false);
-      showToast('Signed out from Google.');
+    // Initial theme
+    const savedTheme = localStorage.getItem('vp_theme') || 'dark';
+    applyTheme(savedTheme);
+
+    // ── Segregated Settings Tabs ──
+    const tabBtns = document.querySelectorAll('.settings-tab-btn');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+        btn.classList.add('active');
+        const target = document.getElementById(btn.getAttribute('data-tab'));
+        if (target) target.classList.add('active');
+      });
     });
 
-    // Init GIS when library has loaded
-    if (typeof google !== 'undefined' && google.accounts) {
-      initGoogleSignIn();
-    } else {
-      document.querySelector('script[src*="accounts.google.com"]')?.addEventListener('load', initGoogleSignIn);
-    }
-
-    // ── Settings Listeners ──
+    // ── Settings Save Listeners ──
     const geminiInput = document.getElementById('gemini-key-input');
     if (geminiInput) {
       geminiInput.value = VP_GEMINI_KEY;
-      geminiInput.addEventListener('change', function() {
-        VP_GEMINI_KEY = this.value.trim();
-        localStorage.setItem('vp_gemini_key', VP_GEMINI_KEY);
-        showToast(VP_GEMINI_KEY ? '🎉 Gemini API Key saved! AI Review is ready.' : 'Gemini Key cleared.');
-      });
     }
+    document.getElementById('btn-save-gemini').addEventListener('click', async () => {
+      const val = geminiInput.value.trim();
+      VP_GEMINI_KEY = val;
+      localStorage.setItem('vp_gemini_key', VP_GEMINI_KEY);
+      if (VP_GEMINI_KEY) {
+        showToast('Testing Google Gemini connection...');
+        try {
+          await callGemini('Test connection', 'Review test', VP_GEMINI_KEY, null);
+          showToast('🎉 Google Gemini connected successfully!');
+          VPVoiceFeedback.speak('Google Gemini connected');
+        } catch (e) {
+          showToast(`Saved, but test call failed: ${e.message}`, 6000);
+        }
+      } else {
+        showToast('Gemini Key removed.');
+      }
+      renderState();
+    });
 
     const openaiInput = document.getElementById('openai-key-input');
     if (openaiInput) {
       openaiInput.value = VP_OPENAI_KEY;
-      openaiInput.addEventListener('change', function() {
-        VP_OPENAI_KEY = this.value.trim();
-        localStorage.setItem('vp_openai_key', VP_OPENAI_KEY);
-        showToast(VP_OPENAI_KEY ? 'OpenAI Key saved!' : 'OpenAI Key cleared.');
+    }
+    document.getElementById('btn-save-openai').addEventListener('click', () => {
+      VP_OPENAI_KEY = openaiInput.value.trim();
+      localStorage.setItem('vp_openai_key', VP_OPENAI_KEY);
+      showToast(VP_OPENAI_KEY ? 'OpenAI key saved!' : 'OpenAI key cleared.');
+      renderState();
+    });
+
+    // Advanced Google Cloud OAuth
+    const googleClientInput = document.getElementById('google-client-id-input');
+    const oauthBtnContainer = document.getElementById('oauth-btn-container');
+    if (googleClientInput) {
+      googleClientInput.value = VP_GOOGLE_CLIENT_ID;
+      if (VP_GOOGLE_CLIENT_ID) oauthBtnContainer.style.display = 'block';
+      googleClientInput.addEventListener('change', function() {
+        VP_GOOGLE_CLIENT_ID = this.value.trim();
+        localStorage.setItem('vp_google_client_id', VP_GOOGLE_CLIENT_ID);
+        oauthBtnContainer.style.display = VP_GOOGLE_CLIENT_ID ? 'block' : 'none';
+        initGoogleOAuth();
       });
     }
 
+    function initGoogleOAuth() {
+      if (!VP_GOOGLE_CLIENT_ID || typeof google === 'undefined' || !google.accounts) return;
+      try {
+        _googleTokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: VP_GOOGLE_CLIENT_ID,
+          scope: 'https://www.googleapis.com/auth/generative-language',
+          callback: (response) => {
+            if (response.error) {
+              showToast(`Google Sign-In failed: ${response.error}`, 6000);
+              return;
+            }
+            VP_GOOGLE_TOKEN = response.access_token;
+            renderState();
+            showToast('🎉 Signed in with Google! Gemini AI is ready.');
+            VPVoiceFeedback.speak('Signed in with Google. AI ready.');
+          }
+        });
+      } catch (e) {
+        console.warn('OAuth init error:', e);
+      }
+    }
+
+    document.getElementById('btn-google-oauth-signin')?.addEventListener('click', () => {
+      if (!_googleTokenClient) {
+        initGoogleOAuth();
+      }
+      if (_googleTokenClient) {
+        _googleTokenClient.requestAccessToken({ prompt: 'consent' });
+      } else {
+        showToast('Please enter a valid Google OAuth Client ID first.');
+      }
+    });
+
+    // General Settings
     document.getElementById('catchword-input').addEventListener('change', function() {
       const val = this.value.trim();
       if (val) {
@@ -1721,6 +2025,9 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
     // Init
     attachTracker();
     renderState();
+    if (VP_GOOGLE_CLIENT_ID) {
+      window.addEventListener('load', initGoogleOAuth);
+    }
   </script>
 </body>
 </html>
