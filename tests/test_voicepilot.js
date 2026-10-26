@@ -58,7 +58,7 @@ assertEqual(re1 && re1.action, 'redo', 'Shazam, redo works locally');
 const re2 = VPCommandParser.parse('Shazam, redo.');
 assertEqual(re2 && re2.action, 'redo', 'Shazam, redo. with period works locally');
 
-// 4. Local Read (MUST work locally even with dictation punctuation)
+// 4. Local Read, Stop & Silence
 const rd1 = VPCommandParser.parse('Shazam, read');
 assertEqual(rd1 && rd1.action, 'read', 'Shazam, read works locally');
 
@@ -68,7 +68,23 @@ assertEqual(rd2 && rd2.action, 'read', 'Shazam, read. with period works locally'
 const rd3 = VPCommandParser.parse('Shazam, read aloud.');
 assertEqual(rd3 && rd3.action, 'read', 'Shazam, read aloud. works locally');
 
-// 5. Local Accept & Decline (MUST work locally with all natural variations)
+const st1 = VPCommandParser.parse('Shazam, stop');
+assertEqual(st1 && st1.action, 'stop', 'Shazam, stop works locally');
+
+const st2 = VPCommandParser.parse('Shazam, silence.');
+assertEqual(st2 && st2.action, 'stop', 'Shazam, silence. works locally');
+
+// 5. Local Copy & Clear
+const cp1 = VPCommandParser.parse('Shazam, copy');
+assertEqual(cp1 && cp1.action, 'copy', 'Shazam, copy works locally');
+
+const cp2 = VPCommandParser.parse('Shazam, copy to clipboard.');
+assertEqual(cp2 && cp2.action, 'copy', 'Shazam, copy to clipboard. works locally');
+
+const cl1 = VPCommandParser.parse('Shazam, clear draft.');
+assertEqual(cl1 && cl1.action, 'clear', 'Shazam, clear draft. works locally');
+
+// 6. Local Accept & Decline (MUST work locally with all natural variations)
 const acc1 = VPCommandParser.parse('Shazam, accept');
 assertEqual(acc1 && acc1.action, 'accept', 'Shazam, accept works locally');
 
@@ -93,7 +109,7 @@ assertEqual(dec3 && dec3.action, 'decline', 'Shazam, keep previous. works locall
 const dec4 = VPCommandParser.parse('Shazam, option one.');
 assertEqual(dec4 && dec4.action, 'decline', 'Shazam, option one. works locally');
 
-// 6. Natural AI instructions (Only actual instructions are sent to AI)
+// 7. Natural AI instructions (Only actual instructions are sent to AI)
 const ai1 = VPCommandParser.parse('Shazam, put a comma next to hello');
 assertEqual(ai1 && ai1.action, 'ai_instruction', 'Natural command routes to ai_instruction');
 assertEqual(ai1 && ai1.arg, 'put a comma next to hello', 'Instruction text captured cleanly');
@@ -101,7 +117,7 @@ assertEqual(ai1 && ai1.arg, 'put a comma next to hello', 'Instruction text captu
 const ai2 = VPCommandParser.parse('Shazam, edit add exclamation mark at the end.');
 assertEqual(ai2 && ai2.action, 'ai_instruction', 'Explicit edit command routes to ai_instruction');
 
-// 7. Empty Shazam
+// 8. Empty Shazam
 const emptyShazam = VPCommandParser.parse('Shazam');
 assertEqual(emptyShazam && emptyShazam.action, 'empty_prompt', 'Standalone catchword returns empty_prompt');
 
