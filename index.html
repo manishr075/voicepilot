@@ -3,31 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VoicePilot — Professional Hands-Free Voice Editor</title>
+  <title>VoicePilot — Professional Voice Writing &amp; Editing</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='%23090d16'/%3E%3Crect x='13' y='6' width='6' height='12' rx='3' fill='url(%23g)'/%3E%3Cpath d='M10 13 A6 6 0 0 0 22 13' stroke='url(%23g)' stroke-width='2.5' stroke-linecap='round' fill='none'/%3E%3Cline x1='16' y1='19' x2='16' y2='25' stroke='url(%23g)' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <!-- Google Identity Services (optional SSO) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    /* ── CSS Design Tokens & Themes ── */
+    /* ── Design Tokens & Themes ── */
     :root {
       --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
-      --radius-lg: 16px;
-      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-md: 9px;
       --radius-sm: 6px;
-      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Dark Theme (Default) */
+    /* Dark Theme */
     html[data-theme="dark"] {
       --bg: #090d16;
       --bg-subtle: #0f1629;
-      --card-bg: rgba(17, 24, 39, 0.78);
+      --card-bg: rgba(17, 24, 39, 0.82);
       --card-border: rgba(255, 255, 255, 0.08);
       --card-border-hover: rgba(99, 102, 241, 0.35);
-      --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      --card-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04);
 
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
@@ -38,17 +39,18 @@
       --primary-glow: rgba(99, 102, 241, 0.25);
       --accent: #06b6d4;
 
-      --diff-curr-bg: rgba(244, 63, 94, 0.08);
-      --diff-curr-border: rgba(244, 63, 94, 0.25);
+      --diff-curr-bg: rgba(244, 63, 94, 0.12);
+      --diff-curr-border: rgba(244, 63, 94, 0.28);
       --diff-curr-text: #fda4af;
 
-      --diff-prop-bg: rgba(16, 185, 129, 0.08);
-      --diff-prop-border: rgba(16, 185, 129, 0.25);
+      --diff-prop-bg: rgba(16, 185, 129, 0.14);
+      --diff-prop-border: rgba(16, 185, 129, 0.3);
       --diff-prop-text: #a7f3d0;
 
-      --input-bg: rgba(0, 0, 0, 0.35);
-      --header-bg: rgba(9, 13, 22, 0.85);
-      --badge-bg: rgba(255, 255, 255, 0.05);
+      --input-bg: rgba(0, 0, 0, 0.4);
+      --header-bg: rgba(9, 13, 22, 0.88);
+      --badge-bg: rgba(255, 255, 255, 0.04);
+      --modal-bg: rgba(15, 23, 42, 0.96);
     }
 
     /* Light Theme */
@@ -69,17 +71,18 @@
       --primary-glow: rgba(79, 70, 229, 0.2);
       --accent: #0891b2;
 
-      --diff-curr-bg: #fef2f2;
-      --diff-curr-border: #fecaca;
-      --diff-curr-text: #991b1b;
+      --diff-curr-bg: #fee2e2;
+      --diff-curr-border: #fca5a5;
+      --diff-curr-text: #b91c1c;
 
-      --diff-prop-bg: #ecfdf5;
-      --diff-prop-border: #a7f3d0;
-      --diff-prop-text: #065f46;
+      --diff-prop-bg: #d1fae5;
+      --diff-prop-border: #86efac;
+      --diff-prop-text: #047857;
 
       --input-bg: #ffffff;
-      --header-bg: rgba(255, 255, 255, 0.88);
-      --badge-bg: rgba(0, 0, 0, 0.04);
+      --header-bg: rgba(255, 255, 255, 0.9);
+      --badge-bg: rgba(0, 0, 0, 0.03);
+      --modal-bg: #ffffff;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -94,10 +97,11 @@
       font-size: 15px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      width: 100%;
     }
 
-    /* ── Header ── */
+    /* ── Full-Width Header ── */
     #vp-header {
       background: var(--header-bg);
       border-bottom: 1px solid var(--card-border);
@@ -106,55 +110,70 @@
       z-index: 50;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
+      width: 100%;
       transition: var(--transition);
     }
 
     #vp-header-inner {
-      max-width: 1060px;
-      margin: 0 auto;
-      padding: 0.85rem 1.5rem;
+      width: 100%;
+      max-width: 100%;
+      padding: 0.75rem 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      gap: 1.25rem;
     }
 
     .vp-logo {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.85rem;
       text-decoration: none;
       color: inherit;
+      user-select: none;
     }
 
     .vp-logo-mark {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 10px;
       background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 14px var(--primary-glow);
+      flex-shrink: 0;
+    }
+
+    .vp-logo-text {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
     }
 
     .vp-logo-text h1 {
-      font-size: 1.12rem;
+      font-size: 1.18rem;
       font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
+      letter-spacing: -0.025em;
+      line-height: 1;
     }
 
-    .vp-logo-text p {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      font-weight: 500;
+    .vp-logo-text .badge-pro {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: var(--badge-bg);
+      border: 1px solid var(--card-border);
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
     }
 
     /* ── Status Pill ── */
@@ -162,9 +181,9 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.75rem;
+      font-size: 0.76rem;
       font-weight: 600;
-      padding: 0.38rem 0.85rem;
+      padding: 0.35rem 0.8rem;
       border-radius: 99px;
       border: 1px solid var(--card-border);
       background: var(--bg-subtle);
@@ -174,8 +193,8 @@
     }
 
     #vp-status-pill .dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: var(--text-dim);
       transition: background 0.25s ease;
@@ -221,37 +240,35 @@
       box-shadow: 0 0 8px rgba(244, 63, 94, 0.6);
     }
 
-    /* ── Theme Switcher Button ── */
-    #theme-toggle {
+    /* ── Icon Buttons in Header (Theme & Settings) ── */
+    .btn-icon {
       background: var(--bg-subtle);
       border: 1px solid var(--card-border);
       color: var(--text-main);
-      padding: 0.4rem 0.75rem;
+      width: 36px;
+      height: 36px;
       border-radius: var(--radius-md);
-      font-size: 0.8rem;
-      font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
+      justify-content: center;
       transition: var(--transition);
-      font-family: inherit;
     }
-    #theme-toggle:hover {
+    .btn-icon:hover {
       border-color: var(--card-border-hover);
       background: var(--card-border);
+      transform: translateY(-1px);
     }
 
-    /* ── Main Layout ── */
+    /* ── Full-Width Main Workspace ── */
     main {
-      max-width: 1060px;
       width: 100%;
-      margin: 0 auto;
-      padding: 1.75rem 1.5rem 4rem;
+      max-width: 100%;
+      padding: 1.25rem 2rem 3rem;
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     /* ── Cards & Containers ── */
@@ -263,6 +280,7 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
     }
 
     .vp-card:hover {
@@ -274,12 +292,13 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      padding: 0.95rem 1.35rem;
+      padding: 0.9rem 1.4rem;
       border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
     }
 
     .vp-card-title {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -291,21 +310,20 @@
 
     /* ── Guidance Banner ── */
     #wispr-guidance {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.08) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.25);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.06) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.22);
       border-radius: var(--radius-md);
-      padding: 0.9rem 1.25rem;
+      padding: 0.8rem 1.25rem;
       font-size: 0.86rem;
       color: var(--text-main);
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 0.85rem;
     }
 
     #wispr-guidance .icon {
       font-size: 1.25rem;
       line-height: 1;
-      margin-top: 2px;
     }
 
     #wispr-guidance kbd {
@@ -319,10 +337,16 @@
       font-weight: 600;
     }
 
-    /* ── Draft Editor Card ── */
+    /* ══════════════════════════════════════════════════════════════
+       DRAFT CARD & IN-PLACE INLINE PROPOSAL FIELD
+       ══════════════════════════════════════════════════════════════ */
     #draft-card {
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 480px;
     }
 
     #draft-card:focus-within {
@@ -330,176 +354,132 @@
       box-shadow: 0 0 0 3px var(--primary-glow), var(--card-shadow);
     }
 
+    .editor-field-wrapper {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 380px;
+    }
+
     #draft-editor {
       width: 100%;
-      min-height: 280px;
+      height: 100%;
+      min-height: 380px;
       resize: vertical;
       border: none;
       outline: none;
-      padding: 1.35rem;
+      padding: 1.4rem;
       font-family: var(--font-sans);
-      font-size: 1.05rem;
-      line-height: 1.8;
+      font-size: 1.1rem;
+      line-height: 1.85;
       color: var(--text-main);
       background: transparent;
       display: block;
+      flex: 1;
     }
 
     #draft-editor::placeholder {
       color: var(--text-dim);
     }
 
-    .draft-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1.35rem;
-      border-top: 1px solid var(--card-border);
-      background: var(--badge-bg);
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    /* ══════════════════════════════════════════════════════════════
-       TWO-SCREEN / SPLIT COMPARISON VIEW
-       ══════════════════════════════════════════════════════════════ */
-    #two-screen-review {
+    /* ── Inline In-Place Diff / Proposal Display (SAME FIELD) ── */
+    #draft-diff-display {
       display: none;
-      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    #two-screen-review.visible {
-      display: block;
-    }
-
-    .comparison-banner {
-      background: linear-gradient(90deg, rgba(99, 102, 241, 0.18) 0%, rgba(6, 182, 212, 0.12) 100%);
-      border-bottom: 1px solid var(--card-border);
-      padding: 1rem 1.35rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .comparison-title {
-      font-weight: 700;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .comparison-instruction {
-      font-size: 0.8rem;
-      padding: 0.25rem 0.7rem;
-      border-radius: 99px;
-      background: var(--badge-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-muted);
-    }
-
-    .two-screen-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--card-border);
-    }
-
-    @media (max-width: 768px) {
-      .two-screen-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .screen-column {
-      background: var(--card-bg);
-      padding: 1.35rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
-    }
-
-    .screen-column-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-
-    .screen-tag {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .screen-tag.original { color: #f43f5e; }
-    .screen-tag.corrected { color: #10b981; }
-
-    .voice-command-pill {
-      font-family: var(--font-mono);
-      font-size: 0.74rem;
-      font-weight: 600;
-      padding: 0.25rem 0.65rem;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .voice-command-pill.decline-pill {
-      background: var(--diff-curr-bg);
-      color: var(--diff-curr-text);
-      border: 1px solid var(--diff-curr-border);
-    }
-
-    .voice-command-pill.accept-pill {
-      background: var(--diff-prop-bg);
-      color: var(--diff-prop-text);
-      border: 1px solid var(--diff-prop-border);
-    }
-
-    .screen-content-box {
-      font-family: var(--font-mono);
-      font-size: 0.92rem;
-      line-height: 1.75;
+      width: 100%;
+      height: 100%;
+      min-height: 380px;
+      padding: 1.4rem;
+      font-family: var(--font-sans);
+      font-size: 1.1rem;
+      line-height: 1.85;
+      color: var(--text-main);
+      background: transparent;
       white-space: pre-wrap;
       word-break: break-word;
-      border-radius: var(--radius-md);
-      padding: 1.15rem;
-      min-height: 220px;
-      max-height: 380px;
       overflow-y: auto;
       flex: 1;
     }
 
-    .screen-content-box.original-box {
+    /* Faded removed text (strike-through) */
+    .diff-removed-faded {
+      text-decoration: line-through;
+      opacity: 0.55;
       background: var(--diff-curr-bg);
-      border: 1px solid var(--diff-curr-border);
       color: var(--diff-curr-text);
+      padding: 0.12rem 0.35rem;
+      border-radius: 4px;
+      margin: 0 0.1rem;
+      display: inline;
     }
 
-    .screen-content-box.corrected-box {
+    /* Faded proposed edit text */
+    .diff-added-faded {
+      opacity: 0.95;
       background: var(--diff-prop-bg);
-      border: 1px solid var(--diff-prop-border);
       color: var(--diff-prop-text);
+      border-bottom: 2px solid var(--diff-prop-border);
+      padding: 0.12rem 0.35rem;
+      border-radius: 4px;
+      margin: 0 0.1rem;
+      font-weight: 500;
+      display: inline;
     }
 
-    .screen-actions {
+    /* ── Proposal Review Reason Banner (Only for Review) ── */
+    #proposal-reason-banner {
+      display: none;
+      background: linear-gradient(90deg, rgba(99, 102, 241, 0.14) 0%, rgba(6, 182, 212, 0.1) 100%);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.85rem 1.4rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeIn 0.2s ease;
+    }
+
+    #proposal-reason-banner.visible {
+      display: flex;
+    }
+
+    .proposal-reason-content {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.86rem;
+      flex: 1;
+    }
+
+    .proposal-reason-content .tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.2rem 0.55rem;
+      border-radius: 99px;
+      background: var(--badge-bg);
+      border: 1px solid var(--card-border);
+      color: var(--primary);
+    }
+
+    .proposal-reason-actions {
       display: flex;
       align-items: center;
       gap: 0.6rem;
-      margin-top: 0.25rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── Draft Footer ── */
+    .draft-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.4rem;
+      border-top: 1px solid var(--card-border);
+      background: var(--badge-bg);
+      font-size: 0.78rem;
+      color: var(--text-muted);
     }
 
     /* ── Buttons ── */
@@ -507,7 +487,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
-      padding: 0.52rem 1.15rem;
+      padding: 0.48rem 1.1rem;
       border-radius: var(--radius-md);
       font-size: 0.84rem;
       font-weight: 600;
@@ -550,7 +530,7 @@
       border-color: var(--diff-curr-border);
     }
     .btn-danger:hover {
-      background: rgba(244, 63, 94, 0.2);
+      background: rgba(244, 63, 94, 0.22);
     }
 
     .btn-ghost {
@@ -566,7 +546,7 @@
     .btn-sm {
       font-size: 0.78rem;
       padding: 0.38rem 0.85rem;
-      border-radius: 8px;
+      border-radius: 7px;
     }
 
     /* ── Separate Notes Card ── */
@@ -576,7 +556,7 @@
     #notes-panel.visible { display: block; }
 
     #notes-list {
-      padding: 1rem 1.35rem;
+      padding: 1rem 1.4rem;
       display: flex;
       flex-direction: column;
       gap: 0.65rem;
@@ -608,13 +588,13 @@
     }
     .note-item-del:hover { color: #f43f5e; }
 
-    /* ── Command Reference Grid ── */
+    /* ── Command Reference Guide ── */
     details summary {
       cursor: pointer;
       font-size: 0.82rem;
       font-weight: 700;
       color: var(--text-muted);
-      padding: 1rem 1.35rem;
+      padding: 0.9rem 1.4rem;
       list-style: none;
       display: flex;
       align-items: center;
@@ -634,9 +614,9 @@
 
     .command-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 0.75rem;
-      padding: 0 1.35rem 1.25rem;
+      padding: 0 1.4rem 1.25rem;
     }
 
     .command-item {
@@ -664,10 +644,71 @@
     }
 
     /* ══════════════════════════════════════════════════════════════
-       SEGREGATED SETTINGS & CONNECTION PANEL
+       SETTINGS EXPANDABLE MODAL / DIALOG (TOP-RIGHT CORNER TRIGGER)
        ══════════════════════════════════════════════════════════════ */
-    .settings-body {
-      padding: 0 1.35rem 1.35rem;
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: 1.5rem 2rem;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--modal-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--card-border);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.15rem 1.4rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .modal-header h2 {
+      font-size: 0.96rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .modal-body {
+      padding: 1.25rem 1.4rem;
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
@@ -683,9 +724,9 @@
     .settings-tab-btn {
       background: none;
       border: 1px solid transparent;
-      padding: 0.45rem 1rem;
+      padding: 0.45rem 0.85rem;
       border-radius: var(--radius-md);
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-muted);
       cursor: pointer;
@@ -706,7 +747,7 @@
       background: var(--badge-bg);
       border: 1px solid var(--card-border);
       border-radius: var(--radius-md);
-      padding: 1.15rem;
+      padding: 1.1rem;
       display: flex;
       flex-direction: column;
       gap: 0.85rem;
@@ -720,7 +761,7 @@
     }
 
     .service-title {
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -728,7 +769,7 @@
     }
 
     .service-desc {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--text-muted);
       line-height: 1.55;
     }
@@ -740,7 +781,7 @@
     }
 
     .setting-row label {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-main);
     }
@@ -765,7 +806,7 @@
     }
 
     .setting-hint {
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       color: var(--text-dim);
     }
 
@@ -773,9 +814,9 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       font-weight: 600;
-      padding: 0.3rem 0.75rem;
+      padding: 0.25rem 0.65rem;
       border-radius: 99px;
       white-space: nowrap;
     }
@@ -797,9 +838,9 @@
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      z-index: 100;
-      max-width: 420px;
-      padding: 0.9rem 1.25rem;
+      z-index: 300;
+      max-width: 440px;
+      padding: 0.85rem 1.25rem;
       border-radius: var(--radius-md);
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -831,10 +872,11 @@
     footer {
       border-top: 1px solid var(--card-border);
       background: var(--header-bg);
-      padding: 1.25rem;
+      padding: 1.2rem 2rem;
       font-size: 0.78rem;
       color: var(--text-dim);
       text-align: center;
+      width: 100%;
     }
     footer a { color: var(--text-muted); text-decoration: none; font-weight: 500; }
     footer a:hover { color: var(--primary); }
@@ -842,33 +884,52 @@
 </head>
 <body>
 
-  <!-- HEADER -->
+  <!-- FULL-WIDTH HEADER -->
   <header id="vp-header" role="banner">
     <div id="vp-header-inner">
+      <!-- Modern VoicePilot Logo -->
       <div class="vp-logo">
         <div class="vp-logo-mark" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-            <line x1="12" y1="19" x2="12" y2="22"></line>
+          <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+            <defs>
+              <linearGradient id="vpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" />
+                <stop offset="100%" stop-color="#e0e7ff" />
+              </linearGradient>
+            </defs>
+            <!-- Pilot Wings / Wave -->
+            <path d="M4 16 C8 10, 12 10, 16 16 C20 22, 24 22, 28 16" stroke="url(#vpGrad)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <!-- Microphone Core -->
+            <rect x="13" y="6" width="6" height="12" rx="3" fill="url(#vpGrad)" />
+            <path d="M10 13 A6 6 0 0 0 22 13" stroke="url(#vpGrad)" stroke-width="2" stroke-linecap="round" fill="none" />
+            <line x1="16" y1="19" x2="16" y2="25" stroke="url(#vpGrad)" stroke-width="2" stroke-linecap="round" />
+            <line x1="12" y1="25" x2="20" y2="25" stroke="url(#vpGrad)" stroke-width="2" stroke-linecap="round" />
           </svg>
         </div>
         <div class="vp-logo-text">
           <h1>VoicePilot</h1>
-          <p>Professional Voice-Controlled Writing Suite</p>
+          <span class="badge-pro">Hands-Free</span>
         </div>
       </div>
 
       <div class="header-actions">
+        <!-- Live Status Indicator -->
         <div id="vp-status-pill" class="ready" aria-live="polite">
           <span class="dot" aria-hidden="true"></span>
           <span id="vp-status-text">Ready for Wispr input</span>
         </div>
 
-        <!-- Dark / Light Mode Switcher -->
-        <button type="button" id="theme-toggle" aria-label="Toggle dark/light theme" title="Toggle theme">
+        <!-- Dark / Light Mode Switcher Icon -->
+        <button type="button" id="theme-toggle" class="btn-icon" aria-label="Toggle dark/light theme" title="Toggle Theme">
           <span id="theme-icon">☀️</span>
-          <span id="theme-label">Light</span>
+        </button>
+
+        <!-- Settings Icon in Top-Right Corner -->
+        <button type="button" id="btn-open-settings" class="btn-icon" aria-label="Open Settings" title="AI &amp; Configuration Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
         </button>
       </div>
     </div>
@@ -880,66 +941,29 @@
     <button id="vp-toast-close" type="button" aria-label="Close notification">✕</button>
   </div>
 
-  <!-- MAIN APP -->
+  <!-- MAIN APP (FULL-WIDTH) -->
   <main id="vp-main">
 
     <!-- Wispr Guidance Banner -->
     <div id="wispr-guidance" role="note">
       <div class="icon">🎙️</div>
-      <div>
-        <strong>Hands-Free Editing:</strong> Speak freely using <strong>Wispr Flow</strong> (<kbd>Ctrl+Win</kbd> or <kbd>Fn</kbd>).
+      <div style="flex:1;">
+        <strong>Hands-Free Workflow:</strong> Speak freely using <strong>Wispr Flow</strong> (<kbd>Ctrl+Win</kbd> or <kbd>Fn</kbd>).
         To edit directly, say <strong>"Shazam, &lt;any instruction&gt;"</strong> (e.g. <em>"Shazam, put a comma next to hello"</em>).
-        To review and polish with before/after comparison, say <strong>"Shazam, review"</strong> and select hands-free with <strong>"Shazam, accept"</strong> or <strong>"Shazam, decline"</strong>!
+        To polish, say <strong>"Shazam, review"</strong> — the proposed changes show right on the same field with the AI's reason. Select hands-free with <strong>"Shazam, accept"</strong> or <strong>"Shazam, decline"</strong>!
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════════
-         TWO-SCREEN / SPLIT COMPARISON VIEW (Screen 1 & Screen 2)
-         ══════════════════════════════════════════════════════════════ -->
-    <section id="two-screen-review" class="vp-card" aria-label="AI Proposal Comparison" aria-live="polite">
-      <div class="comparison-banner">
-        <div class="comparison-title">
-          <span>✨</span>
-          <span>AI Proposal Comparison — Select Hands-Free</span>
-        </div>
-        <span class="comparison-instruction" id="review-instruction">Instruction: Polish</span>
-      </div>
-
-      <div class="two-screen-grid">
-        <!-- Screen 1: Original / Previous Draft -->
-        <div class="screen-column">
-          <div class="screen-column-header">
-            <span class="screen-tag original">● Option 1 · Previous Text</span>
-            <span class="voice-command-pill decline-pill">🎙️ Say "Shazam, decline"</span>
-          </div>
-          <div class="screen-content-box original-box" id="screen-original"></div>
-          <div class="screen-actions">
-            <button type="button" class="btn btn-danger btn-sm" id="btn-keep-original">✕ Keep Previous (Option 1)</button>
-            <span style="font-size:0.75rem;color:var(--text-dim);">(or say "Shazam, keep previous")</span>
-          </div>
-        </div>
-
-        <!-- Screen 2: Corrected / AI Enhanced Text -->
-        <div class="screen-column">
-          <div class="screen-column-header">
-            <span class="screen-tag corrected">● Option 2 · Corrected Text</span>
-            <span class="voice-command-pill accept-pill">🎙️ Say "Shazam, accept"</span>
-          </div>
-          <div class="screen-content-box corrected-box" id="screen-corrected"></div>
-          <div class="screen-actions">
-            <button type="button" class="btn btn-primary btn-sm" id="btn-choose-corrected">✓ Choose Corrected (Option 2)</button>
-            <button type="button" class="btn btn-outline btn-sm" id="btn-speak-proposal">🔊 Hear Proposal</button>
-            <span style="font-size:0.75rem;color:var(--text-dim);">(or say "Shazam, keep new")</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Main Draft Editor Card -->
+    <!-- MAIN DRAFT CARD WITH IN-PLACE PROPOSAL ON THE SAME FIELD -->
     <div class="vp-card" id="draft-card">
       <div class="vp-card-header">
-        <span class="vp-card-title">Document Draft</span>
-        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span class="vp-card-title">Document Draft</span>
+          <span id="proposal-active-pill" class="auth-badge connected" style="display:none;font-size:0.72rem;">
+            ✨ Proposal Active (Say "Shazam, accept" or "Shazam, decline")
+          </span>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
           <button type="button" class="btn btn-primary btn-sm" id="btn-review" title="Say 'Shazam, review'">✨ AI Review</button>
           <button type="button" class="btn btn-outline btn-sm" id="btn-undo" title="Say 'Shazam, undo'">↺ Undo</button>
           <button type="button" class="btn btn-outline btn-sm" id="btn-redo" title="Say 'Shazam, redo'">↻ Redo</button>
@@ -947,13 +971,37 @@
           <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-draft">Clear</button>
         </div>
       </div>
-      <textarea
-        id="draft-editor"
-        aria-label="Voice draft editor"
-        placeholder="Dictate your ideas freely using Wispr Flow...&#10;&#10;When ready, say 'Shazam, review' for a full polish, or say any instruction like 'Shazam, put a comma next to hello' to make edits automatically."
-        spellcheck="true"
-        autocomplete="off"
-      ></textarea>
+
+      <!-- REVIEW REASON BANNER (ONLY SHOWN FOR REVIEW PROPOSALS) -->
+      <div id="proposal-reason-banner" class="proposal-reason-banner">
+        <div class="proposal-reason-content">
+          <span class="tag">AI Review</span>
+          <div>
+            <strong>Reason: </strong>
+            <span id="proposal-reason-text">Polished flow, phrasing, and punctuation.</span>
+          </div>
+        </div>
+        <div class="proposal-reason-actions">
+          <button type="button" class="btn btn-primary btn-sm" id="btn-inline-accept">✓ Accept (Shazam, accept)</button>
+          <button type="button" class="btn btn-danger btn-sm" id="btn-inline-decline">✕ Decline (Shazam, decline)</button>
+          <button type="button" class="btn btn-outline btn-sm" id="btn-speak-proposal">🔊 Hear</button>
+        </div>
+      </div>
+
+      <!-- IN-PLACE FIELD: TEXTAREA OR INLINE FADED DIFF ON THE SAME FIELD -->
+      <div class="editor-field-wrapper">
+        <textarea
+          id="draft-editor"
+          aria-label="Voice draft editor"
+          placeholder="Dictate your ideas freely using Wispr Flow...&#10;&#10;When ready, say 'Shazam, review' for full polish, or say any instruction like 'Shazam, put a comma next to hello' to make edits automatically."
+          spellcheck="true"
+          autocomplete="off"
+        ></textarea>
+
+        <!-- Inline Faded Diff View (Rendered in the exact same field!) -->
+        <div id="draft-diff-display" class="inline-diff-display" aria-live="polite"></div>
+      </div>
+
       <div class="draft-footer">
         <span id="word-count" aria-live="polite">0 words</span>
         <span id="history-bar" style="color:var(--primary);font-weight:600;"></span>
@@ -976,31 +1024,31 @@
         <div class="command-grid">
           <div class="command-item">
             <span class="cmd-phrase">Shazam, &lt;any instruction&gt;</span>
-            <span class="cmd-desc">Say ANY targeted edit (e.g. "Shazam, add a comma after hello" or "Shazam, make this friendlier"). Applies directly into your draft!</span>
+            <span class="cmd-desc">Say ANY targeted edit (e.g. "Shazam, add a comma after hello"). The proposed change is displayed in faded text right on the field!</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, review</span>
-            <span class="cmd-desc">Comprehensive polish. Opens the two-screen comparison screen to review and accept/decline.</span>
+            <span class="cmd-desc">Full comprehensive polish. Displays the proposed edit on the field along with the AI's reason.</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, accept / keep new</span>
-            <span class="cmd-desc">Accepts the AI Review proposal into your draft. Also works with "option two" or "yes".</span>
+            <span class="cmd-desc">Accepts the proposed edit into your draft. Also works with "option two" or "yes".</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, decline / keep previous</span>
-            <span class="cmd-desc">Declines the AI Review proposal and keeps your original text. Also works with "option one" or "no".</span>
+            <span class="cmd-desc">Declines the proposed edit and keeps your original text. Also works with "option one" or "no".</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, undo</span>
-            <span class="cmd-desc">Reverts the most recent insertion or accepted revision.</span>
+            <span class="cmd-desc">Reverts the most recent insertion or accepted revision. Always works locally.</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, redo</span>
-            <span class="cmd-desc">Restores an undone action.</span>
+            <span class="cmd-desc">Restores an undone action. Always works locally.</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, read</span>
-            <span class="cmd-desc">Reads your current draft aloud using high-quality speech synthesis.</span>
+            <span class="cmd-desc">Reads your current draft aloud using speech synthesis. Always works locally.</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, make that a separate note</span>
@@ -1010,121 +1058,129 @@
       </details>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════════
-         SEGREGATED SETTINGS & CONNECTION PANEL
-         ══════════════════════════════════════════════════════════════ -->
-    <div class="vp-card" id="settings-panel">
-      <details open>
-        <summary>⚙️ AI Connection &amp; Settings</summary>
-        <div class="settings-body">
-
-          <!-- Connection Tabs -->
-          <div class="settings-tabs" role="tablist">
-            <button type="button" class="settings-tab-btn active" data-tab="tab-gemini" role="tab">
-              🌟 Google Gemini (Recommended &amp; Free)
-            </button>
-            <button type="button" class="settings-tab-btn" data-tab="tab-openai" role="tab">
-              🤖 OpenAI / ChatGPT
-            </button>
-            <button type="button" class="settings-tab-btn" data-tab="tab-general" role="tab">
-              🎙️ Voice &amp; General
-            </button>
-          </div>
-
-          <!-- TAB 1: Google Gemini (Recommended) -->
-          <div id="tab-gemini" class="tab-content active" role="tabpanel">
-            <div class="service-card">
-              <div class="service-card-header">
-                <span class="service-title">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#6366f1"/></svg>
-                  Connect with Google Account (100% Free)
-                </span>
-                <span class="auth-badge disconnected" id="gemini-status-badge">● Not Connected</span>
-              </div>
-              <p class="service-desc">
-                Google provides free access to Gemini through your Google account via Google AI Studio.
-                No credit card required, takes 10 seconds to generate.
-              </p>
-              
-              <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
-                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="text-decoration:none;">
-                  🔑 Get Free Google Key in 1 Click ↗
-                </a>
-              </div>
-
-              <div class="setting-row" style="margin-top:0.4rem;">
-                <label for="gemini-key-input">Paste Google Gemini API Key</label>
-                <div style="display:flex;gap:0.6rem;align-items:center;">
-                  <input type="password" id="gemini-key-input" placeholder="AIzaSy..." style="flex:1;" />
-                  <button type="button" class="btn btn-outline btn-sm" id="btn-save-gemini">Save &amp; Test</button>
-                </div>
-                <span class="setting-hint">Stored strictly inside your local browser storage. Never sent to any third-party server.</span>
-              </div>
-
-              <!-- Optional Google Cloud OAuth Client ID -->
-              <details style="margin-top:0.5rem;">
-                <summary style="font-size:0.75rem;padding:0.4rem 0;">Advanced: Sign in using Google Cloud OAuth Client ID</summary>
-                <div class="setting-row" style="margin-top:0.5rem;">
-                  <label for="google-client-id-input">Google OAuth Client ID (Optional)</label>
-                  <input type="text" id="google-client-id-input" placeholder="your-client-id.apps.googleusercontent.com" />
-                  <span class="setting-hint">If you registered a Client ID for https://manishr075.github.io in Google Cloud Console, enter it here to enable one-click Sign In with Google.</span>
-                  <div style="margin-top:0.5rem;" id="oauth-btn-container" style="display:none;">
-                    <button type="button" class="btn btn-outline btn-sm" id="btn-google-oauth-signin">Sign in with Google</button>
-                  </div>
-                </div>
-              </details>
-            </div>
-          </div>
-
-          <!-- TAB 2: OpenAI / ChatGPT -->
-          <div id="tab-openai" class="tab-content" role="tabpanel">
-            <div class="service-card">
-              <div class="service-card-header">
-                <span class="service-title">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                  OpenAI / ChatGPT (gpt-4o-mini)
-                </span>
-                <span class="auth-badge disconnected" id="openai-status-badge">● Not Connected</span>
-              </div>
-              <p class="service-desc">
-                If you have an OpenAI platform account, you can use your OpenAI API key. Note: OpenAI does not support Google Sign-In for API access; an API key is required.
-              </p>
-
-              <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
-                <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="text-decoration:none;">
-                  Get OpenAI Key ↗
-                </a>
-              </div>
-
-              <div class="setting-row" style="margin-top:0.4rem;">
-                <label for="openai-key-input">OpenAI API Key</label>
-                <div style="display:flex;gap:0.6rem;align-items:center;">
-                  <input type="password" id="openai-key-input" placeholder="sk-..." style="flex:1;" />
-                  <button type="button" class="btn btn-outline btn-sm" id="btn-save-openai">Save</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- TAB 3: General & Voice Settings -->
-          <div id="tab-general" class="tab-content" role="tabpanel">
-            <div class="setting-row">
-              <label for="catchword-input">Voice Catchword (Wake Word)</label>
-              <input type="text" id="catchword-input" value="Shazam" style="max-width:320px;" />
-              <span class="setting-hint">The wake word triggering commands (default: "Shazam").</span>
-            </div>
-
-            <div class="setting-row" style="flex-direction:row;align-items:center;gap:.6rem;margin-top:.4rem;">
-              <input type="checkbox" id="spoken-feedback-toggle" checked style="width:16px;height:16px;accent-color:var(--primary);" />
-              <label for="spoken-feedback-toggle" style="cursor:pointer;margin:0;">Voice audio feedback (read confirmations and proposals aloud)</label>
-            </div>
-          </div>
-
-        </div>
-      </details>
-    </div>
-
   </main>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SETTINGS EXPANDABLE MODAL (CLICK ⚙️ IN TOP RIGHT CORNER)
+       ══════════════════════════════════════════════════════════════ -->
+  <div id="settings-backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-settings-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-settings-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          AI &amp; Configuration Settings
+        </h2>
+        <button type="button" id="btn-close-settings" class="btn-ghost btn-sm" aria-label="Close Settings">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Segregated Tabs -->
+        <div class="settings-tabs" role="tablist">
+          <button type="button" class="settings-tab-btn active" data-tab="tab-gemini" role="tab">
+            🌟 Google Gemini (Free)
+          </button>
+          <button type="button" class="settings-tab-btn" data-tab="tab-openai" role="tab">
+            🤖 OpenAI / ChatGPT
+          </button>
+          <button type="button" class="settings-tab-btn" data-tab="tab-general" role="tab">
+            🎙️ Voice &amp; General
+          </button>
+        </div>
+
+        <!-- TAB 1: Google Gemini (Recommended) -->
+        <div id="tab-gemini" class="tab-content active" role="tabpanel">
+          <div class="service-card">
+            <div class="service-card-header">
+              <span class="service-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#6366f1"/></svg>
+                Google Gemini (3.5 Flash-Lite)
+              </span>
+              <span class="auth-badge disconnected" id="gemini-status-badge">● Not Connected</span>
+            </div>
+            <p class="service-desc">
+              Google provides free access to Gemini through your Google account via Google AI Studio.
+              No credit card required. Uses <strong>Gemini 3.5 Flash-Lite</strong> for instant responses.
+            </p>
+            
+            <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="text-decoration:none;">
+                🔑 Get Free Google Key in 1 Click ↗
+              </a>
+            </div>
+
+            <div class="setting-row" style="margin-top:0.4rem;">
+              <label for="gemini-key-input">Paste Google Gemini API Key</label>
+              <div style="display:flex;gap:0.6rem;align-items:center;">
+                <input type="password" id="gemini-key-input" placeholder="AIzaSy..." style="flex:1;" />
+                <button type="button" class="btn btn-outline btn-sm" id="btn-save-gemini">Save &amp; Test</button>
+              </div>
+              <span class="setting-hint">Stored strictly inside your local browser. Never sent to any third-party server.</span>
+            </div>
+
+            <!-- Optional Google Cloud OAuth Client ID -->
+            <details style="margin-top:0.5rem;">
+              <summary style="font-size:0.75rem;padding:0.4rem 0;">Advanced: Google Cloud OAuth Single Sign-On</summary>
+              <div class="setting-row" style="margin-top:0.5rem;">
+                <label for="google-client-id-input">Google OAuth Client ID (Optional)</label>
+                <input type="text" id="google-client-id-input" placeholder="your-client-id.apps.googleusercontent.com" />
+                <span class="setting-hint">If you registered a Client ID for https://manishr075.github.io in Google Cloud Console.</span>
+                <div style="margin-top:0.5rem;" id="oauth-btn-container" style="display:none;">
+                  <button type="button" class="btn btn-outline btn-sm" id="btn-google-oauth-signin">Sign in with Google</button>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- TAB 2: OpenAI / ChatGPT -->
+        <div id="tab-openai" class="tab-content" role="tabpanel">
+          <div class="service-card">
+            <div class="service-card-header">
+              <span class="service-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                OpenAI / ChatGPT (gpt-4o-mini)
+              </span>
+              <span class="auth-badge disconnected" id="openai-status-badge">● Not Connected</span>
+            </div>
+            <p class="service-desc">
+              Connect to OpenAI gpt-4o-mini using your personal API key. (Note: OpenAI requires an API key and does not support Google Sign-In).
+            </p>
+
+            <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+              <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="text-decoration:none;">
+                Get OpenAI Key ↗
+              </a>
+            </div>
+
+            <div class="setting-row" style="margin-top:0.4rem;">
+              <label for="openai-key-input">OpenAI API Key</label>
+              <div style="display:flex;gap:0.6rem;align-items:center;">
+                <input type="password" id="openai-key-input" placeholder="sk-..." style="flex:1;" />
+                <button type="button" class="btn btn-outline btn-sm" id="btn-save-openai">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: General & Voice Settings -->
+        <div id="tab-general" class="tab-content" role="tabpanel">
+          <div class="setting-row">
+            <label for="catchword-input">Voice Catchword (Wake Word)</label>
+            <input type="text" id="catchword-input" value="Shazam" style="max-width:320px;" />
+            <span class="setting-hint">The wake word triggering commands (default: "Shazam").</span>
+          </div>
+
+          <div class="setting-row" style="flex-direction:row;align-items:center;gap:.6rem;margin-top:.4rem;">
+            <input type="checkbox" id="spoken-feedback-toggle" checked style="width:16px;height:16px;accent-color:var(--primary);" />
+            <label for="spoken-feedback-toggle" style="cursor:pointer;margin:0;">Voice audio feedback (read confirmations aloud)</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer>
     VoicePilot Professional · Hands-Free Voice Editing · Designed for <a href="https://wisprflow.ai" target="_blank" rel="noopener">Wispr Flow</a>
@@ -1296,7 +1352,7 @@ const VPEditorState = (() => {
   function createState() {
     return {
       acceptedDraft: '',
-      pendingProposal: null,
+      pendingProposal: null, // { text, instruction, reason, isReview }
       undoStack: [],
       redoStack: [],
       notes: [],
@@ -1317,10 +1373,15 @@ const VPEditorState = (() => {
     return next;
   }
 
-  function setProposal(state, proposalText, instruction) {
+  function setProposal(state, proposalText, instruction, reason = '', isReview = false) {
     return {
       ...state,
-      pendingProposal: { text: proposalText, instruction: instruction || '' },
+      pendingProposal: {
+        text: proposalText,
+        instruction: instruction || '',
+        reason: reason || '',
+        isReview: !!isReview,
+      },
     };
   }
 
@@ -1383,32 +1444,36 @@ const VPEditorState = (() => {
     let catchword = 'Shazam';
     let _internalWrite = false;
 
+    // Interruption handling: sequence counter and active AbortController
+    let _currentOpId = 0;
+    let _activeAbortController = null;
+
     // Keys stored in local storage
     let VP_GEMINI_KEY = localStorage.getItem('vp_gemini_key') || '';
     let VP_OPENAI_KEY = localStorage.getItem('vp_openai_key') || '';
     let VP_GOOGLE_CLIENT_ID = localStorage.getItem('vp_google_client_id') || '';
     let VP_GOOGLE_TOKEN = '';
     let _googleTokenClient = null;
+    let _activeGeminiModel = 'gemini-3.5-flash-lite';
 
     // DOM Elements
-    const draftEditor       = document.getElementById('draft-editor');
-    const wordCountEl       = document.getElementById('word-count');
-    const historyBarEl      = document.getElementById('history-bar');
-    const statusPill        = document.getElementById('vp-status-pill');
-    const statusText        = document.getElementById('vp-status-text');
+    const draftEditor          = document.getElementById('draft-editor');
+    const draftDiffDisplay     = document.getElementById('draft-diff-display');
+    const proposalActivePill   = document.getElementById('proposal-active-pill');
+    const proposalReasonBanner = document.getElementById('proposal-reason-banner');
+    const proposalReasonText   = document.getElementById('proposal-reason-text');
 
-    // Two-Screen Review Elements
-    const twoScreenReview   = document.getElementById('two-screen-review');
-    const reviewInstruction = document.getElementById('review-instruction');
-    const screenOriginal    = document.getElementById('screen-original');
-    const screenCorrected   = document.getElementById('screen-corrected');
+    const wordCountEl          = document.getElementById('word-count');
+    const historyBarEl         = document.getElementById('history-bar');
+    const statusPill           = document.getElementById('vp-status-pill');
+    const statusText           = document.getElementById('vp-status-text');
 
-    const notesPanel        = document.getElementById('notes-panel');
-    const notesList         = document.getElementById('notes-list');
+    const notesPanel           = document.getElementById('notes-panel');
+    const notesList            = document.getElementById('notes-list');
 
-    const toastEl           = document.getElementById('vp-toast');
-    const toastMsg          = document.getElementById('vp-toast-msg');
-    let _toastTimer         = null;
+    const toastEl              = document.getElementById('vp-toast');
+    const toastMsg             = document.getElementById('vp-toast-msg');
+    let _toastTimer            = null;
 
     function showToast(msg, durationMs = 4000) {
       toastMsg.textContent = msg;
@@ -1427,6 +1492,15 @@ const VPEditorState = (() => {
       statusText.textContent = label || (type === 'ready' ? 'Ready for Wispr input' : type);
     }
 
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
     function writeToEditor(val) {
       _internalWrite = true;
       if (tracker) tracker.setGuard(true);
@@ -1437,8 +1511,43 @@ const VPEditorState = (() => {
     }
 
     function updateWordCount() {
-      const words = draftEditor.value.trim().split(/\s+/).filter(Boolean);
+      const textToCount = state.pendingProposal ? state.pendingProposal.text : draftEditor.value;
+      const words = textToCount.trim().split(/\s+/).filter(Boolean);
       wordCountEl.textContent = `${words.length} word${words.length !== 1 ? 's' : ''}`;
+    }
+
+    // ── Generate In-Place Faded Diff HTML ──
+    function renderInPlaceDiff(oldText, newText) {
+      if (!oldText && !newText) return '';
+      if (!oldText) {
+        return `<span class="diff-added-faded">${escapeHtml(newText)}</span>`;
+      }
+      if (!newText) {
+        return `<span class="diff-removed-faded">${escapeHtml(oldText)}</span>`;
+      }
+
+      let prefixLen = 0;
+      while (prefixLen < oldText.length && prefixLen < newText.length && oldText[prefixLen] === newText[prefixLen]) {
+        prefixLen++;
+      }
+
+      let suffixLen = 0;
+      while (suffixLen < (oldText.length - prefixLen) && suffixLen < (newText.length - prefixLen) &&
+             oldText[oldText.length - 1 - suffixLen] === newText[newText.length - 1 - suffixLen]) {
+        suffixLen++;
+      }
+
+      const commonPrefix = oldText.slice(0, prefixLen);
+      const commonSuffix = oldText.slice(oldText.length - suffixLen);
+      const removedPart = oldText.slice(prefixLen, oldText.length - suffixLen);
+      const addedPart = newText.slice(prefixLen, newText.length - suffixLen);
+
+      let html = '';
+      if (commonPrefix) html += `<span>${escapeHtml(commonPrefix)}</span>`;
+      if (removedPart) html += `<span class="diff-removed-faded">${escapeHtml(removedPart)}</span>`;
+      if (addedPart) html += `<span class="diff-added-faded">${escapeHtml(addedPart)}</span>`;
+      if (commonSuffix) html += `<span>${escapeHtml(commonSuffix)}</span>`;
+      return html;
     }
 
     function renderNotes() {
@@ -1464,28 +1573,42 @@ const VPEditorState = (() => {
     }
 
     function renderState() {
-      if (draftEditor.value !== state.acceptedDraft) {
-        writeToEditor(state.acceptedDraft);
+      if (state.pendingProposal) {
+        // Show inline in-place diff on the same field!
+        draftEditor.style.display = 'none';
+        draftDiffDisplay.style.display = 'block';
+        draftDiffDisplay.innerHTML = renderInPlaceDiff(state.acceptedDraft, state.pendingProposal.text);
+
+        proposalActivePill.style.display = 'inline-flex';
+
+        // Reason banner is shown only for Review
+        if (state.pendingProposal.isReview) {
+          proposalReasonBanner.classList.add('visible');
+          proposalReasonText.textContent = state.pendingProposal.reason || 'Polished grammar, flow, and clarity.';
+        } else {
+          proposalReasonBanner.classList.add('visible');
+          proposalReasonText.textContent = `Targeted edit: "${state.pendingProposal.instruction}"`;
+        }
+
+        setStatus('review', 'Proposed Edit Active (Say Shazam, accept/decline)');
+      } else {
+        // Normal editable field
+        draftEditor.style.display = 'block';
+        draftDiffDisplay.style.display = 'none';
+        proposalActivePill.style.display = 'none';
+        proposalReasonBanner.classList.remove('visible');
+
+        if (draftEditor.value !== state.acceptedDraft) {
+          writeToEditor(state.acceptedDraft);
+        }
+        setStatus('ready', 'Ready for Wispr input');
       }
+
       updateWordCount();
 
       historyBarEl.textContent = state.undoStack.length > 0
         ? `${state.undoStack.length} revision${state.undoStack.length > 1 ? 's' : ''} in history`
         : '';
-
-      // Two-Screen Review Presentation
-      if (state.pendingProposal) {
-        twoScreenReview.classList.add('visible');
-        reviewInstruction.textContent = state.pendingProposal.instruction
-          ? `Instruction: "${state.pendingProposal.instruction}"`
-          : 'Instruction: AI Polish';
-        screenOriginal.textContent = state.acceptedDraft || '(empty draft)';
-        screenCorrected.textContent = state.pendingProposal.text || '(empty proposal)';
-        setStatus('review', 'Comparison Ready (Say Shazam, accept/decline)');
-      } else {
-        twoScreenReview.classList.remove('visible');
-        setStatus('ready', 'Ready for Wispr input');
-      }
 
       if (state.notes.length > 0) {
         notesPanel.classList.add('visible');
@@ -1505,7 +1628,7 @@ const VPEditorState = (() => {
           geminiBadge.textContent = '✓ Google Account Connected';
         } else if (VP_GEMINI_KEY) {
           geminiBadge.className = 'auth-badge connected';
-          geminiBadge.textContent = '✓ Key Active (Free Tier)';
+          geminiBadge.textContent = '✓ Key Active (3.5 Flash-Lite)';
         } else {
           geminiBadge.className = 'auth-badge disconnected';
           geminiBadge.textContent = '● Not Connected';
@@ -1525,11 +1648,9 @@ const VPEditorState = (() => {
     }
 
     // ── Zero-Failure Google Gemini Integration (Gemini 3.5 Flash-Lite) ──
-    let _activeGeminiModel = 'gemini-3.5-flash-lite';
-
-    async function discoverBestGeminiModel(apiKey) {
+    async function discoverBestGeminiModel(apiKey, signal) {
       try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`, { signal });
         if (res.ok) {
           const data = await res.json();
           const available = (data.models || []).filter(m => m.supportedGenerationMethods?.includes('generateContent'));
@@ -1549,31 +1670,47 @@ const VPEditorState = (() => {
             }
           }
           if (available.length > 0) {
-            // Pick first available model
             const fallback = available[0].name.replace(/^models\//, '');
             _activeGeminiModel = fallback;
             return fallback;
           }
         }
       } catch (err) {
+        if (err.name === 'AbortError') throw err;
         console.warn('Dynamic model discovery failed, using default', err);
       }
       return 'gemini-3.5-flash-lite';
     }
 
-    async function callGemini(draft, instruction, apiKey, token) {
-      const prompt = `You are a world-class professional editor.
+    async function callGemini(draft, instruction, apiKey, token, isReview = false, signal) {
+      let prompt = '';
+      if (isReview) {
+        prompt = `You are a world-class professional editor.
+User's draft document:
+"""
+${draft}
+"""
+
+Review and polish the entire draft for grammar, flow, and elegance.
+Respond with a JSON object containing EXACTLY two fields:
+{
+  "revised": "The complete polished text without quotes or markdown code blocks",
+  "reason": "A 1-sentence summary explaining the key improvements made"
+}
+Output ONLY raw JSON.`;
+      } else {
+        prompt = `You are a world-class professional editor.
 User's draft document:
 """
 ${draft}
 """
 
 Editing instruction:
-"${instruction || 'Review for clarity, eliminate awkward phrasing, fix grammar, and improve flow while strictly preserving meaning and facts.'}"
+"${instruction}"
 
 Return ONLY the final revised draft. Do not wrap in markdown code blocks, backticks, quotes, commentary, or pleasantries.`;
+      }
 
-      // Candidate models starting with Gemini 3.5 Flash-Lite
       const candidateModels = [
         _activeGeminiModel,
         'gemini-3.5-flash-lite',
@@ -1583,7 +1720,6 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
         'gemini-1.5-flash',
         'gemini-1.5-flash-latest'
       ];
-      // Deduplicate
       const uniqueModels = [...new Set(candidateModels)];
 
       let lastError = null;
@@ -1600,6 +1736,7 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           const resp = await fetch(url, {
             method: 'POST',
             headers,
+            signal,
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: { temperature: 0.3 }
@@ -1607,7 +1744,6 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           });
 
           if (resp.status === 404) {
-            // Model not found on this API endpoint/region, try next model
             const errJson = await resp.json().catch(() => ({}));
             lastError = new Error(errJson.error?.message || `Model ${modelName} not found`);
             continue;
@@ -1625,12 +1761,25 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           }
 
           const data = await resp.json();
-          const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-          if (text) {
+          const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+          if (rawText) {
             _activeGeminiModel = modelName;
-            return text;
+            if (isReview) {
+              try {
+                const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
+                const parsed = JSON.parse(cleaned);
+                if (parsed.revised) {
+                  return { revised: parsed.revised.trim(), reason: parsed.reason || 'Polished grammar and clarity.' };
+                }
+              } catch (e) {
+                // Fallback to text directly if JSON parsing failed
+              }
+              return { revised: rawText, reason: 'Polished grammar, structure, and tone.' };
+            }
+            return { revised: rawText, reason: '' };
           }
         } catch (e) {
+          if (e.name === 'AbortError') throw e;
           if (e.message && (e.message.includes('not found') || e.message.includes('404'))) {
             lastError = e;
             continue;
@@ -1646,6 +1795,7 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           const resp = await fetch(v1Url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            signal,
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: { temperature: 0.3 }
@@ -1653,8 +1803,8 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           });
           if (resp.ok) {
             const data = await resp.json();
-            const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-            if (text) return text;
+            const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+            if (rawText) return { revised: rawText, reason: 'Polished grammar and flow.' };
           }
         } catch (ignored) {}
       }
@@ -1663,13 +1813,14 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
     }
 
     // ── OpenAI Provider ──
-    async function callOpenAI(draft, instruction, apiKey) {
+    async function callOpenAI(draft, instruction, apiKey, isReview = false, signal) {
       const resp = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${apiKey}`,
         },
+        signal,
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
@@ -1694,71 +1845,89 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
       const data = await resp.json();
       const text = data.choices?.[0]?.message?.content?.trim();
       if (!text) throw new Error('OpenAI returned an empty response.');
-      return text;
+      return { revised: text, reason: 'Polished grammar and clarity.' };
     }
 
     // ── Unified AI Router ──
-    async function callAI(draft, instruction) {
+    async function callAI(draft, instruction, isReview = false, signal) {
       if (!draft || !draft.trim()) {
         throw new Error('Your draft is empty. Dictate some content first before requesting AI editing.');
       }
 
       // 1. Google OAuth Token (if active)
       if (VP_GOOGLE_TOKEN) {
-        return await callGemini(draft, instruction, null, VP_GOOGLE_TOKEN);
+        return await callGemini(draft, instruction, null, VP_GOOGLE_TOKEN, isReview, signal);
       }
 
       // 2. Google Gemini API Key (Recommended Free Tier)
       if (VP_GEMINI_KEY) {
-        return await callGemini(draft, instruction, VP_GEMINI_KEY, null);
+        return await callGemini(draft, instruction, VP_GEMINI_KEY, null, isReview, signal);
       }
 
       // 3. OpenAI Key
       if (VP_OPENAI_KEY) {
-        return await callOpenAI(draft, instruction, VP_OPENAI_KEY);
+        return await callOpenAI(draft, instruction, VP_OPENAI_KEY, isReview, signal);
       }
 
-      throw new Error('No AI connected. Open Settings (⚙️) to connect with your free Google account in 1 click!');
+      throw new Error('No AI connected. Open Settings (⚙️ in top-right) and add your free Google key in 1 click!');
     }
 
-    // ── Command Routing & Execution ──
+    // ── Command Routing & Execution (With Interruption Handling) ──
     async function executeCommand(parsed, insertedText) {
       const { action, arg } = parsed;
+
+      // ⚡ INTERRUPTION LOGIC: Cancel any in-flight old Shazam immediately!
+      _currentOpId++;
+      const thisOpId = _currentOpId;
+      if (_activeAbortController) {
+        try { _activeAbortController.abort(); } catch (e) {}
+        _activeAbortController = null;
+      }
+      _activeAbortController = new AbortController();
+      const signal = _activeAbortController.signal;
+
       setStatus('command', `Command: ${action}`);
 
       switch (action) {
         case 'review': {
-          showToast('Consulting AI editor for full polish...');
+          showToast('Consulting AI editor for review...');
           setStatus('review', 'AI Reviewing...');
           try {
-            const revised = await callAI(state.acceptedDraft, 'Comprehensive review for grammar, flow, and elegance');
-            state = VPEditorState.setProposal(state, revised, 'Comprehensive Polish');
+            const res = await callAI(state.acceptedDraft, 'Comprehensive Review', true, signal);
+            if (thisOpId !== _currentOpId) return; // Interrupted by newer command!
+
+            // Show proposed edit in faded text on the exact same field, with reason!
+            state = VPEditorState.setProposal(state, res.revised, 'Review & Polish', res.reason, true);
             renderState();
-            showToast('Comparison ready! Say "Shazam, accept" or "Shazam, decline".');
-            VPVoiceFeedback.speak('Comparison ready. Say Shazam accept for corrected text, or Shazam decline to keep previous.');
+            showToast('Review ready! Say "Shazam, accept" or "Shazam, decline".');
+            VPVoiceFeedback.speak('Review ready. Say Shazam accept to apply, or Shazam decline to keep previous.');
           } catch (e) {
+            if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
             showToast(`Review failed: ${e.message}`, 6500);
             setStatus('error', 'AI Review Failed');
           }
           break;
         }
 
-        // ANY TARGETED EDIT INSTRUCTION: APPLIED DIRECTLY (No comparison screen needed!)
+        // Targeted Edit Instruction: Shows proposed edit in faded text on the SAME FIELD!
         case 'ai_instruction': {
           if (!arg || !arg.trim()) {
             showToast('Please state what you want to edit.');
             break;
           }
-          showToast(`Applying edit: "${arg}"...`);
-          setStatus('review', 'Applying Edit...');
+          showToast(`Applying: "${arg}"...`);
+          setStatus('review', 'Editing...');
           try {
-            const revised = await callAI(state.acceptedDraft, arg);
-            // Apply edit directly into the draft, pushing previous draft into undo history
-            state = VPEditorState.acceptDraft(state, revised);
+            const res = await callAI(state.acceptedDraft, arg, false, signal);
+            if (thisOpId !== _currentOpId) return; // Interrupted by newer command!
+
+            // Show proposed edit in faded text on the exact same field!
+            state = VPEditorState.setProposal(state, res.revised, arg, '', false);
             renderState();
-            showToast(`✓ Edit applied: "${arg}". (Say "Shazam, undo" to revert)`);
-            VPVoiceFeedback.speak('Edit applied');
+            showToast(`Proposal ready for: "${arg}". Say "Shazam, accept" or "Shazam, decline".`);
+            VPVoiceFeedback.speak('Proposal ready. Say Shazam accept or decline.');
           } catch (e) {
+            if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
             showToast(`Edit failed: ${e.message}`, 6500);
             setStatus('error', 'AI Edit Failed');
           }
@@ -1772,7 +1941,7 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           } else {
             state = VPEditorState.applyProposal(state);
             renderState();
-            showToast('✓ Option 2 accepted: Changes applied to document.');
+            showToast('✓ Proposal accepted into document.');
             VPVoiceFeedback.speak('Proposal accepted');
           }
           break;
@@ -1785,7 +1954,7 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           } else {
             state = VPEditorState.discardProposal(state);
             renderState();
-            showToast('✕ Option 1 chosen: Original draft preserved.');
+            showToast('✕ Proposal declined. Original draft kept.');
             VPVoiceFeedback.speak('Proposal declined. Original kept.');
           }
           break;
@@ -1873,6 +2042,10 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
         await executeCommand(parsed, insertedText);
       } else {
         // Regular voice dictation
+        if (state.pendingProposal) {
+          // If dictating while proposal is open, discard proposal and append
+          state = VPEditorState.discardProposal(state);
+        }
         state = VPEditorState.acceptDraft(state, draftEditor.value);
         renderState();
       }
@@ -1910,12 +2083,12 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
       showToast('Draft cleared.');
     });
 
-    // Two-Screen Selection Buttons
-    document.getElementById('btn-choose-corrected').addEventListener('click', () => {
+    // Inline Proposal Accept / Decline Buttons
+    document.getElementById('btn-inline-accept').addEventListener('click', () => {
       executeCommand({ action: 'accept', arg: null }, '');
     });
 
-    document.getElementById('btn-keep-original').addEventListener('click', () => {
+    document.getElementById('btn-inline-decline').addEventListener('click', () => {
       executeCommand({ action: 'decline', arg: null }, '');
     });
 
@@ -1933,18 +2106,11 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
     // ── Dark / Light Mode Switcher ──
     const themeToggleBtn = document.getElementById('theme-toggle');
     const themeIcon = document.getElementById('theme-icon');
-    const themeLabel = document.getElementById('theme-label');
 
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('vp_theme', theme);
-      if (theme === 'dark') {
-        themeIcon.textContent = '☀️';
-        themeLabel.textContent = 'Light';
-      } else {
-        themeIcon.textContent = '🌙';
-        themeLabel.textContent = 'Dark';
-      }
+      themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
     }
 
     themeToggleBtn.addEventListener('click', () => {
@@ -1952,9 +2118,34 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
       applyTheme(current === 'dark' ? 'light' : 'dark');
     });
 
-    // Initial theme
     const savedTheme = localStorage.getItem('vp_theme') || 'dark';
     applyTheme(savedTheme);
+
+    // ── Expandable Settings Modal ──
+    const settingsBackdrop = document.getElementById('settings-backdrop');
+    const btnOpenSettings = document.getElementById('btn-open-settings');
+    const btnCloseSettings = document.getElementById('btn-close-settings');
+
+    function openSettingsModal() {
+      settingsBackdrop.classList.add('open');
+    }
+
+    function closeSettingsModal() {
+      settingsBackdrop.classList.remove('open');
+    }
+
+    btnOpenSettings.addEventListener('click', openSettingsModal);
+    btnCloseSettings.addEventListener('click', closeSettingsModal);
+
+    settingsBackdrop.addEventListener('click', (e) => {
+      if (e.target === settingsBackdrop) closeSettingsModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && settingsBackdrop.classList.contains('open')) {
+        closeSettingsModal();
+      }
+    });
 
     // ── Segregated Settings Tabs ──
     const tabBtns = document.querySelectorAll('.settings-tab-btn');
@@ -1980,9 +2171,9 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
       if (VP_GEMINI_KEY) {
         showToast('Connecting to Google Gemini (3.5 Flash-Lite)...');
         try {
-          await discoverBestGeminiModel(VP_GEMINI_KEY);
-          await callGemini('Hello world', 'Check connection', VP_GEMINI_KEY, null);
-          showToast(`🎉 Google Gemini connected! Using ${_activeGeminiModel}.`);
+          await discoverBestGeminiModel(VP_GEMINI_KEY, null);
+          await callGemini('Hello world', 'Check connection', VP_GEMINI_KEY, null, false, null);
+          showToast(`🎉 Google Gemini connected! Model: ${_activeGeminiModel}`);
           VPVoiceFeedback.speak('Google Gemini connected');
         } catch (e) {
           showToast(`Saved, but test call failed: ${e.message}`, 6500);
@@ -2041,9 +2232,7 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
     }
 
     document.getElementById('btn-google-oauth-signin')?.addEventListener('click', () => {
-      if (!_googleTokenClient) {
-        initGoogleOAuth();
-      }
+      if (!_googleTokenClient) initGoogleOAuth();
       if (_googleTokenClient) {
         _googleTokenClient.requestAccessToken({ prompt: 'consent' });
       } else {
