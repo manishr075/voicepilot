@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VoicePilot — Professional Hands-Free Voice Text Editor</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z'/%3E%3Cpath d='M19 10v1a7 7 0 0 1-14 0v-1'/%3E%3Cline x1='12' y1='18' x2='12' y2='22'/%3E%3Cline x1='8' y1='22' x2='16' y2='22'/%3E%3C/svg%3E" />
   <link rel="icon" type="image/jpeg" href="assets/app-icon.jpg" />
   <link rel="apple-touch-icon" href="assets/app-icon.jpg" />
 
@@ -150,24 +151,28 @@
     .brand-mark {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.65rem;
       text-decoration: none;
       color: inherit;
       user-select: none;
       flex-shrink: 0;
     }
 
-    .brand-icon-img {
+    .brand-icon-box {
       width: 28px;
       height: 28px;
       border-radius: 7px;
-      object-fit: cover;
-      display: block;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      background: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
 
     .brand-title {
-      font-size: 0.95rem;
+      font-size: 0.96rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       color: var(--text-main);
@@ -278,6 +283,25 @@
     #voice-status-pill.listening .dot { background: var(--primary); }
     #voice-status-pill.review .dot { background: #f59e0b; }
     #voice-status-pill.error .dot { background: #f43f5e; }
+
+    /* Interactive cancel state when AI is thinking */
+    #voice-status-pill.review,
+    #voice-status-pill.listening {
+      cursor: pointer;
+      background: rgba(245, 158, 11, 0.14);
+      border-color: rgba(245, 158, 11, 0.35);
+      color: #f59e0b;
+    }
+    #voice-status-pill.review:hover,
+    #voice-status-pill.listening:hover {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.45);
+      color: #f87171;
+    }
+    #voice-status-pill.review:hover .dot,
+    #voice-status-pill.listening:hover .dot {
+      background: #f87171;
+    }
 
     /* Button Icon (General) */
     .btn-icon {
@@ -1023,9 +1047,15 @@
   <header id="app-header" role="banner">
     <div class="header-left">
       <a href="#" class="brand-mark" aria-label="VoicePilot Home">
-        <img src="assets/app-icon.jpg" alt="VoicePilot Icon" class="brand-icon-img" onerror="this.style.display='none'" />
+        <div class="brand-icon-box" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v1a7 7 0 0 1-14 0v-1"></path>
+            <line x1="12" y1="18" x2="12" y2="22"></line>
+            <line x1="8" y1="22" x2="16" y2="22"></line>
+          </svg>
+        </div>
         <span class="brand-title">VoicePilot</span>
-        <span class="brand-tag">Rich Editor</span>
       </a>
 
       <div class="header-divider" aria-hidden="true"></div>
@@ -1094,56 +1124,34 @@
     </div>
   </header>
 
-  <!-- ════════════════════ RICH FORMATTING TOOLBAR ════════════════════ -->
+  <!-- ════════════════════ STREAMLINED HANDS-FREE TOOLBAR ════════════════════ -->
   <nav id="formatting-toolbar" aria-label="Text formatting toolbar">
-    <!-- Group 1: Undo & Redo -->
+    <!-- Primary AI Action -->
+    <div class="toolbar-group">
+      <button type="button" class="btn-ai-review" id="btn-trigger-review" title="Polish document (or say 'Shazam, review')">✨ AI Review</button>
+    </div>
+
+    <div class="toolbar-sep" aria-hidden="true"></div>
+
+    <!-- Essential Formatting (Minimal, Voice-Friendly) -->
+    <div class="toolbar-group">
+      <button type="button" class="t-btn" id="t-bold" title="Bold (Ctrl+B or 'Shazam, bold')" aria-label="Bold"><strong>B</strong></button>
+      <button type="button" class="t-btn" id="t-italic" title="Italic (Ctrl+I or 'Shazam, italic')" aria-label="Italic"><em>I</em></button>
+      <button type="button" class="t-btn" id="t-heading" title="Toggle Heading (or 'Shazam, heading')" aria-label="Heading">H</button>
+      <button type="button" class="t-btn" id="t-bullet-list" title="Bullet List (or 'Shazam, list')" aria-label="Bullet List">• List</button>
+    </div>
+
+    <div class="toolbar-sep" aria-hidden="true"></div>
+
+    <!-- Minimal History -->
     <div class="toolbar-group">
       <button type="button" class="t-btn" id="t-undo" title="Undo (Ctrl+Z or 'Shazam, undo')" aria-label="Undo">↺</button>
       <button type="button" class="t-btn" id="t-redo" title="Redo (Ctrl+Y or 'Shazam, redo')" aria-label="Redo">↻</button>
     </div>
 
-    <div class="toolbar-sep" aria-hidden="true"></div>
-
-    <!-- Group 2: Headings & Block Format -->
-    <div class="toolbar-group">
-      <select id="t-block-format" class="t-select" aria-label="Paragraph Style">
-        <option value="p">Paragraph</option>
-        <option value="h1">Heading 1</option>
-        <option value="h2">Heading 2</option>
-        <option value="h3">Heading 3</option>
-        <option value="blockquote">Quote Callout</option>
-      </select>
-    </div>
-
-    <div class="toolbar-sep" aria-hidden="true"></div>
-
-    <!-- Group 3: Inline Styles (Bold, Italic, Underline, Strikethrough, Code) -->
-    <div class="toolbar-group">
-      <button type="button" class="t-btn" id="t-bold" title="Bold (Ctrl+B or 'Shazam, bold')" aria-label="Bold"><strong>B</strong></button>
-      <button type="button" class="t-btn" id="t-italic" title="Italic (Ctrl+I or 'Shazam, italic')" aria-label="Italic"><em>I</em></button>
-      <button type="button" class="t-btn" id="t-underline" title="Underline (Ctrl+U)" aria-label="Underline"><u>U</u></button>
-      <button type="button" class="t-btn" id="t-strike" title="Strikethrough" aria-label="Strikethrough"><s>S</s></button>
-      <button type="button" class="t-btn" id="t-code" title="Inline Code" aria-label="Inline Code"><code>&lt;&gt;</code></button>
-    </div>
-
-    <div class="toolbar-sep" aria-hidden="true"></div>
-
-    <!-- Group 4: Lists & Structure -->
-    <div class="toolbar-group">
-      <button type="button" class="t-btn" id="t-bullet-list" title="Bullet List (or 'Shazam, list')" aria-label="Bullet List">• List</button>
-      <button type="button" class="t-btn" id="t-num-list" title="Numbered List" aria-label="Numbered List">1. List</button>
-      <button type="button" class="t-btn" id="t-quote" title="Blockquote" aria-label="Blockquote">” Quote</button>
-      <button type="button" class="t-btn" id="t-clear-fmt" title="Clear Formatting" aria-label="Clear Formatting">Tx</button>
-    </div>
-
-    <div class="toolbar-sep" aria-hidden="true"></div>
-
-    <!-- Group 5: AI & Assistant Actions -->
     <div class="toolbar-group" style="margin-left:auto;">
-      <button type="button" class="btn-ai-review" id="btn-trigger-review" title="Say 'Shazam, review'">✨ AI Review</button>
-      <button type="button" class="t-btn" id="btn-trigger-read" title="Read Aloud (or 'Shazam, read')">▶ Read</button>
-      <button type="button" class="t-btn" id="btn-load-sample" title="Load Rich Sample Document">🪄 Sample</button>
-      <button type="button" class="t-btn" id="btn-clear-doc" title="Clear Canvas (or 'Shazam, clear')">Clear</button>
+      <button type="button" class="t-btn" id="btn-load-sample" title="Load sample document" style="font-size:0.78rem;color:var(--text-dim);">Sample</button>
+      <button type="button" class="t-btn" id="btn-clear-doc" title="Clear canvas (or 'Shazam, clear')" style="font-size:0.78rem;color:var(--text-dim);">Clear</button>
     </div>
   </nav>
 
@@ -1445,9 +1453,11 @@ const VPSegmentTracker = (() => {
           editor,
         };
         clearTimeout(_debounceTimer);
+        const isCommand = /shazam/i.test(insertedText);
+        const waitMs = isCommand ? 80 : debounceMs;
         _debounceTimer = setTimeout(() => {
           if (typeof onSegment === 'function') onSegment(seg);
-        }, debounceMs);
+        }, waitMs);
       }
     }
 
@@ -1734,10 +1744,28 @@ const VPEditorState = (() => {
       return walk(div).replace(/\n{3,}/g, '\n\n').trim();
     }
 
-    function writeToEditor(htmlVal) {
+    function moveCaretToEnd(el) {
+      if (!el) return;
+      try {
+        el.focus();
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false); // false collapses to end of text
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } catch (e) {
+        console.warn('Could not move caret to end', e);
+      }
+    }
+
+    function writeToEditor(htmlVal, shouldMoveToEnd = true) {
       _internalWrite = true;
       if (tracker) tracker.setGuard(true);
       draftEditor.innerHTML = htmlVal || '';
+      if (shouldMoveToEnd) {
+        moveCaretToEnd(draftEditor);
+      }
       if (tracker) {
         tracker.syncSnapshot();
         tracker.setGuard(false);
@@ -1885,53 +1913,42 @@ const VPEditorState = (() => {
 
     function updateToolbarActiveStates() {
       try {
-        document.getElementById('t-bold').classList.toggle('active', document.queryCommandState('bold'));
-        document.getElementById('t-italic').classList.toggle('active', document.queryCommandState('italic'));
-        document.getElementById('t-underline').classList.toggle('active', document.queryCommandState('underline'));
-        document.getElementById('t-strike').classList.toggle('active', document.queryCommandState('strikeThrough'));
-
-        const block = (document.queryCommandValue('formatBlock') || 'p').toLowerCase();
-        const select = document.getElementById('t-block-format');
-        if (select) {
-          if (['p', 'h1', 'h2', 'h3', 'blockquote'].includes(block)) {
-            select.value = block;
-          } else {
-            select.value = 'p';
-          }
+        const b = document.getElementById('t-bold');
+        if (b) b.classList.toggle('active', document.queryCommandState('bold'));
+        const it = document.getElementById('t-italic');
+        if (it) it.classList.toggle('active', document.queryCommandState('italic'));
+        const h = document.getElementById('t-heading');
+        if (h) {
+          const block = (document.queryCommandValue('formatBlock') || '').toLowerCase();
+          h.classList.toggle('active', block === 'h2' || block === 'h1' || block === 'h3');
         }
+        const bl = document.getElementById('t-bullet-list');
+        if (bl) bl.classList.toggle('active', document.queryCommandState('insertUnorderedList'));
       } catch (e) {}
     }
 
-    // Format Toolbar Listeners
-    document.getElementById('t-bold').addEventListener('click', () => formatDoc('bold'));
-    document.getElementById('t-italic').addEventListener('click', () => formatDoc('italic'));
-    document.getElementById('t-underline').addEventListener('click', () => formatDoc('underline'));
-    document.getElementById('t-strike').addEventListener('click', () => formatDoc('strikeThrough'));
-    document.getElementById('t-bullet-list').addEventListener('click', () => formatDoc('insertUnorderedList'));
-    document.getElementById('t-num-list').addEventListener('click', () => formatDoc('insertOrderedList'));
-    document.getElementById('t-clear-fmt').addEventListener('click', () => formatDoc('removeFormat'));
+    // Streamlined Minimal Toolbar Listeners
+    const tBold = document.getElementById('t-bold');
+    if (tBold) tBold.addEventListener('click', () => formatDoc('bold'));
 
-    document.getElementById('t-code').addEventListener('click', () => {
-      const sel = window.getSelection();
-      if (!sel.rangeCount || sel.isCollapsed) return;
-      const range = sel.getRangeAt(0);
-      const code = document.createElement('code');
-      code.textContent = range.toString();
-      range.deleteContents();
-      range.insertNode(code);
-      formatDoc('removeFormat'); // sync state
+    const tItalic = document.getElementById('t-italic');
+    if (tItalic) tItalic.addEventListener('click', () => formatDoc('italic'));
+
+    const tHeading = document.getElementById('t-heading');
+    if (tHeading) tHeading.addEventListener('click', () => {
+      const current = (document.queryCommandValue('formatBlock') || 'p').toLowerCase();
+      const target = current === 'h2' ? 'p' : 'h2';
+      formatDoc('formatBlock', target);
     });
 
-    document.getElementById('t-quote').addEventListener('click', () => {
-      formatDoc('formatBlock', 'blockquote');
-    });
+    const tList = document.getElementById('t-bullet-list');
+    if (tList) tList.addEventListener('click', () => formatDoc('insertUnorderedList'));
 
-    document.getElementById('t-block-format').addEventListener('change', (e) => {
-      formatDoc('formatBlock', e.target.value);
-    });
+    const tUndo = document.getElementById('t-undo');
+    if (tUndo) tUndo.addEventListener('click', () => executeCommand({ action: 'undo', arg: null }, ''));
 
-    document.getElementById('t-undo').addEventListener('click', () => executeCommand({ action: 'undo', arg: null }, ''));
-    document.getElementById('t-redo').addEventListener('click', () => executeCommand({ action: 'redo', arg: null }, ''));
+    const tRedo = document.getElementById('t-redo');
+    if (tRedo) tRedo.addEventListener('click', () => executeCommand({ action: 'redo', arg: null }, ''));
 
     // Keyboard Shortcuts (Ctrl+B, Ctrl+I, Ctrl+U, Ctrl+Z, Ctrl+Y)
     draftEditor.addEventListener('keydown', (e) => {
@@ -1955,45 +1972,37 @@ const VPEditorState = (() => {
       }
     });
 
-    // ── Zero-Failure Google Gemini Integration (Gemini 3.5 Flash-Lite) ──
+    // ── High-Speed Google Gemini Integration ──
     async function callGemini(draftText, instruction, apiKey, isReview = false, signal) {
       let prompt = '';
       if (isReview) {
-        prompt = `You are a world-class professional editor.
-User's document:
+        prompt = `Polish this document for grammar, flow, and clarity. Preserve markdown headings, lists, and bold words.
+Document:
 """
 ${draftText}
 """
 
-Polish the document for clarity, flow, and elegance.
-Preserve headings, bullet points, and markdown formatting where appropriate.
-Respond with a JSON object containing EXACTLY two fields:
-{
-  "revised": "The complete polished text without backticks",
-  "reason": "A 1-sentence summary of the key improvements made"
-}
-Output ONLY raw JSON.`;
+Return ONLY a raw JSON object with this exact shape:
+{"revised": "the polished document text", "reason": "brief 1-sentence summary"}`;
       } else {
-        prompt = `You are a world-class professional editor.
-User's document:
+        prompt = `Apply this instruction to the document:
+Instruction: "${instruction}"
+
+Document:
 """
 ${draftText}
 """
 
-Editing instruction:
-"${instruction}"
-
-Return ONLY the final revised document text. Preserve or enhance markdown headings and formatting. Do not wrap in markdown code blocks or preamble.`;
+Return ONLY the final revised document text. Preserve all formatting (bold, headings, lists). No preamble, no quotes, no markdown code fence blocks.`;
       }
 
+      const savedModel = localStorage.getItem('vp_gemini_model');
       const candidateModels = [
-        _activeGeminiModel,
-        'gemini-3.5-flash-lite',
-        'gemini-3.1-flash-lite',
-        'gemini-2.5-flash',
+        savedModel,
         'gemini-2.0-flash',
-        'gemini-1.5-flash'
-      ];
+        'gemini-1.5-flash',
+        'gemini-2.0-flash-lite-preview-02-05'
+      ].filter(Boolean);
       const uniqueModels = [...new Set(candidateModels)];
       let lastError = null;
 
@@ -2006,7 +2015,11 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
             signal,
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.3 }
+              generationConfig: {
+                temperature: 0.1,
+                maxOutputTokens: 2048,
+                topP: 0.8
+              }
             })
           });
 
@@ -2018,13 +2031,14 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
 
           if (!resp.ok) {
             const errJson = await resp.json().catch(() => ({}));
-            throw new Error(errJson.error?.message || `Gemini API returned status ${resp.status}`);
+            throw new Error(errJson.error?.message || `Gemini API status ${resp.status}`);
           }
 
           const data = await resp.json();
           const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
           if (rawText) {
             _activeGeminiModel = modelName;
+            localStorage.setItem('vp_gemini_model', modelName);
             if (isReview) {
               try {
                 const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
@@ -2121,7 +2135,7 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
         // Full Polish: Only Review shows Accept / Decline and Reason
         case 'review': {
           showToast('Consulting AI editor for review...');
-          setStatus('review', 'AI Reviewing...');
+          setStatus('review', 'AI Reviewing... (Click to stop)');
           if (editorWrapper) editorWrapper.classList.add('thinking');
           try {
             const res = await callAI(state.acceptedDraft, 'Comprehensive Review', true, signal);
@@ -2149,7 +2163,7 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
             break;
           }
           showToast(`Applying: "${arg}"...`);
-          setStatus('review', 'Applying Edit...');
+          setStatus('review', 'Applying Edit... (Click to stop)');
           if (editorWrapper) editorWrapper.classList.add('thinking');
           try {
             const res = await callAI(state.acceptedDraft, arg, false, signal);
@@ -2157,7 +2171,9 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
 
             const revisedHtml = markdownToHtml(res.revised);
             state = VPEditorState.acceptDraft(state, revisedHtml);
+            writeToEditor(revisedHtml, true);
             renderState();
+            moveCaretToEnd(draftEditor);
             showToast(`✓ Applied: "${arg}"`);
             VPVoiceFeedback.speak('Edit applied');
           } catch (e) {
@@ -2207,7 +2223,9 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
             showToast('No pending proposal to accept.');
           } else {
             state = VPEditorState.applyProposal(state);
+            writeToEditor(state.acceptedDraft, true);
             renderState();
+            moveCaretToEnd(draftEditor);
             showToast('✓ Proposal accepted into document.');
             VPVoiceFeedback.speak('Proposal accepted');
           }
@@ -2221,6 +2239,7 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
           } else {
             state = VPEditorState.discardProposal(state);
             renderState();
+            moveCaretToEnd(draftEditor);
             showToast('✕ Proposal declined. Original text kept.');
             VPVoiceFeedback.speak('Proposal declined. Original kept.');
           }
@@ -2231,6 +2250,7 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
           const prev = state;
           state = VPEditorState.undo(state);
           renderState();
+          moveCaretToEnd(draftEditor);
           if (state === prev) {
             showToast('Nothing to undo.');
           } else {
@@ -2244,6 +2264,7 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
           const prev = state;
           state = VPEditorState.redo(state);
           renderState();
+          moveCaretToEnd(draftEditor);
           if (state === prev) {
             showToast('Nothing to redo.');
           } else {
@@ -2268,7 +2289,15 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
           if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
           }
-          showToast('Speech playback stopped.');
+          if (_activeAbortController) {
+            _activeAbortController.abort();
+            _activeAbortController = null;
+            _currentOpId++;
+            if (editorWrapper) editorWrapper.classList.remove('thinking');
+            setStatus('ready', 'Wispr Flow Ready');
+            moveCaretToEnd(draftEditor);
+          }
+          showToast('Stopped.');
           break;
         }
 
@@ -2369,6 +2398,20 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
         onSegment: handleSegment,
       });
     }
+
+    // Stop thinking when status pill is clicked
+    voiceStatusPill.addEventListener('click', () => {
+      if (_activeAbortController) {
+        _activeAbortController.abort();
+        _activeAbortController = null;
+        _currentOpId++;
+        if (editorWrapper) editorWrapper.classList.remove('thinking');
+        setStatus('ready', 'Wispr Flow Ready');
+        showToast('🛑 AI thinking stopped.');
+        VPVoiceFeedback.speak('Stopped');
+        moveCaretToEnd(draftEditor);
+      }
+    });
 
     // ── Button Listeners ──
     document.getElementById('btn-trigger-review').addEventListener('click', () => {
@@ -2586,6 +2629,15 @@ Return ONLY the final revised document text. Preserve or enhance markdown headin
       if (e.key === 'Escape') {
         settingsBackdrop.classList.remove('open');
         guideBackdrop.classList.remove('open');
+        if (_activeAbortController) {
+          _activeAbortController.abort();
+          _activeAbortController = null;
+          _currentOpId++;
+          if (editorWrapper) editorWrapper.classList.remove('thinking');
+          setStatus('ready', 'Wispr Flow Ready');
+          showToast('🛑 AI thinking stopped.');
+          moveCaretToEnd(draftEditor);
+        }
       }
     });
 
