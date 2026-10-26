@@ -3,107 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VoicePilot — Professional Hands-Free Voice Text Editor</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z'/%3E%3Cpath d='M19 10v1a7 7 0 0 1-14 0v-1'/%3E%3Cline x1='12' y1='18' x2='12' y2='22'/%3E%3Cline x1='8' y1='22' x2='16' y2='22'/%3E%3C/svg%3E" />
+  <title>VoicePilot — Hands-Free Voice Text Editor</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230078d4' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='16' y1='13' x2='8' y2='13'/%3E%3Cline x1='16' y1='17' x2='8' y2='17'/%3E%3Cpolyline points='10 9 9 9 8 9'/%3E%3C/svg%3E" />
   <link rel="icon" type="image/jpeg" href="assets/app-icon.jpg" />
   <link rel="apple-touch-icon" href="assets/app-icon.jpg" />
 
-  <!-- Google Fonts: Plus Jakarta Sans (Modern UI/Doc), Merriweather (Editorial Serif), JetBrains Mono (Code) -->
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet" />
-
-  <!-- Google Identity Services (optional SSO) -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
     /* ══════════════════════════════════════════════════════════════
-       PRODUCTION DESIGN SYSTEM — RESTRAINED, INTENTIONAL & ACCESSIBLE
+       WINDOWS 11 NATIVE DARK TEXT EDITOR DESIGN SYSTEM
+       Inspiration: Windows 11 Notepad / VS Code Full-Canvas
        ══════════════════════════════════════════════════════════════ */
     :root {
-      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-serif: 'Merriweather', Georgia, Cambria, serif;
-      --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Text', 'Segoe UI', Roboto, sans-serif;
+      --font-serif: 'Merriweather', Georgia, serif;
+      --font-mono: 'JetBrains Mono', Consolas, 'Courier New', monospace;
 
-      --radius-sm: 6px;
-      --radius-md: 9px;
-      --radius-lg: 14px;
-      --radius-xl: 18px;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
 
-      --transition-fast: 0.12s ease;
-      --transition-base: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-fast: 0.1s ease;
     }
 
-    /* Dark Theme (Default) — Restrained Obsidian & Slate */
+    /* Windows 11 Dark Mode */
     html[data-theme="dark"] {
-      --bg-app: #0e1015;
-      --bg-paper: #15181f;
-      --bg-subtle: #1a1d26;
-      --bg-surface: #202430;
-      --bg-elevated: #262b3a;
+      --win-bg: #202020;            /* Notepad background */
+      --win-titlebar: #181818;      /* Top bar */
+      --win-tab-active: #202020;    /* Active tab matches canvas */
+      --win-tab-hover: #2b2b2b;     /* Tab hover */
+      --win-toolbar: #202020;       /* Toolbar background */
+      --win-statusbar: #181818;     /* Status bar at bottom */
+      --win-subtle: #2d2d2d;        /* Hover buttons / cards */
+      --win-border: #333333;        /* Subtle hairline borders */
+      --win-border-subtle: #292929;
+      --win-accent: #0078d4;        /* Windows Blue */
+      --win-accent-hover: #1084d8;
 
-      --border-subtle: #1e222d;
-      --border-default: #282d3b;
-      --border-hover: #3d4458;
-      --border-focus: #6366f1;
+      --text-main: #f3f3f3;
+      --text-muted: #9d9d9d;
+      --text-dim: #6d6d6d;
 
-      --text-main: #f3f5f8;
-      --text-muted: #9aa1b3;
-      --text-dim: #636a7e;
-
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --primary-subtle: rgba(99, 102, 241, 0.12);
-      --primary-border: rgba(99, 102, 241, 0.3);
-
-      /* In-Place Diff Colors (Soft, accessible, no eye-strain) */
-      --diff-curr-bg: rgba(239, 68, 68, 0.18);
-      --diff-curr-border: rgba(239, 68, 68, 0.42);
+      --diff-curr-bg: rgba(239, 68, 68, 0.22);
       --diff-curr-text: #fca5a5;
-
-      --diff-prop-bg: rgba(16, 185, 129, 0.18);
-      --diff-prop-border: rgba(16, 185, 129, 0.42);
+      --diff-prop-bg: rgba(16, 185, 129, 0.22);
       --diff-prop-text: #6ee7b7;
 
-      --paper-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-default);
-      --modal-backdrop: rgba(6, 8, 12, 0.75);
+      --modal-backdrop: rgba(0, 0, 0, 0.65);
     }
 
-    /* Light Theme — Editorial Studio Paper */
+    /* Windows 11 Light Mode */
     html[data-theme="light"] {
-      --bg-app: #f5f6f9;
-      --bg-paper: #ffffff;
-      --bg-subtle: #f0f2f6;
-      --bg-surface: #e6e9f0;
-      --bg-elevated: #ffffff;
+      --win-bg: #f9f9f9;
+      --win-titlebar: #f0f0f0;
+      --win-tab-active: #f9f9f9;
+      --win-tab-hover: #e8e8e8;
+      --win-toolbar: #f9f9f9;
+      --win-statusbar: #f0f0f0;
+      --win-subtle: #eaeaea;
+      --win-border: #e0e0e0;
+      --win-border-subtle: #ebebeb;
+      --win-accent: #0078d4;
+      --win-accent-hover: #006cc1;
 
-      --border-subtle: #eaecf1;
-      --border-default: #d9dce5;
-      --border-hover: #b4bac9;
-      --border-focus: #4f46e5;
-
-      --text-main: #121620;
-      --text-muted: #52596d;
-      --text-dim: #8c93a7;
-
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --primary-subtle: rgba(79, 70, 229, 0.08);
-      --primary-border: rgba(79, 70, 229, 0.28);
+      --text-main: #181818;
+      --text-muted: #5f5f5f;
+      --text-dim: #909090;
 
       --diff-curr-bg: #fee2e2;
-      --diff-curr-border: #fca5a5;
       --diff-curr-text: #991b1b;
-
       --diff-prop-bg: #d1fae5;
-      --diff-prop-border: #86efac;
       --diff-prop-text: #065f46;
 
-      --paper-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 20px 40px -15px rgba(0, 0, 0, 0.07), 0 0 0 1px var(--border-subtle);
-      --modal-backdrop: rgba(15, 23, 42, 0.45);
+      --modal-backdrop: rgba(0, 0, 0, 0.35);
     }
 
-    /* Base Reset */
+    /* Reset */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -112,531 +91,432 @@
 
     html, body {
       height: 100%;
-      background: var(--bg-app);
+      background: var(--win-bg);
       color: var(--text-main);
       font-family: var(--font-sans);
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
-      transition: background-color var(--transition-base), color var(--transition-base);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       TOP APPLICATION HEADER (Sleek SaaS Nav, 52px)
-       ══════════════════════════════════════════════════════════════ */
-    #app-header {
-      height: 52px;
-      background: var(--bg-paper);
-      border-bottom: 1px solid var(--border-subtle);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    /* ════════════════════ ROW 1: WINDOW TITLE & TAB BAR (40px) ════════════════════ */
+    #titlebar {
+      height: 40px;
+      background: var(--win-titlebar);
+      border-bottom: 1px solid var(--win-border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 1.25rem;
-      gap: 1rem;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      min-width: 0;
-      flex: 1;
-    }
-
-    .brand-mark {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      text-decoration: none;
-      color: inherit;
+      padding: 0 10px 0 12px;
       user-select: none;
       flex-shrink: 0;
     }
 
-    .brand-icon-box {
-      width: 28px;
-      height: 28px;
-      border-radius: 7px;
-      background: var(--primary);
-      color: #ffffff;
+    .titlebar-left {
       display: flex;
       align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .brand-title {
-      font-size: 0.96rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--text-main);
-    }
-
-    .brand-tag {
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0.15rem 0.45rem;
-      border-radius: 99px;
-      background: var(--primary-subtle);
-      color: var(--primary);
-      border: 1px solid var(--primary-border);
-    }
-
-    .header-divider {
-      width: 1px;
-      height: 20px;
-      background: var(--border-default);
-      flex-shrink: 0;
-    }
-
-    /* Editable Document Title */
-    .doc-title-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      gap: 8px;
       min-width: 0;
       flex: 1;
-      max-width: 320px;
+    }
+
+    /* Windows Notepad Tab */
+    .notepad-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .notepad-tab {
+      background: var(--win-tab-active);
+      border: 1px solid var(--win-border);
+      border-bottom: 1px solid var(--win-bg);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      padding: 4px 10px 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12.5px;
+      color: var(--text-main);
+      position: relative;
+      top: 1px;
+    }
+
+    .tab-icon {
+      color: var(--win-accent);
+      display: flex;
+      align-items: center;
     }
 
     #doc-title-input {
       background: transparent;
-      border: 1px solid transparent;
-      border-radius: var(--radius-sm);
+      border: none;
       color: var(--text-main);
       font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 600;
-      padding: 0.25rem 0.5rem;
-      width: 100%;
+      font-size: 12.5px;
+      font-weight: 500;
       outline: none;
+      width: 140px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      transition: border-color var(--transition-fast), background var(--transition-fast);
-    }
-
-    #doc-title-input:hover {
-      background: var(--bg-subtle);
     }
 
     #doc-title-input:focus {
-      background: var(--bg-paper);
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 2px var(--primary-subtle);
+      background: var(--win-subtle);
+      border-radius: 2px;
     }
 
-    .save-indicator {
-      font-size: 0.72rem;
+    .tab-close {
+      cursor: pointer;
       color: var(--text-dim);
+      font-size: 13px;
+      line-height: 1;
+      padding: 2px 4px;
+      border-radius: 2px;
+    }
+    .tab-close:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .tab-new-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 3px 6px;
+      border-radius: 3px;
       display: flex;
       align-items: center;
-      gap: 0.3rem;
-      white-space: nowrap;
+      justify-content: center;
+    }
+    .tab-new-btn:hover {
+      background: var(--win-subtle);
+      color: var(--text-main);
     }
 
-    .save-indicator.saved {
-      color: #10b981;
-    }
-
-    /* Header Right Actions */
-    .header-right {
+    /* Window Controls (Min, Max, Close) */
+    .titlebar-right {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      flex-shrink: 0;
+      gap: 2px;
     }
 
-    /* Status Pill: Minimalist semantic indicator */
-    #voice-status-pill {
+    .win-control-btn {
+      width: 38px;
+      height: 28px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
-      padding: 0.3rem 0.7rem;
-      border-radius: 99px;
-      font-size: 0.76rem;
-      font-weight: 600;
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-default);
-      color: var(--text-muted);
-      transition: all var(--transition-fast);
+      justify-content: center;
+      font-size: 11px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+    }
+    .win-control-btn:hover {
+      background: var(--win-subtle);
+      color: var(--text-main);
+    }
+    .win-control-btn.close:hover {
+      background: #c42b1c;
+      color: #ffffff;
+    }
+
+    /* ════════════════════ ROW 2: MENU & COMPACT TOOLBAR (40px) ════════════════════ */
+    #menubar {
+      height: 40px;
+      background: var(--win-toolbar);
+      border-bottom: 1px solid var(--win-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      gap: 12px;
+      flex-shrink: 0;
       user-select: none;
     }
 
+    .menubar-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Native Menus: File, Edit, View */
+    .menu-item-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background var(--transition-fast), color var(--transition-fast);
+    }
+    .menu-item-btn:hover {
+      background: var(--win-subtle);
+      color: var(--text-main);
+    }
+
+    .v-sep {
+      width: 1px;
+      height: 18px;
+      background: var(--win-border);
+      margin: 0 4px;
+      flex-shrink: 0;
+    }
+
+    /* Formatting Tools */
+    .tool-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .tool-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 3px 7px;
+      height: 28px;
+      min-width: 28px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: background var(--transition-fast), color var(--transition-fast);
+    }
+    .tool-btn:hover {
+      background: var(--win-subtle);
+      color: var(--text-main);
+    }
+    .tool-btn.active {
+      background: var(--win-subtle);
+      color: var(--win-accent);
+      border-color: var(--win-accent);
+    }
+
+    /* AI Polish Button */
+    .tool-btn-ai {
+      background: rgba(0, 120, 212, 0.15);
+      border: 1px solid rgba(0, 120, 212, 0.35);
+      color: #38bdf8;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: var(--radius-sm);
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .tool-btn-ai:hover {
+      background: var(--win-accent);
+      color: #ffffff;
+      border-color: var(--win-accent);
+    }
+
+    .menubar-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Hands-Free Voice Status Pill */
+    #voice-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 600;
+      background: var(--win-subtle);
+      border: 1px solid var(--win-border);
+      color: var(--text-muted);
+      cursor: default;
+      transition: all var(--transition-fast);
+    }
     #voice-status-pill .dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
       background: #10b981;
-      transition: background var(--transition-fast);
     }
-
     #voice-status-pill.ready .dot { background: #10b981; }
-    #voice-status-pill.listening .dot { background: var(--primary); }
+    #voice-status-pill.listening .dot { background: var(--win-accent); }
     #voice-status-pill.review .dot { background: #f59e0b; }
     #voice-status-pill.error .dot { background: #f43f5e; }
 
-    /* Interactive cancel state when AI is thinking */
     #voice-status-pill.review,
     #voice-status-pill.listening {
       cursor: pointer;
-      background: rgba(245, 158, 11, 0.14);
-      border-color: rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.4);
       color: #f59e0b;
     }
-    #voice-status-pill.review:hover,
-    #voice-status-pill.listening:hover {
-      background: rgba(239, 68, 68, 0.18);
-      border-color: rgba(239, 68, 68, 0.45);
+    #voice-status-pill.review:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.5);
       color: #f87171;
     }
-    #voice-status-pill.review:hover .dot,
-    #voice-status-pill.listening:hover .dot {
-      background: #f87171;
-    }
-
-    /* Button Icon (General) */
-    .btn-icon {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-default);
-      color: var(--text-muted);
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-sm);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--transition-fast);
-    }
-
-    .btn-icon:hover {
-      background: var(--bg-surface);
-      color: var(--text-main);
-      border-color: var(--border-hover);
-    }
-
-    .btn-icon:focus-visible {
-      outline: 2px solid var(--border-focus);
-      outline-offset: 1px;
-    }
+    #voice-status-pill.review:hover .dot { background: #f87171; }
 
     /* Dropdown Menus */
     .dropdown-container {
       position: relative;
     }
-
     .dropdown-menu {
       position: absolute;
-      top: calc(100% + 6px);
-      right: 0;
-      background: var(--bg-paper);
-      border: 1px solid var(--border-default);
+      top: calc(100% + 4px);
+      left: 0;
+      background: var(--win-titlebar);
+      border: 1px solid var(--win-border);
       border-radius: var(--radius-md);
-      box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.4);
-      min-width: 170px;
-      padding: 0.4rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+      min-width: 190px;
+      padding: 4px;
       display: none;
       flex-direction: column;
-      gap: 0.2rem;
-      z-index: 250;
-      animation: menuFadeIn 0.15s ease;
+      gap: 2px;
+      z-index: 200;
     }
-
+    .dropdown-menu.right-align {
+      left: auto;
+      right: 0;
+    }
     .dropdown-menu.show {
       display: flex;
     }
-
-    @keyframes menuFadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     .dropdown-item {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      padding: 0.45rem 0.75rem;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 10px;
       border-radius: var(--radius-sm);
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--text-muted);
+      font-size: 12.5px;
+      color: var(--text-main);
       background: none;
       border: none;
       cursor: pointer;
       text-align: left;
       width: 100%;
-      transition: var(--transition-fast);
       font-family: inherit;
     }
-
     .dropdown-item:hover {
-      background: var(--bg-subtle);
-      color: var(--text-main);
+      background: var(--win-subtle);
+    }
+    .dropdown-item .shortcut {
+      color: var(--text-dim);
+      font-size: 11px;
+    }
+    .menu-divider {
+      height: 1px;
+      background: var(--win-border-subtle);
+      margin: 3px 0;
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       RICH FORMATTING TOOLBAR (Sticky, Tactile & Professional, 42px)
-       ══════════════════════════════════════════════════════════════ */
-    #formatting-toolbar {
-      background: var(--bg-paper);
-      border-bottom: 1px solid var(--border-subtle);
-      position: sticky;
-      top: 52px;
-      z-index: 90;
-      padding: 0.35rem 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.8rem;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    #formatting-toolbar::-webkit-scrollbar {
-      display: none;
-    }
-
-    .toolbar-group {
-      display: flex;
-      align-items: center;
-      gap: 0.2rem;
-      flex-shrink: 0;
-    }
-
-    .toolbar-sep {
-      width: 1px;
-      height: 18px;
-      background: var(--border-default);
-      margin: 0 0.25rem;
-      flex-shrink: 0;
-    }
-
-    .t-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: var(--radius-sm);
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 0.32rem 0.55rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-      min-width: 28px;
-      height: 28px;
-      line-height: 1;
-      transition: var(--transition-fast);
-      user-select: none;
-    }
-
-    .t-btn:hover {
-      background: var(--bg-subtle);
-      color: var(--text-main);
-    }
-
-    .t-btn.active {
-      background: var(--primary-subtle);
-      color: var(--primary);
-      border-color: var(--primary-border);
-    }
-
-    .t-btn:focus-visible {
-      outline: 2px solid var(--border-focus);
-    }
-
-    .t-select {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-sm);
-      color: var(--text-main);
-      font-family: inherit;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.25rem 0.5rem;
-      height: 28px;
-      cursor: pointer;
-      outline: none;
-    }
-
-    .t-select:focus {
-      border-color: var(--border-focus);
-    }
-
-    /* Primary Accent Action Buttons */
-    .btn-ai-review {
-      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
-      color: #ffffff !important;
-      border: none;
-      padding: 0.35rem 0.85rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.82rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      cursor: pointer;
-      box-shadow: 0 2px 8px var(--primary-subtle);
-      transition: var(--transition-fast);
-    }
-
-    .btn-ai-review:hover {
-      filter: brightness(1.08);
-      transform: translateY(-1px);
-    }
-
-    /* ══════════════════════════════════════════════════════════════
-       DOCUMENT WORKSPACE & PAPER CANVAS
-       ══════════════════════════════════════════════════════════════ */
-    #document-viewport {
-      min-height: calc(100vh - 52px - 42px - 36px);
-      padding: 2.2rem 1.5rem 4rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: padding var(--transition-base);
-    }
-
-    /* The Centered Document Paper */
-    #doc-paper {
-      width: 100%;
-      max-width: 860px;
-      background: var(--bg-paper);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--paper-shadow);
-      min-height: 75vh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      transition: max-width var(--transition-base), border-color var(--transition-fast);
-    }
-
-    /* When Full-Width Mode is active */
-    #doc-paper.full-width {
-      max-width: 100%;
-    }
-
-    /* Document typography dynamic classes */
-    #doc-paper.font-sans { font-family: var(--font-sans); }
-    #doc-paper.font-serif { font-family: var(--font-serif); }
-    #doc-paper.font-mono { font-family: var(--font-mono); }
-
-    /* ── Proposal Review Reason Banner ── */
+    /* ════════════════════ ROW 3: AI REVIEW PROPOSAL BANNER ════════════════════ */
     #proposal-reason-banner {
       display: none;
-      background: var(--bg-subtle);
-      border-bottom: 1px solid var(--border-default);
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-      padding: 0.85rem 1.4rem;
+      background: var(--win-subtle);
+      border-bottom: 1px solid var(--win-border);
+      padding: 6px 16px;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      animation: menuFadeIn 0.2s ease;
+      gap: 12px;
+      flex-shrink: 0;
+      font-size: 12.5px;
     }
-
     #proposal-reason-banner.visible {
       display: flex;
     }
-
-    .proposal-reason-left {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      font-size: 0.85rem;
-      flex: 1;
-    }
-
     .proposal-tag {
-      font-size: 0.72rem;
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0.2rem 0.55rem;
-      border-radius: 99px;
-      background: var(--primary-subtle);
-      color: var(--primary);
-      border: 1px solid var(--primary-border);
-      white-space: nowrap;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: rgba(0, 120, 212, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(0, 120, 212, 0.4);
     }
-
-    .proposal-reason-text {
-      color: var(--text-main);
-      font-weight: 500;
-    }
-
-    .proposal-reason-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-action {
-      font-family: inherit;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.35rem 0.8rem;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      border: 1px solid transparent;
-      transition: var(--transition-fast);
-    }
-
     .btn-action-accept {
       background: #10b981;
       color: #ffffff;
+      border: none;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
     }
-    .btn-action-accept:hover { background: #059669; }
-
     .btn-action-decline {
       background: var(--diff-curr-bg);
       color: var(--diff-curr-text);
-      border-color: var(--diff-curr-border);
+      border: 1px solid var(--win-border);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
     }
-    .btn-action-decline:hover { background: rgba(239, 68, 68, 0.28); }
 
-    /* ── The Rich Editable Surface (#draft-editor) ── */
-    .editor-wrapper {
-      position: relative;
+    /* ════════════════════ ROW 4: FULL-CANVAS MAIN EDITOR ════════════════════ */
+    #editor-container {
       flex: 1;
-      padding: 3rem 3.5rem;
       display: flex;
       flex-direction: column;
+      position: relative;
+      overflow-y: auto;
+      background: var(--win-bg);
+    }
+
+    .editor-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding: 24px 48px 48px;
     }
 
     @media (max-width: 768px) {
       .editor-wrapper {
-        padding: 1.5rem 1.25rem;
+        padding: 16px 20px 32px;
       }
     }
 
     #draft-editor {
       flex: 1;
-      min-height: 550px;
       outline: none;
-      font-size: 1.05rem;
-      line-height: 1.8;
+      font-size: 15px;
+      line-height: 1.75;
       color: var(--text-main);
       word-break: break-word;
-      caret-color: var(--primary);
+      caret-color: var(--win-accent);
+      min-height: calc(100vh - 160px);
     }
 
-    /* Contenteditable Empty Placeholder */
+    /* Empty Placeholder */
     #draft-editor:empty::before {
       content: attr(data-placeholder);
       color: var(--text-dim);
@@ -645,112 +525,67 @@
       font-style: italic;
     }
 
-    /* High-Quality Typography for Rich Text Elements */
+    /* High Quality Typography for Rich Text */
     #draft-editor h1, .inline-diff-display h1 {
-      font-size: 2.1rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.25;
-      margin-top: 1.6rem;
-      margin-bottom: 0.6rem;
-      color: var(--text-main);
-    }
-
-    #draft-editor h2, .inline-diff-display h2 {
-      font-size: 1.5rem;
+      font-size: 1.85rem;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.35;
       margin-top: 1.4rem;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.5rem;
       color: var(--text-main);
     }
-
-    #draft-editor h3, .inline-diff-display h3 {
-      font-size: 1.2rem;
+    #draft-editor h2, .inline-diff-display h2 {
+      font-size: 1.4rem;
       font-weight: 650;
-      line-height: 1.4;
-      margin-top: 1.1rem;
-      margin-bottom: 0.35rem;
+      margin-top: 1.2rem;
+      margin-bottom: 0.4rem;
       color: var(--text-main);
     }
-
+    #draft-editor h3, .inline-diff-display h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      margin-bottom: 0.3rem;
+      color: var(--text-main);
+    }
     #draft-editor p, .inline-diff-display p {
-      margin-bottom: 0.95rem;
+      margin-bottom: 0.85rem;
     }
-
-    #draft-editor strong, .inline-diff-display strong,
-    #draft-editor b, .inline-diff-display b {
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    #draft-editor em, .inline-diff-display em,
-    #draft-editor i, .inline-diff-display i {
-      font-style: italic;
-    }
-
-    #draft-editor u, .inline-diff-display u {
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    #draft-editor strike, #draft-editor s, #draft-editor del {
-      text-decoration: line-through;
-      opacity: 0.7;
-    }
-
-    #draft-editor blockquote, .inline-diff-display blockquote {
-      border-left: 3px solid var(--primary);
-      background: var(--primary-subtle);
-      padding: 0.6rem 1.1rem;
-      margin: 1rem 0;
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      font-style: italic;
-      color: var(--text-muted);
-    }
-
     #draft-editor ul, .inline-diff-display ul,
     #draft-editor ol, .inline-diff-display ol {
-      margin: 0.85rem 0 0.85rem 1.6rem;
+      margin: 0.75rem 0 0.75rem 1.5rem;
     }
-
     #draft-editor li, .inline-diff-display li {
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.25rem;
     }
-
+    #draft-editor blockquote, .inline-diff-display blockquote {
+      border-left: 3px solid var(--win-accent);
+      background: var(--win-subtle);
+      padding: 0.5rem 1rem;
+      margin: 0.9rem 0;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      color: var(--text-muted);
+    }
     #draft-editor code, .inline-diff-display code {
       font-family: var(--font-mono);
       font-size: 0.88em;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-default);
+      background: var(--win-subtle);
+      border: 1px solid var(--win-border);
       padding: 0.15rem 0.4rem;
-      border-radius: var(--radius-sm);
-      color: var(--text-main);
+      border-radius: 3px;
     }
 
-    #draft-editor hr {
-      border: none;
-      height: 1px;
-      background: var(--border-default);
-      margin: 1.8rem 0;
-    }
-
-    /* ── Proposal In-Place Diff View ── */
+    /* Diff View */
     #draft-diff-display {
       display: none;
-      font-size: 1.05rem;
-      line-height: 1.8;
+      font-size: 15px;
+      line-height: 1.75;
       color: var(--text-main);
       white-space: pre-wrap;
       word-break: break-word;
     }
-
-    /* Proposal active: textarea overlays invisibly so Wispr Flow can type into it without losing focus */
     .editor-wrapper.has-proposal #draft-diff-display {
       display: block;
     }
-
     .editor-wrapper.has-proposal #draft-editor {
       position: absolute;
       top: 0;
@@ -761,560 +596,380 @@
       z-index: 10;
       background: transparent;
       color: transparent;
-      caret-color: var(--primary);
     }
-
-    /* Removed text: highlighted in red WITHOUT scratch-off / strikethrough */
     .diff-removed-highlight {
       background: var(--diff-curr-bg);
       color: var(--diff-curr-text);
-      border: 1px solid var(--diff-curr-border);
-      border-radius: 4px;
-      padding: 0.15rem 0.45rem;
-      margin: 0 0.15rem;
-      font-weight: 500;
+      border-radius: 3px;
+      padding: 0.1rem 0.35rem;
       text-decoration: none !important;
-      display: inline;
     }
-
-    /* Proposed new text: highlighted in green */
     .diff-added-highlight {
       background: var(--diff-prop-bg);
       color: var(--diff-prop-text);
-      border: 1px solid var(--diff-prop-border);
-      border-radius: 4px;
-      padding: 0.15rem 0.45rem;
-      margin: 0 0.15rem;
-      font-weight: 500;
+      border-radius: 3px;
+      padding: 0.1rem 0.35rem;
       text-decoration: none !important;
-      display: inline;
     }
 
-    /* AI Thinking subtle border glow */
+    /* AI Thinking Subtle Border */
     .editor-wrapper.thinking {
-      position: relative;
-    }
-    .editor-wrapper.thinking::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border: 2px solid var(--primary);
-      border-radius: var(--radius-lg);
-      pointer-events: none;
-      animation: thinkingPulse 1.5s infinite ease-in-out;
-    }
-    @keyframes thinkingPulse {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 0.8; }
+      outline: 1.5px solid var(--win-accent);
+      outline-offset: -2px;
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       APPLICATION FOOTER / STATUS BAR (Minimalist, 36px)
-       ══════════════════════════════════════════════════════════════ */
-    #app-footer {
-      height: 36px;
-      background: var(--bg-paper);
-      border-top: 1px solid var(--border-subtle);
-      position: sticky;
-      bottom: 0;
-      z-index: 80;
+    /* ════════════════════ ROW 5: WINDOWS NOTEPAD STATUS BAR (26px) ════════════════════ */
+    #statusbar {
+      height: 26px;
+      background: var(--win-statusbar);
+      border-top: 1px solid var(--win-border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 1.25rem;
-      font-size: 0.78rem;
-      color: var(--text-dim);
-    }
-
-    .footer-left {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .footer-right {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .btn-link {
-      background: none;
-      border: none;
+      padding: 0 16px;
+      font-size: 11.5px;
       color: var(--text-muted);
-      cursor: pointer;
-      font-family: inherit;
-      font-size: inherit;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: color var(--transition-fast);
+      user-select: none;
+      flex-shrink: 0;
     }
-    .btn-link:hover { color: var(--primary); }
 
-    /* ══════════════════════════════════════════════════════════════
-       SLIDE-OVER MODALS (Settings & Voice Commands Guide)
-       ══════════════════════════════════════════════════════════════ */
+    .statusbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .statusbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-sep {
+      width: 1px;
+      height: 12px;
+      background: var(--win-border);
+    }
+
+    /* Modals (Settings) */
     .modal-backdrop {
       position: fixed;
       inset: 0;
       background: var(--modal-backdrop);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(2px);
       z-index: 300;
       display: none;
-      align-items: flex-start;
-      justify-content: flex-end;
-      padding: 1.5rem;
-      animation: menuFadeIn 0.2s ease;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
+    .modal-backdrop.open { display: flex; }
     .modal-sheet {
-      background: var(--bg-paper);
-      border: 1px solid var(--border-default);
+      background: var(--win-titlebar);
+      border: 1px solid var(--win-border);
       border-radius: var(--radius-lg);
-      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
       width: 100%;
-      max-width: 520px;
-      max-height: calc(100vh - 3rem);
+      max-width: 480px;
+      max-height: 85vh;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
     }
-
     .modal-sheet-header {
-      padding: 1.1rem 1.4rem;
-      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--win-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-
     .modal-sheet-header h2 {
-      font-size: 0.96rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      font-size: 13.5px;
+      font-weight: 600;
       color: var(--text-main);
     }
-
     .modal-sheet-body {
-      padding: 1.4rem;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 14px;
     }
-
-    /* Service Cards in Settings */
-    .service-card {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-md);
-      padding: 1rem 1.15rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .service-card-title {
-      font-size: 0.86rem;
-      font-weight: 700;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
+      gap: 5px;
     }
-
     .form-group label {
-      font-size: 0.78rem;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 500;
       color: var(--text-muted);
     }
-
     .form-input {
-      background: var(--bg-paper);
-      border: 1px solid var(--border-default);
+      background: var(--win-bg);
+      border: 1px solid var(--win-border);
       border-radius: var(--radius-sm);
-      padding: 0.45rem 0.75rem;
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
+      padding: 6px 10px;
+      font-family: var(--font-sans);
+      font-size: 12.5px;
       color: var(--text-main);
       outline: none;
-      width: 100%;
-      transition: border-color var(--transition-fast);
     }
+    .form-input:focus { border-color: var(--win-accent); }
 
-    .form-input:focus {
-      border-color: var(--border-focus);
-    }
-
-    .badge-status {
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.2rem 0.55rem;
-      border-radius: 99px;
-    }
-    .badge-status.connected {
-      background: rgba(16, 185, 129, 0.12);
-      color: #10b981;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-    .badge-status.disconnected {
-      background: var(--bg-surface);
-      color: var(--text-dim);
-      border: 1px solid var(--border-default);
-    }
-
-    /* Voice Commands Grid */
-    .cmd-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-    }
-
-    .cmd-card {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-md);
-      padding: 0.75rem 1rem;
-    }
-
-    .cmd-phrase {
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--primary);
-      display: block;
-      margin-bottom: 0.2rem;
-    }
-
-    .cmd-desc {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* ── Toast Notification ── */
+    /* Toast */
     #vp-toast {
       position: fixed;
-      bottom: 2.5rem;
-      right: 2rem;
+      bottom: 36px;
+      right: 20px;
       z-index: 400;
-      background: var(--bg-paper);
-      border: 1px solid var(--border-default);
+      background: var(--win-titlebar);
+      border: 1px solid var(--win-border);
       color: var(--text-main);
       border-radius: var(--radius-md);
-      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5);
-      padding: 0.75rem 1.15rem;
-      font-size: 0.84rem;
-      font-weight: 500;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      padding: 8px 14px;
+      font-size: 12.5px;
       display: none;
       align-items: center;
-      gap: 0.75rem;
-      animation: menuFadeIn 0.2s ease;
+      gap: 10px;
     }
-
-    #vp-toast.visible {
-      display: flex;
-    }
-
+    #vp-toast.visible { display: flex; }
     #vp-toast-close {
       background: none;
       border: none;
       color: var(--text-dim);
       cursor: pointer;
-      font-size: 1rem;
-      padding: 0;
-      line-height: 1;
+      font-size: 13px;
     }
-    #vp-toast-close:hover { color: var(--text-main); }
   </style>
 </head>
 <body>
 
-  <!-- ════════════════════ TOP APPLICATION HEADER ════════════════════ -->
-  <header id="app-header" role="banner">
-    <div class="header-left">
-      <a href="#" class="brand-mark" aria-label="VoicePilot Home">
-        <div class="brand-icon-box" aria-hidden="true">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
-            <path d="M19 10v1a7 7 0 0 1-14 0v-1"></path>
-            <line x1="12" y1="18" x2="12" y2="22"></line>
-            <line x1="8" y1="22" x2="16" y2="22"></line>
-          </svg>
+  <!-- ════════════════════ ROW 1: WINDOW TITLE & NOTEPAD TAB BAR ════════════════════ -->
+  <header id="titlebar" role="banner">
+    <div class="titlebar-left">
+      <div class="notepad-tabs">
+        <div class="notepad-tab">
+          <span class="tab-icon" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </span>
+          <input type="text" id="doc-title-input" value="Untitled Document" placeholder="Untitled Document" aria-label="Document Title" spellcheck="false" />
+          <span class="tab-close" id="btn-tab-close" title="Clear / New">×</span>
         </div>
-        <span class="brand-title">VoicePilot</span>
-      </a>
-
-      <div class="header-divider" aria-hidden="true"></div>
-
-      <!-- Editable Document Title with Auto-Save -->
-      <div class="doc-title-wrapper">
-        <input type="text" id="doc-title-input" value="Untitled Document" placeholder="Document title..." aria-label="Document Title" spellcheck="false" />
-        <span id="save-status" class="save-indicator saved" title="Auto-saved to local browser storage">✓ Saved</span>
+        <button type="button" class="tab-new-btn" id="btn-new-tab" title="New Document">+</button>
       </div>
     </div>
 
-    <div class="header-right">
-      <!-- Live Wispr Flow / Voice Status -->
-      <div id="voice-status-pill" class="ready" title="Hands-free listening status for Wispr Flow" aria-live="polite">
-        <span class="dot" aria-hidden="true"></span>
-        <span id="voice-status-text">Wispr Flow Ready</span>
-      </div>
-
-      <!-- Typography Selector (Sans / Serif / Mono) -->
-      <div class="dropdown-container">
-        <button type="button" class="btn-icon" id="btn-font-toggle" title="Change Document Font" aria-label="Select Typography">
-          <span style="font-weight:700;font-size:0.85rem;">Aa</span>
-        </button>
-        <div class="dropdown-menu" id="font-dropdown-menu">
-          <button type="button" class="dropdown-item" data-font="sans">Modern Sans (Plus Jakarta)</button>
-          <button type="button" class="dropdown-item" data-font="serif">Editorial Serif (Merriweather)</button>
-          <button type="button" class="dropdown-item" data-font="mono">Technical Mono (JetBrains)</button>
-        </div>
-      </div>
-
-      <!-- Full-Width / Reading Width Toggle -->
-      <button type="button" class="btn-icon" id="btn-width-toggle" title="Toggle Reading / Full Width" aria-label="Toggle Document Width">
-        <span id="width-icon">↔</span>
-      </button>
-
-      <!-- Theme Switcher (Dark / Light) -->
-      <button type="button" class="btn-icon" id="btn-theme-toggle" title="Toggle Dark / Light Theme" aria-label="Toggle Theme">
-        <span id="theme-icon">☀️</span>
-      </button>
-
-      <!-- Export Dropdown -->
-      <div class="dropdown-container">
-        <button type="button" class="btn-icon" id="btn-export-toggle" title="Export Document" aria-label="Export Document">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-        </button>
-        <div class="dropdown-menu" id="export-dropdown-menu">
-          <button type="button" class="dropdown-item" id="export-copy-rich">📋 Copy Rich Text</button>
-          <button type="button" class="dropdown-item" id="export-copy-markdown">📝 Copy Markdown</button>
-          <button type="button" class="dropdown-item" id="export-download-md">💾 Download .md file</button>
-          <button type="button" class="dropdown-item" id="export-download-txt">📄 Download .txt file</button>
-          <button type="button" class="dropdown-item" id="export-print">🖨️ Print / Save PDF</button>
-        </div>
-      </div>
-
-      <!-- Settings Icon (⚙️) -->
-      <button type="button" class="btn-icon" id="btn-open-settings" title="AI &amp; API Key Settings" aria-label="Open Settings">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-          <circle cx="12" cy="12" r="3"></circle>
-        </svg>
-      </button>
+    <div class="titlebar-right">
+      <button type="button" class="win-control-btn" title="Minimize">―</button>
+      <button type="button" class="win-control-btn" title="Maximize">□</button>
+      <button type="button" class="win-control-btn close" title="Close">✕</button>
     </div>
   </header>
 
-  <!-- ════════════════════ STREAMLINED HANDS-FREE TOOLBAR ════════════════════ -->
-  <nav id="formatting-toolbar" aria-label="Text formatting toolbar">
-    <!-- Primary AI Action -->
-    <div class="toolbar-group">
-      <button type="button" class="btn-ai-review" id="btn-trigger-review" title="Polish document (or say 'Shazam, review')">✨ AI Review</button>
+  <!-- ════════════════════ ROW 2: MENU & EDITING TOOLBAR ════════════════════ -->
+  <nav id="menubar" aria-label="Editor command bar">
+    <div class="menubar-left">
+      <!-- File Menu -->
+      <div class="dropdown-container">
+        <button type="button" class="menu-item-btn" id="btn-file-menu">File</button>
+        <div class="dropdown-menu" id="file-menu">
+          <button type="button" class="dropdown-item" id="menu-file-new"><span>New Document</span><span class="shortcut">Ctrl+N</span></button>
+          <button type="button" class="dropdown-item" id="menu-file-sample"><span>Open Sample Draft</span></button>
+          <div class="menu-divider"></div>
+          <button type="button" class="dropdown-item" id="menu-file-copy-rich"><span>Copy Rich Text</span><span class="shortcut">Ctrl+Shift+C</span></button>
+          <button type="button" class="dropdown-item" id="menu-file-copy-md"><span>Copy Markdown</span></button>
+          <button type="button" class="dropdown-item" id="menu-file-download-md"><span>Download .md</span><span class="shortcut">Ctrl+S</span></button>
+          <button type="button" class="dropdown-item" id="menu-file-download-txt"><span>Download .txt</span></button>
+          <button type="button" class="dropdown-item" id="menu-file-print"><span>Print / Save PDF</span><span class="shortcut">Ctrl+P</span></button>
+          <div class="menu-divider"></div>
+          <button type="button" class="dropdown-item" id="menu-file-clear"><span>Clear Document</span></button>
+        </div>
+      </div>
+
+      <!-- Edit Menu -->
+      <div class="dropdown-container">
+        <button type="button" class="menu-item-btn" id="btn-edit-menu">Edit</button>
+        <div class="dropdown-menu" id="edit-menu">
+          <button type="button" class="dropdown-item" id="menu-edit-undo"><span>Undo</span><span class="shortcut">Ctrl+Z</span></button>
+          <button type="button" class="dropdown-item" id="menu-edit-redo"><span>Redo</span><span class="shortcut">Ctrl+Y</span></button>
+          <div class="menu-divider"></div>
+          <button type="button" class="dropdown-item" id="menu-edit-cut"><span>Cut</span><span class="shortcut">Ctrl+X</span></button>
+          <button type="button" class="dropdown-item" id="menu-edit-copy"><span>Copy</span><span class="shortcut">Ctrl+C</span></button>
+          <button type="button" class="dropdown-item" id="menu-edit-paste"><span>Paste</span><span class="shortcut">Ctrl+V</span></button>
+          <div class="menu-divider"></div>
+          <button type="button" class="dropdown-item" id="menu-edit-selectall"><span>Select All</span><span class="shortcut">Ctrl+A</span></button>
+        </div>
+      </div>
+
+      <!-- View Menu -->
+      <div class="dropdown-container">
+        <button type="button" class="menu-item-btn" id="btn-view-menu">View</button>
+        <div class="dropdown-menu" id="view-menu">
+          <button type="button" class="dropdown-item" id="menu-view-theme"><span>Toggle Dark / Light</span></button>
+          <div class="menu-divider"></div>
+          <button type="button" class="dropdown-item" data-font="sans"><span>Font: Modern Sans</span></button>
+          <button type="button" class="dropdown-item" data-font="serif"><span>Font: Editorial Serif</span></button>
+          <button type="button" class="dropdown-item" data-font="mono"><span>Font: JetBrains Mono</span></button>
+        </div>
+      </div>
+
+      <div class="v-sep"></div>
+
+      <!-- In-Line Rich Formatting Controls (Inspired by Notepad++) -->
+      <div class="tool-group">
+        <!-- Paragraph / Heading Picker -->
+        <div class="dropdown-container">
+          <button type="button" class="tool-btn" id="btn-heading-dropdown" title="Paragraph Style">
+            <span id="heading-label">H1</span> <span style="font-size:9px;">▼</span>
+          </button>
+          <div class="dropdown-menu" id="heading-menu">
+            <button type="button" class="dropdown-item" data-format="p">Paragraph</button>
+            <button type="button" class="dropdown-item" data-format="h1">Heading 1</button>
+            <button type="button" class="dropdown-item" data-format="h2">Heading 2</button>
+            <button type="button" class="dropdown-item" data-format="h3">Heading 3</button>
+          </div>
+        </div>
+
+        <!-- Bullet / Number List -->
+        <div class="dropdown-container">
+          <button type="button" class="tool-btn" id="btn-list-dropdown" title="List Style">
+            <span>• ▾</span>
+          </button>
+          <div class="dropdown-menu" id="list-menu">
+            <button type="button" class="dropdown-item" id="tool-bullet-list">Bullet List (•)</button>
+            <button type="button" class="dropdown-item" id="tool-ordered-list">Numbered List (1.)</button>
+          </div>
+        </div>
+
+        <button type="button" class="tool-btn" id="t-bold" title="Bold (Ctrl+B or 'Shazam, bold')"><strong>B</strong></button>
+        <button type="button" class="tool-btn" id="t-italic" title="Italic (Ctrl+I or 'Shazam, italic')"><em>I</em></button>
+        <button type="button" class="tool-btn" id="t-strike" title="Strikethrough"><s>S</s></button>
+      </div>
+
+      <div class="v-sep"></div>
+
+      <!-- History -->
+      <div class="tool-group">
+        <button type="button" class="tool-btn" id="t-undo" title="Undo (Ctrl+Z or 'Shazam, undo')">↺</button>
+        <button type="button" class="tool-btn" id="t-redo" title="Redo (Ctrl+Y or 'Shazam, redo')">↻</button>
+      </div>
     </div>
 
-    <div class="toolbar-sep" aria-hidden="true"></div>
+    <div class="menubar-right">
+      <!-- AI Polish Action -->
+      <button type="button" class="tool-btn-ai" id="btn-trigger-review" title="Full Document Polish (or say 'Shazam, review')">
+        ✨ Polish Draft
+      </button>
 
-    <!-- Essential Formatting (Minimal, Voice-Friendly) -->
-    <div class="toolbar-group">
-      <button type="button" class="t-btn" id="t-bold" title="Bold (Ctrl+B or 'Shazam, bold')" aria-label="Bold"><strong>B</strong></button>
-      <button type="button" class="t-btn" id="t-italic" title="Italic (Ctrl+I or 'Shazam, italic')" aria-label="Italic"><em>I</em></button>
-      <button type="button" class="t-btn" id="t-heading" title="Toggle Heading (or 'Shazam, heading')" aria-label="Heading">H</button>
-      <button type="button" class="t-btn" id="t-bullet-list" title="Bullet List (or 'Shazam, list')" aria-label="Bullet List">• List</button>
-    </div>
+      <div class="v-sep"></div>
 
-    <div class="toolbar-sep" aria-hidden="true"></div>
+      <!-- Live Voice Status Pill -->
+      <div id="voice-status-pill" class="ready" title="Wispr Flow listening status (Click to stop AI)" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="voice-status-text">Wispr Ready</span>
+      </div>
 
-    <!-- Minimal History -->
-    <div class="toolbar-group">
-      <button type="button" class="t-btn" id="t-undo" title="Undo (Ctrl+Z or 'Shazam, undo')" aria-label="Undo">↺</button>
-      <button type="button" class="t-btn" id="t-redo" title="Redo (Ctrl+Y or 'Shazam, redo')" aria-label="Redo">↻</button>
-    </div>
-
-    <div class="toolbar-group" style="margin-left:auto;">
-      <button type="button" class="t-btn" id="btn-load-sample" title="Load sample document" style="font-size:0.78rem;color:var(--text-dim);">Sample</button>
-      <button type="button" class="t-btn" id="btn-clear-doc" title="Clear canvas (or 'Shazam, clear')" style="font-size:0.78rem;color:var(--text-dim);">Clear</button>
+      <!-- Settings Icon -->
+      <button type="button" class="tool-btn" id="btn-open-settings" title="Settings &amp; Speech Options" aria-label="Settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
     </div>
   </nav>
 
-  <!-- ════════════════════ DOCUMENT WORKSPACE ════════════════════ -->
-  <main id="document-viewport">
-    <div id="doc-paper" class="font-sans">
-
-      <!-- AI Review Reason Banner (Only shown during Review proposals) -->
-      <div id="proposal-reason-banner">
-        <div class="proposal-reason-left">
-          <span class="proposal-tag">✨ AI Polish</span>
-          <div>
-            <strong>Reason: </strong>
-            <span id="proposal-reason-text" class="proposal-reason-text">Improved structure, clarity, and phrasing.</span>
-          </div>
-        </div>
-        <div class="proposal-reason-actions">
-          <button type="button" class="btn-action btn-action-accept" id="btn-inline-accept" title="Say 'Shazam, accept'">✓ Accept (Shazam, accept)</button>
-          <button type="button" class="btn-action btn-action-decline" id="btn-inline-decline" title="Say 'Shazam, decline'">✕ Decline (Shazam, decline)</button>
-          <button type="button" class="btn-action" id="btn-speak-proposal" style="background:var(--bg-paper);color:var(--text-main);border-color:var(--border-default);">🔊 Hear</button>
-        </div>
-      </div>
-
-      <!-- Editable Document Surface -->
-      <div class="editor-wrapper" id="editor-wrapper">
-        <!-- Live Rich Text Contenteditable Editor -->
-        <div
-          id="draft-editor"
-          contenteditable="true"
-          role="textbox"
-          aria-multiline="true"
-          aria-label="Rich Voice Document Editor"
-          data-placeholder="Start typing or speaking freely with Wispr Flow...&#10;&#10;• Use toolbar buttons or voice commands for Bold, Italic, Headings, and Lists.&#10;• Say 'Shazam, put a comma next to hello' for instant targeted edits.&#10;• Say 'Shazam, review' for full comprehensive polish."
-          spellcheck="true"
-        ></div>
-
-        <!-- In-Place Diff View (Active during AI Review) -->
-        <div id="draft-diff-display" class="inline-diff-display" aria-live="polite"></div>
-      </div>
-
+  <!-- ════════════════════ ROW 3: AI REVIEW PROPOSAL BANNER ════════════════════ -->
+  <div id="proposal-reason-banner">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="proposal-tag">✨ AI Polish</span>
+      <span id="proposal-reason-text" style="color:var(--text-main);">Review ready</span>
     </div>
-  </main>
-
-  <!-- ════════════════════ FOOTER / STATUS BAR ════════════════════ -->
-  <footer id="app-footer">
-    <div class="footer-left">
-      <span id="doc-stats">0 words · 0 characters · ~0 min read</span>
-      <span id="history-counter" style="color:var(--primary);font-weight:600;"></span>
-    </div>
-    <div class="footer-right">
-      <button type="button" class="btn-link" id="btn-open-guide">
-        🎙️ Voice Commands Guide
-      </button>
-    </div>
-  </footer>
-
-  <!-- ════════════════════ VOICE COMMANDS GUIDE DRAWER ════════════════════ -->
-  <div class="modal-backdrop" id="guide-backdrop" role="dialog" aria-modal="true" aria-labelledby="guide-title">
-    <div class="modal-sheet">
-      <div class="modal-sheet-header">
-        <h2 id="guide-title">🎙️ Hands-Free Voice Commands Guide</h2>
-        <button type="button" class="btn-icon" id="btn-close-guide" aria-label="Close Guide">✕</button>
-      </div>
-      <div class="modal-sheet-body">
-        <div style="font-size:0.84rem;color:var(--text-muted);line-height:1.5;">
-          VoicePilot works seamlessly alongside <strong>Wispr Flow</strong> (<kbd>Ctrl+Win</kbd> or <kbd>Fn</kbd>). Speak freely to dictate, or prefix with <strong>"Shazam"</strong> for commands:
-        </div>
-
-        <div class="cmd-grid">
-          <div class="cmd-card">
-            <span class="cmd-phrase">Shazam, &lt;any instruction&gt;</span>
-            <span class="cmd-desc">Say ANY targeted edit (e.g. <em>"Shazam, put a comma next to hello"</em> or <em>"Shazam, capitalize the title"</em>). Applied directly to your document and saved to undo history.</span>
-          </div>
-
-          <div class="cmd-card">
-            <span class="cmd-phrase">Shazam, review</span>
-            <span class="cmd-desc">Comprehensive polish. Shows proposed additions in green and removals in red on the exact field with the AI's reason.</span>
-          </div>
-
-          <div class="cmd-card">
-            <span class="cmd-phrase">Shazam, accept / keep new</span>
-            <span class="cmd-desc">Accepts the proposed review changes. Also works with <em>"option two"</em> or <em>"yes"</em>.</span>
-          </div>
-
-          <div class="cmd-card">
-            <span class="cmd-phrase">Shazam, decline / keep previous</span>
-            <span class="cmd-desc">Declines review changes and keeps original draft. Also works with <em>"option one"</em> or <em>"no"</em>.</span>
-          </div>
-
-          <div class="cmd-card">
-            <span class="cmd-phrase">Shazam, bold / italic / heading / list</span>
-            <span class="cmd-desc">Instantly formats current text selection or line as bold, italic, heading, or bullet list hands-free without AI delay.</span>
-          </div>
-
-          <div class="cmd-card">
-            <span class="cmd-phrase">Shazam, undo / redo</span>
-            <span class="cmd-desc">Reverts or restores previous insertions and edits. Local and instant.</span>
-          </div>
-
-          <div class="cmd-card">
-            <span class="cmd-phrase">Shazam, clear</span>
-            <span class="cmd-desc">Clears the document. Automatically backed up to undo history (say <em>"Shazam, undo"</em> to restore).</span>
-          </div>
-
-          <div class="cmd-card">
-            <span class="cmd-phrase">Shazam, read / stop</span>
-            <span class="cmd-desc">Reads your document aloud using speech synthesis, or halts speech immediately.</span>
-          </div>
-
-          <div class="cmd-card">
-            <span class="cmd-phrase">Shazam, copy</span>
-            <span class="cmd-desc">Copies your active draft directly to your clipboard.</span>
-          </div>
-        </div>
-      </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <button type="button" class="btn-action-accept" id="btn-inline-accept" title="Say 'Shazam, accept'">✓ Accept (Shazam, accept)</button>
+      <button type="button" class="btn-action-decline" id="btn-inline-decline" title="Say 'Shazam, decline'">✕ Decline (Shazam, decline)</button>
+      <button type="button" class="tool-btn" id="btn-speak-proposal" style="height:24px;font-size:11px;">🔊 Hear</button>
     </div>
   </div>
 
-  <!-- ════════════════════ SETTINGS MODAL ════════════════════ -->
-  <div class="modal-backdrop" id="settings-backdrop" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+  <!-- ════════════════════ ROW 4: EDGE-TO-EDGE FULL-CANVAS EDITOR ════════════════════ -->
+  <main id="editor-container">
+    <div class="editor-wrapper" id="editor-wrapper">
+      <!-- Live Rich Text Contenteditable Surface -->
+      <div
+        id="draft-editor"
+        contenteditable="true"
+        role="textbox"
+        aria-multiline="true"
+        aria-label="Hands-free voice document editor"
+        data-placeholder="Start dictating with Wispr Flow or typing...&#10;&#10;• Dictate naturally: your words flow directly into the document.&#10;• Format hands-free: say 'Shazam, bold', 'Shazam, heading', or 'Shazam, list'.&#10;• Instant targeted edits: say 'Shazam, put a comma next to hello'.&#10;• Full document polish: say 'Shazam, review'."
+        spellcheck="true"
+      ></div>
+
+      <!-- In-Place Diff Display during AI Review -->
+      <div id="draft-diff-display" class="inline-diff-display" aria-live="polite"></div>
+    </div>
+  </main>
+
+  <!-- ════════════════════ ROW 5: NATIVE STATUS BAR ════════════════════ -->
+  <footer id="statusbar">
+    <div class="statusbar-left">
+      <span id="caret-pos">Ln 1, Col 1</span>
+      <div class="stat-sep"></div>
+      <span id="doc-stats">0 words · 0 characters</span>
+      <div class="stat-sep"></div>
+      <span id="history-counter" style="color:var(--win-accent);"></span>
+    </div>
+
+    <div class="statusbar-right">
+      <span id="save-status" style="color:#10b981;">✓ Saved</span>
+      <div class="stat-sep"></div>
+      <span>100%</span>
+      <div class="stat-sep"></div>
+      <span>Windows (CRLF)</span>
+      <div class="stat-sep"></div>
+      <span>UTF-8</span>
+    </div>
+  </footer>
+
+  <!-- ════════════════════ MODALS: SETTINGS ════════════════════ -->
+  <div class="modal-backdrop" id="settings-backdrop">
     <div class="modal-sheet">
       <div class="modal-sheet-header">
-        <h2 id="settings-title">⚙️ AI &amp; Configuration Settings</h2>
-        <button type="button" class="btn-icon" id="btn-close-settings" aria-label="Close Settings">✕</button>
+        <h2>Settings &amp; Speech Control</h2>
+        <button type="button" class="tab-close" id="btn-close-settings">✕</button>
       </div>
       <div class="modal-sheet-body">
+        <div class="form-group">
+          <label>Wake Word / Catchphrase</label>
+          <input type="text" id="catchword-input" class="form-input" value="Shazam" placeholder="Shazam" />
+          <span style="font-size:11px;color:var(--text-dim);">Trigger phrase before voice commands (e.g. "Shazam, bold", "Shazam, review").</span>
+        </div>
 
-        <!-- Google Gemini 3.5 Flash-Lite Card -->
-        <div class="service-card">
-          <div class="service-card-title">
-            <span>Google Gemini (Recommended)</span>
-            <span id="gemini-status-badge" class="badge-status disconnected">● Not Connected</span>
-          </div>
-          <p style="font-size:0.78rem;color:var(--text-muted);line-height:1.5;">
-            Powered by <strong>Gemini 3.5 Flash-Lite</strong> for instant, zero-latency document editing. Free from Google AI Studio.
-          </p>
-
-          <div class="form-group">
-            <label for="input-gemini-key">Gemini API Key</label>
-            <input type="password" id="input-gemini-key" class="form-input" placeholder="AIzaSy..." />
-          </div>
-
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;margin-top:0.25rem;">
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size:0.76rem;color:var(--primary);text-decoration:none;font-weight:600;">Get Free Key from Google AI Studio ↗</a>
-            <button type="button" class="btn-action" id="btn-save-gemini" style="background:var(--primary);color:#fff;">Save Key</button>
+        <div class="form-group">
+          <label>Spoken Audio Feedback</label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input type="checkbox" id="spoken-feedback-toggle" checked style="accent-color:var(--win-accent);" />
+            <span style="font-size:12px;color:var(--text-main);">Speak voice confirmation after edits</span>
           </div>
         </div>
 
-        <!-- OpenAI Card -->
-        <div class="service-card">
-          <div class="service-card-title">
-            <span>OpenAI (GPT-4o mini)</span>
-            <span id="openai-status-badge" class="badge-status disconnected">● Not Connected</span>
-          </div>
-          <div class="form-group">
-            <label for="input-openai-key">OpenAI API Key</label>
-            <input type="password" id="input-openai-key" class="form-input" placeholder="sk-..." />
-          </div>
-          <div style="text-align:right;">
-            <button type="button" class="btn-action" id="btn-save-openai" style="background:var(--primary);color:#fff;">Save Key</button>
+        <div style="height:1px;background:var(--win-border-subtle);margin:4px 0;"></div>
+
+        <div class="form-group">
+          <label>Gemini API Key (Optional Override)</label>
+          <input type="password" id="input-gemini-key" class="form-input" placeholder="AIza..." />
+          <span style="font-size:11px;color:var(--text-dim);">All local formatting (bold, heading, list, undo, redo, read) works 100% locally with zero key needed.</span>
+          <div style="margin-top:6px;text-align:right;">
+            <button type="button" class="tool-btn-ai" id="btn-save-gemini" style="padding:4px 12px;">Save Key</button>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -1362,7 +1017,8 @@ const VPCommandParser = (() => {
   function buildCatchwordRegex(catchword) {
     if (!catchword || !catchword.trim()) return null;
     const escaped = catchword.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp('^' + escaped + '\\s*[,.:;\\-]?\\s*(.*)', 'is');
+    // Match catchword at start OR preceded by boundary/space/punctuation
+    return new RegExp('(?:^|[\\s.,;:!?"\'—])(' + escaped + '(?:\\b|\\s*[,.:;\\-])\\s*([\\s\\S]*))$', 'i');
   }
 
   function parse(segment, catchword = 'Shazam') {
@@ -1373,12 +1029,13 @@ const VPCommandParser = (() => {
     const m = catchRe.exec(segment.trim());
     if (!m) return null;
 
-    const rawBody = m[1].trim();
+    const fullCommand = m[1];
+    const rawBody = m[2].trim();
     if (!rawBody) {
-      return { action: 'empty_prompt', arg: '', commandText: segment };
+      return { action: 'empty_prompt', arg: '', commandText: fullCommand };
     }
 
-    // Strip surrounding punctuation common in dictation (e.g. "undo.", "read.", "accept,")
+    // Strip surrounding punctuation common in dictation (e.g. "undo.", "read.", "copy.", "accept,")
     const cleanBody = rawBody.replace(/^[.,;:!?"'—\s]+|[.,;:!?"'—\s]+$/g, '').trim();
 
     // Check clean body first for local commands
@@ -1388,7 +1045,7 @@ const VPCommandParser = (() => {
         return {
           action,
           arg: hasArg ? (match[1] || '').trim() : null,
-          commandText: segment,
+          commandText: fullCommand,
         };
       }
     }
@@ -1397,82 +1054,80 @@ const VPCommandParser = (() => {
     return {
       action: 'ai_instruction',
       arg: cleanBody || rawBody,
-      commandText: segment,
+      commandText: fullCommand,
     };
   }
 
   return { parse };
 })();
 
-// === src/segment_tracker.js (Adapted for Rich Text Contenteditable) ===
+// === src/segment_tracker.js (Robust Contenteditable Segment Tracker) ===
 const VPSegmentTracker = (() => {
   function getPlainText(el) {
     if (!el) return '';
     return el.innerText !== undefined ? el.innerText : (el.textContent || '');
   }
 
-  function attach(editor, { debounceMs = 450, onSegment } = {}) {
+  function attach(editor, { debounceMs = 400, onSegment } = {}) {
     let _guard = false;
-    let _snapshot = getPlainText(editor);
+    let _baseline = getPlainText(editor);
     let _debounceTimer = null;
 
-    function setGuard(val) { _guard = !!val; }
+    function setGuard(val) {
+      _guard = !!val;
+      if (val) clearTimeout(_debounceTimer);
+    }
 
-    function onBeforeInput() {
-      if (_guard) return;
-      _snapshot = getPlainText(editor);
+    function syncSnapshot() {
+      _baseline = getPlainText(editor);
     }
 
     function checkDiff() {
       if (_guard) return;
       const currentVal = getPlainText(editor);
-      if (currentVal === _snapshot) return;
+      if (currentVal === _baseline) return;
 
-      const oldLen = _snapshot.length;
+      const oldLen = _baseline.length;
       const newLen = currentVal.length;
 
       let prefixLen = 0;
-      while (prefixLen < oldLen && prefixLen < newLen && _snapshot[prefixLen] === currentVal[prefixLen]) {
+      while (prefixLen < oldLen && prefixLen < newLen && _baseline[prefixLen] === currentVal[prefixLen]) {
         prefixLen++;
       }
 
       let suffixLen = 0;
       while (suffixLen < (oldLen - prefixLen) && suffixLen < (newLen - prefixLen) &&
-             _snapshot[oldLen - 1 - suffixLen] === currentVal[newLen - 1 - suffixLen]) {
+             _baseline[oldLen - 1 - suffixLen] === currentVal[newLen - 1 - suffixLen]) {
         suffixLen++;
       }
 
       const insertedText = currentVal.slice(prefixLen, newLen - suffixLen);
-      _snapshot = currentVal;
+      if (!insertedText || !insertedText.trim()) return;
 
-      if (insertedText && insertedText.trim()) {
-        const seg = {
-          insertedText,
-          insertStart: prefixLen,
-          insertEnd: newLen - suffixLen,
-          editor,
-        };
-        clearTimeout(_debounceTimer);
-        const isCommand = /shazam/i.test(insertedText);
-        const waitMs = isCommand ? 80 : debounceMs;
-        _debounceTimer = setTimeout(() => {
-          if (typeof onSegment === 'function') onSegment(seg);
-        }, waitMs);
-      }
+      const seg = {
+        insertedText,
+        insertStart: prefixLen,
+        insertEnd: newLen - suffixLen,
+        editor,
+      };
+
+      clearTimeout(_debounceTimer);
+      // Fast path: if Shazam trigger is detected, settle quickly (90ms)
+      const isCommand = /shazam/i.test(insertedText) || /shazam/i.test(currentVal);
+      const waitMs = isCommand ? 90 : debounceMs;
+
+      _debounceTimer = setTimeout(() => {
+        _baseline = getPlainText(editor);
+        if (typeof onSegment === 'function') onSegment(seg);
+      }, waitMs);
     }
 
-    editor.addEventListener('beforeinput', onBeforeInput);
     editor.addEventListener('input', checkDiff);
     editor.addEventListener('paste', () => setTimeout(checkDiff, 20));
 
     function detach() {
       clearTimeout(_debounceTimer);
-      editor.removeEventListener('beforeinput', onBeforeInput);
       editor.removeEventListener('input', checkDiff);
-    }
-
-    function syncSnapshot() {
-      _snapshot = getPlainText(editor);
     }
 
     return { detach, setGuard, syncSnapshot };
@@ -1484,13 +1139,8 @@ const VPSegmentTracker = (() => {
 // === src/voice_feedback.js ===
 const VPVoiceFeedback = (() => {
   let _enabled = true;
-
-  function isAvailable() {
-    return typeof window !== 'undefined' && 'speechSynthesis' in window;
-  }
-
+  function isAvailable() { return typeof window !== 'undefined' && 'speechSynthesis' in window; }
   function setEnabled(val) { _enabled = !!val; }
-
   function speak(text, { rate = 1.05 } = {}) {
     if (!_enabled || !isAvailable() || !text) return;
     try {
@@ -1498,103 +1148,49 @@ const VPVoiceFeedback = (() => {
       const utt = new SpeechSynthesisUtterance(String(text).slice(0, 800));
       utt.rate = rate;
       window.speechSynthesis.speak(utt);
-    } catch (e) {
-      console.warn('Speech synthesis failed', e);
-    }
+    } catch (e) {}
   }
-
   return { isAvailable, setEnabled, speak };
 })();
 
 // === src/editor_state.js ===
 const VPEditorState = (() => {
-  const MAX_HISTORY = 100;
-
+  const MAX_HISTORY = 30;
   function createState() {
-    return {
-      acceptedDraft: '', // stores the HTML content of the document
-      pendingProposal: null, // { text, instruction, reason, isReview }
-      undoStack: [],
-      redoStack: [],
-      notes: [],
-    };
+    return { acceptedDraft: '', undoStack: [], redoStack: [], pendingProposal: null, notes: [] };
   }
-
-  function pushUndo(state) {
-    const next = { ...state };
-    next.undoStack = [...state.undoStack, state.acceptedDraft].slice(-MAX_HISTORY);
-    next.redoStack = [];
-    return next;
+  function acceptDraft(state, newText) {
+    if (newText === state.acceptedDraft) return state;
+    const undoStack = [...state.undoStack, state.acceptedDraft].slice(-MAX_HISTORY);
+    return { ...state, acceptedDraft: newText, undoStack, redoStack: [], pendingProposal: null };
   }
-
-  function acceptDraft(state, newHtml) {
-    const next = pushUndo(state);
-    next.acceptedDraft = typeof newHtml === 'string' ? newHtml : state.acceptedDraft;
-    next.pendingProposal = null;
-    return next;
+  function setProposal(state, proposalText, reasonType = 'General Polish', reason = '', isReview = false) {
+    return { ...state, pendingProposal: { text: proposalText, reasonType, reason, isReview } };
   }
-
-  function setProposal(state, proposalHtml, instruction, reason = '', isReview = false) {
-    return {
-      ...state,
-      pendingProposal: {
-        text: proposalHtml,
-        instruction: instruction || '',
-        reason: reason || '',
-        isReview: !!isReview,
-      },
-    };
-  }
-
   function applyProposal(state) {
     if (!state.pendingProposal) return state;
-    const next = pushUndo(state);
-    next.acceptedDraft = state.pendingProposal.text;
-    next.pendingProposal = null;
-    return next;
+    return acceptDraft(state, state.pendingProposal.text);
   }
-
   function discardProposal(state) {
+    if (!state.pendingProposal) return state;
     return { ...state, pendingProposal: null };
   }
-
   function undo(state) {
+    if (state.pendingProposal) return discardProposal(state);
     if (state.undoStack.length === 0) return state;
-    const undoStack = [...state.undoStack];
-    const prev = undoStack.pop();
-    const redoStack = [state.acceptedDraft, ...state.redoStack];
-    return {
-      ...state,
-      acceptedDraft: prev,
-      undoStack,
-      redoStack: redoStack.slice(0, MAX_HISTORY),
-      pendingProposal: null,
-    };
+    const previous = state.undoStack[state.undoStack.length - 1];
+    const undoStack = state.undoStack.slice(0, -1);
+    const redoStack = [...state.redoStack, state.acceptedDraft].slice(-MAX_HISTORY);
+    return { ...state, acceptedDraft: previous, undoStack, redoStack, pendingProposal: null };
   }
-
   function redo(state) {
     if (state.redoStack.length === 0) return state;
-    const redoStack = [...state.redoStack];
-    const next = redoStack.shift();
+    const next = state.redoStack[state.redoStack.length - 1];
+    const redoStack = state.redoStack.slice(0, -1);
     const undoStack = [...state.undoStack, state.acceptedDraft].slice(-MAX_HISTORY);
-    return {
-      ...state,
-      acceptedDraft: next,
-      undoStack,
-      redoStack,
-      pendingProposal: null,
-    };
+    return { ...state, acceptedDraft: next, undoStack, redoStack, pendingProposal: null };
   }
-
-  return {
-    createState,
-    acceptDraft,
-    setProposal,
-    applyProposal,
-    discardProposal,
-    undo,
-    redo,
-  };
+  return { createState, acceptDraft, setProposal, applyProposal, discardProposal, undo, redo };
 })();
   </script>
 
@@ -1609,9 +1205,9 @@ const VPEditorState = (() => {
     let _currentOpId = 0;
     let _activeAbortController = null;
 
-    // Keys stored in local storage
-    let VP_GEMINI_KEY = localStorage.getItem('vp_gemini_key') || '';
-    let VP_OPENAI_KEY = localStorage.getItem('vp_openai_key') || '';
+    // Built-in Permanent Gemini API Key (Users directly work out of the box)
+    const PERMANENT_GEMINI_KEY = '';
+    let VP_GEMINI_KEY = PERMANENT_GEMINI_KEY || localStorage.getItem('vp_gemini_key') || '';
     let _activeGeminiModel = localStorage.getItem('vp_gemini_model') || 'gemini-2.0-flash';
 
     // DOM Elements
@@ -1623,10 +1219,10 @@ const VPEditorState = (() => {
     const voiceStatusPill      = document.getElementById('voice-status-pill');
     const voiceStatusText      = document.getElementById('voice-status-text');
     const docStatsEl           = document.getElementById('doc-stats');
+    const caretPosEl           = document.getElementById('caret-pos');
     const historyCounterEl     = document.getElementById('history-counter');
     const docTitleInput        = document.getElementById('doc-title-input');
     const saveStatusEl         = document.getElementById('save-status');
-    const docPaper             = document.getElementById('doc-paper');
 
     const toastEl              = document.getElementById('vp-toast');
     const toastMsg             = document.getElementById('vp-toast-msg');
@@ -1646,25 +1242,13 @@ const VPEditorState = (() => {
 
     function setStatus(type, label) {
       voiceStatusPill.className = type;
-      voiceStatusText.textContent = label || (type === 'ready' ? 'Wispr Flow Ready' : type);
+      voiceStatusText.textContent = label || (type === 'ready' ? 'Wispr Ready' : type);
     }
 
-    function escapeHtml(str) {
-      return String(str || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    // ── Markdown ⟷ Rich HTML Helpers ──
+    // ── Markdown ⟷ HTML Conversion ──
     function markdownToHtml(md) {
       if (!md) return '';
-      // If already contains HTML tags like <p>, <h1>, <div>, return directly
-      if (/<(p|h1|h2|h3|ul|ol|blockquote|div|strong|em)[\s>]/i.test(md)) {
-        return md;
-      }
+      if (/<(p|h1|h2|h3|ul|ol|blockquote|div|strong|em)[\s>]/i.test(md)) return md;
 
       const lines = md.replace(/\r\n/g, '\n').split('\n');
       let html = '';
@@ -1677,36 +1261,32 @@ const VPEditorState = (() => {
           continue;
         }
 
-        // Inline formatting: bold, italic, code
-        line = line
-          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-          .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-          .replace(/\*(.+?)\*/g, '<em>$1</em>')
-          .replace(/`(.+?)`/g, '<code>$1</code>');
+        line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        line = line.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        line = line.replace(/`([^`]+)`/g, '<code>$1</code>');
 
         if (line.startsWith('# ')) {
           if (inList) { html += '</ul>'; inList = false; }
-          html += `<h1>${line.slice(2)}</h1>`;
+          html += '<h1>' + line.slice(2) + '</h1>';
         } else if (line.startsWith('## ')) {
           if (inList) { html += '</ul>'; inList = false; }
-          html += `<h2>${line.slice(3)}</h2>`;
+          html += '<h2>' + line.slice(3) + '</h2>';
         } else if (line.startsWith('### ')) {
           if (inList) { html += '</ul>'; inList = false; }
-          html += `<h3>${line.slice(4)}</h3>`;
-        } else if (line.startsWith('&gt; ')) {
-          if (inList) { html += '</ul>'; inList = false; }
-          html += `<blockquote>${line.slice(5)}</blockquote>`;
-        } else if (/^[-*+]\s+/.test(line)) {
+          html += '<h3>' + line.slice(4) + '</h3>';
+        } else if (line.startsWith('- ') || line.startsWith('* ')) {
           if (!inList) { html += '<ul>'; inList = true; }
-          html += `<li>${line.replace(/^[-*+]\s+/, '')}</li>`;
+          html += '<li>' + line.slice(2) + '</li>';
+        } else if (line.startsWith('> ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += '<blockquote>' + line.slice(2) + '</blockquote>';
         } else {
           if (inList) { html += '</ul>'; inList = false; }
-          html += `<p>${line}</p>`;
+          html += '<p>' + line + '</p>';
         }
       }
       if (inList) html += '</ul>';
-      return html || '<p><br></p>';
+      return html;
     }
 
     function htmlToMarkdown(html) {
@@ -1714,28 +1294,25 @@ const VPEditorState = (() => {
       const div = document.createElement('div');
       div.innerHTML = html;
 
-      // Clean simple markdown extractor
       function walk(node) {
         if (node.nodeType === Node.TEXT_NODE) return node.nodeValue;
         if (node.nodeType !== Node.ELEMENT_NODE) return '';
 
         const tag = node.tagName.toLowerCase();
-        let inner = Array.from(node.childNodes).map(walk).join('');
+        let inner = '';
+        for (const child of node.childNodes) inner += walk(child);
 
         switch (tag) {
-          case 'h1': return `\n# ${inner.trim()}\n\n`;
-          case 'h2': return `\n## ${inner.trim()}\n\n`;
-          case 'h3': return `\n### ${inner.trim()}\n\n`;
-          case 'strong':
-          case 'b': return `**${inner}**`;
-          case 'em':
-          case 'i': return `*${inner}*`;
-          case 'u': return `${inner}`;
-          case 'blockquote': return `\n> ${inner.trim()}\n\n`;
-          case 'code': return `\`${inner}\``;
-          case 'li': return `- ${inner.trim()}\n`;
-          case 'p':
-          case 'div': return `${inner}\n\n`;
+          case 'h1': return '\n# ' + inner.trim() + '\n\n';
+          case 'h2': return '\n## ' + inner.trim() + '\n\n';
+          case 'h3': return '\n### ' + inner.trim() + '\n\n';
+          case 'strong': case 'b': return '**' + inner + '**';
+          case 'em': case 'i': return '*' + inner + '*';
+          case 'code': return '`' + inner + '`';
+          case 'blockquote': return '\n> ' + inner.trim() + '\n\n';
+          case 'li': return '- ' + inner.trim() + '\n';
+          case 'ul': case 'ol': return '\n' + inner + '\n';
+          case 'p': return inner.trim() ? inner.trim() + '\n\n' : '';
           case 'br': return '\n';
           default: return inner;
         }
@@ -1744,21 +1321,19 @@ const VPEditorState = (() => {
       return walk(div).replace(/\n{3,}/g, '\n\n').trim();
     }
 
+    // Caret placement: jump to end using requestAnimationFrame
     function moveCaretToEnd(el) {
       if (!el) return;
-      // Use requestAnimationFrame to ensure DOM paint is done before placing caret
       requestAnimationFrame(() => {
         try {
           el.focus();
           const range = document.createRange();
           range.selectNodeContents(el);
-          range.collapse(false); // collapse to end
+          range.collapse(false);
           const sel = window.getSelection();
           sel.removeAllRanges();
           sel.addRange(range);
-        } catch (e) {
-          console.warn('Could not move caret to end', e);
-        }
+        } catch (e) {}
       });
     }
 
@@ -1766,9 +1341,7 @@ const VPEditorState = (() => {
       _internalWrite = true;
       if (tracker) tracker.setGuard(true);
       draftEditor.innerHTML = htmlVal || '';
-      if (shouldMoveToEnd) {
-        moveCaretToEnd(draftEditor);
-      }
+      if (shouldMoveToEnd) moveCaretToEnd(draftEditor);
       if (tracker) {
         tracker.syncSnapshot();
         tracker.setGuard(false);
@@ -1778,46 +1351,38 @@ const VPEditorState = (() => {
       triggerAutoSave();
     }
 
-    // ── In-Place Diff Generation (Highlights in Red/Green, NO Strikethrough) ──
+    // In-Place Diff Generation (Highlights in Red/Green)
     function renderInPlaceDiff(oldHtml, newHtml) {
       const oldText = typeof oldHtml === 'string' ? oldHtml : '';
       const newText = typeof newHtml === 'string' ? newHtml : '';
 
       if (!oldText && !newText) return '';
-      if (!oldText) return `<span class="diff-added-highlight">${newText}</span>`;
-      if (!newText) return `<span class="diff-removed-highlight">${oldText}</span>`;
+      if (!oldText) return '<span class="diff-added-highlight">' + newText + '</span>';
+      if (!newText) return '<span class="diff-removed-highlight">' + oldText + '</span>';
 
-      // Word-level diff
       const oldWords = oldText.split(/(\s+)/);
       const newWords = newText.split(/(\s+)/);
 
       let prefixLen = 0;
-      while (prefixLen < oldWords.length && prefixLen < newWords.length && oldWords[prefixLen] === newWords[prefixLen]) {
-        prefixLen++;
-      }
+      while (prefixLen < oldWords.length && prefixLen < newWords.length && oldWords[prefixLen] === newWords[prefixLen]) prefixLen++;
 
       let suffixLen = 0;
       while (suffixLen < (oldWords.length - prefixLen) && suffixLen < (newWords.length - prefixLen) &&
-             oldWords[oldWords.length - 1 - suffixLen] === newWords[newWords.length - 1 - suffixLen]) {
-        suffixLen++;
-      }
+             oldWords[oldWords.length - 1 - suffixLen] === newWords[newWords.length - 1 - suffixLen]) suffixLen++;
 
-      const commonPrefix = oldWords.slice(0, prefixLen).join('');
-      const commonSuffix = oldWords.slice(oldWords.length - suffixLen).join('');
-      const removedPart = oldWords.slice(prefixLen, oldWords.length - suffixLen).join('');
-      const addedPart = newWords.slice(prefixLen, newWords.length - suffixLen).join('');
+      const removed = oldWords.slice(prefixLen, oldWords.length - suffixLen).join('');
+      const added   = newWords.slice(prefixLen, newWords.length - suffixLen).join('');
 
       let out = '';
-      if (commonPrefix) out += commonPrefix;
-      if (removedPart) out += `<span class="diff-removed-highlight">${removedPart}</span>`;
-      if (addedPart) out += `<span class="diff-added-highlight">${addedPart}</span>`;
-      if (commonSuffix) out += commonSuffix;
+      for (let i = 0; i < prefixLen; i++) out += oldWords[i];
+      if (removed) out += '<span class="diff-removed-highlight">' + removed + '</span>';
+      if (added) out += '<span class="diff-added-highlight">' + added + '</span>';
+      for (let i = oldWords.length - suffixLen; i < oldWords.length; i++) out += oldWords[i];
       return out;
     }
 
     function renderState() {
       if (state.pendingProposal) {
-        // Show in-place diff on the same field
         editorWrapper.classList.add('has-proposal');
         draftEditor.style.display = '';
         draftDiffDisplay.style.display = '';
@@ -1831,11 +1396,8 @@ const VPEditorState = (() => {
         }
 
         setStatus('review', 'Proposal Active (Say "Shazam, accept" or "Shazam, decline")');
-        setTimeout(() => {
-          try { draftEditor.focus(); } catch (e) {}
-        }, 50);
+        setTimeout(() => { try { draftEditor.focus(); } catch (e) {} }, 50);
       } else {
-        // Normal editable document mode
         editorWrapper.classList.remove('has-proposal');
         draftEditor.style.display = '';
         draftDiffDisplay.style.display = '';
@@ -1844,159 +1406,71 @@ const VPEditorState = (() => {
         if (draftEditor.innerHTML.replace(/\s+/g, ' ').trim() !== (state.acceptedDraft || '').replace(/\s+/g, ' ').trim()) {
           writeToEditor(state.acceptedDraft);
         }
-        setStatus('ready', 'Wispr Flow Ready');
+        setStatus('ready', 'Wispr Ready');
       }
 
       updateStats();
       historyCounterEl.textContent = state.undoStack.length > 0
-        ? `${state.undoStack.length} revision${state.undoStack.length > 1 ? 's' : ''}`
+        ? state.undoStack.length + ' revision' + (state.undoStack.length > 1 ? 's' : '')
         : '';
-
-      updateConnectionBadges();
     }
 
     function updateStats() {
       const text = draftEditor.innerText || '';
       const words = (text.trim().match(/\S+/g) || []).length;
       const chars = text.length;
-      const readMin = Math.max(1, Math.ceil(words / 200));
-
-      docStatsEl.textContent = `${words} word${words === 1 ? '' : 's'} · ${chars} char${chars === 1 ? '' : 's'} · ~${readMin} min read`;
+      docStatsEl.textContent = words + ' words · ' + chars + ' characters';
     }
 
     let _saveTimer = null;
     function triggerAutoSave() {
       saveStatusEl.textContent = 'Saving...';
-      saveStatusEl.className = 'save-indicator';
+      saveStatusEl.style.color = '#f59e0b';
       clearTimeout(_saveTimer);
       _saveTimer = setTimeout(() => {
         try {
           localStorage.setItem('vp_doc_content', draftEditor.innerHTML);
           localStorage.setItem('vp_doc_title', docTitleInput.value);
           saveStatusEl.textContent = '✓ Saved';
-          saveStatusEl.className = 'save-indicator saved';
-        } catch (e) {
-          console.warn('Auto-save failed', e);
-        }
+          saveStatusEl.style.color = '#10b981';
+        } catch (e) {}
       }, 500);
     }
 
-    function updateConnectionBadges() {
-      const geminiBadge = document.getElementById('gemini-status-badge');
-      if (geminiBadge) {
-        if (VP_GEMINI_KEY) {
-          geminiBadge.className = 'badge-status connected';
-          geminiBadge.textContent = `✓ Active (${_activeGeminiModel || 'gemini-2.0-flash'})`;
-        } else {
-          geminiBadge.className = 'badge-status disconnected';
-          geminiBadge.textContent = '● Not Connected';
-        }
-      }
-
-      const openaiBadge = document.getElementById('openai-status-badge');
-      if (openaiBadge) {
-        if (VP_OPENAI_KEY) {
-          openaiBadge.className = 'badge-status connected';
-          openaiBadge.textContent = '✓ Active (gpt-4o-mini)';
-        } else {
-          openaiBadge.className = 'badge-status disconnected';
-          openaiBadge.textContent = '● Not Connected';
-        }
-      }
+    // Caret Position Tracker for Status Bar (Ln X, Col Y)
+    function updateCaretPos() {
+      const sel = window.getSelection();
+      if (!sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(draftEditor);
+      preCaretRange.setEnd(range.endContainer, range.endOffset);
+      const text = preCaretRange.toString();
+      const lines = text.split('\n');
+      const ln = lines.length;
+      const col = lines[lines.length - 1].length + 1;
+      caretPosEl.textContent = 'Ln ' + ln + ', Col ' + col;
     }
-
-    // ── Rich Formatting Controls ──
-    function formatDoc(command, value = null) {
-      draftEditor.focus();
-      document.execCommand(command, false, value);
-      updateToolbarActiveStates();
-      state = VPEditorState.acceptDraft(state, draftEditor.innerHTML);
-      triggerAutoSave();
-    }
-
-    function updateToolbarActiveStates() {
-      try {
-        const b = document.getElementById('t-bold');
-        if (b) b.classList.toggle('active', document.queryCommandState('bold'));
-        const it = document.getElementById('t-italic');
-        if (it) it.classList.toggle('active', document.queryCommandState('italic'));
-        const h = document.getElementById('t-heading');
-        if (h) {
-          const block = (document.queryCommandValue('formatBlock') || '').toLowerCase();
-          h.classList.toggle('active', block === 'h2' || block === 'h1' || block === 'h3');
-        }
-        const bl = document.getElementById('t-bullet-list');
-        if (bl) bl.classList.toggle('active', document.queryCommandState('insertUnorderedList'));
-      } catch (e) {}
-    }
-
-    // Streamlined Minimal Toolbar Listeners
-    const tBold = document.getElementById('t-bold');
-    if (tBold) tBold.addEventListener('click', () => formatDoc('bold'));
-
-    const tItalic = document.getElementById('t-italic');
-    if (tItalic) tItalic.addEventListener('click', () => formatDoc('italic'));
-
-    const tHeading = document.getElementById('t-heading');
-    if (tHeading) tHeading.addEventListener('click', () => {
-      const current = (document.queryCommandValue('formatBlock') || 'p').toLowerCase();
-      const target = current === 'h2' ? 'p' : 'h2';
-      formatDoc('formatBlock', target);
-    });
-
-    const tList = document.getElementById('t-bullet-list');
-    if (tList) tList.addEventListener('click', () => formatDoc('insertUnorderedList'));
-
-    const tUndo = document.getElementById('t-undo');
-    if (tUndo) tUndo.addEventListener('click', () => executeCommand({ action: 'undo', arg: null }, ''));
-
-    const tRedo = document.getElementById('t-redo');
-    if (tRedo) tRedo.addEventListener('click', () => executeCommand({ action: 'redo', arg: null }, ''));
-
-    // Keyboard Shortcuts (Ctrl+B, Ctrl+I, Ctrl+U, Ctrl+Z, Ctrl+Y)
-    draftEditor.addEventListener('keydown', (e) => {
-      if (e.ctrlKey || e.metaKey) {
-        if (e.key === 'b' || e.key === 'B') {
-          e.preventDefault();
-          formatDoc('bold');
-        } else if (e.key === 'i' || e.key === 'I') {
-          e.preventDefault();
-          formatDoc('italic');
-        } else if (e.key === 'u' || e.key === 'U') {
-          e.preventDefault();
-          formatDoc('underline');
-        }
-      }
-    });
 
     document.addEventListener('selectionchange', () => {
-      if (document.activeElement === draftEditor) {
-        updateToolbarActiveStates();
-      }
+      if (document.activeElement === draftEditor) updateCaretPos();
     });
+
+    // Formatting Helper
+    function formatDoc(cmd, val = null) {
+      document.execCommand(cmd, false, val);
+      state = VPEditorState.acceptDraft(state, draftEditor.innerHTML);
+      renderState();
+      moveCaretToEnd(draftEditor);
+    }
 
     // ── High-Speed Google Gemini Integration ──
     async function callGemini(draftText, instruction, apiKey, isReview = false, signal) {
       let prompt = '';
       if (isReview) {
-        prompt = `Polish this document for grammar, flow, and clarity. Preserve markdown headings, lists, and bold words.
-Document:
-"""
-${draftText}
-"""
-
-Return ONLY a raw JSON object with this exact shape:
-{"revised": "the polished document text", "reason": "brief 1-sentence summary"}`;
+        prompt = 'Polish this document for grammar, flow, and clarity. Preserve markdown headings, lists, and bold words.\nDocument:\n"""\n' + draftText + '\n"""\n\nReturn ONLY a raw JSON object with this exact shape:\n{"revised": "the polished document text", "reason": "brief 1-sentence summary"}';
       } else {
-        prompt = `Apply this instruction to the document:
-Instruction: "${instruction}"
-
-Document:
-"""
-${draftText}
-"""
-
-Return ONLY the final revised document text. Preserve all formatting (bold, headings, lists). No preamble, no quotes, no markdown code fence blocks.`;
+        prompt = 'Apply this instruction to the document:\nInstruction: "' + instruction + '"\n\nDocument:\n"""\n' + draftText + '\n"""\n\nReturn ONLY the final revised document text. Preserve all formatting. No preamble, no markdown fences.';
       }
 
       const savedModel = localStorage.getItem('vp_gemini_model');
@@ -2011,30 +1485,26 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
 
       for (const modelName of uniqueModels) {
         try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+          const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent?key=' + apiKey;
           const resp = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             signal,
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: {
-                temperature: 0.1,
-                maxOutputTokens: 2048,
-                topP: 0.8
-              }
+              generationConfig: { temperature: 0.1, maxOutputTokens: 2048, topP: 0.8 }
             })
           });
 
           if (resp.status === 404) {
             const errJson = await resp.json().catch(() => ({}));
-            lastError = new Error(errJson.error?.message || `Model ${modelName} not found`);
+            lastError = new Error(errJson.error?.message || 'Model ' + modelName + ' not found');
             continue;
           }
 
           if (!resp.ok) {
             const errJson = await resp.json().catch(() => ({}));
-            throw new Error(errJson.error?.message || `Gemini API status ${resp.status}`);
+            throw new Error(errJson.error?.message || 'API status ' + resp.status);
           }
 
           const data = await resp.json();
@@ -2050,7 +1520,7 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
                   return { revised: parsed.revised.trim(), reason: parsed.reason || 'Polished grammar and structure.' };
                 }
               } catch (e) {}
-              return { revised: rawText, reason: 'Polished grammar, flow, and elegance.' };
+              return { revised: rawText, reason: 'Polished grammar and clarity.' };
             }
             return { revised: rawText, reason: '' };
           }
@@ -2060,69 +1530,28 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
         }
       }
 
-      throw lastError || new Error('Could not connect to Gemini. Please check your API key in Settings.');
+      throw lastError || new Error('Could not connect to Gemini.');
     }
 
-    // ── OpenAI Provider ──
-    async function callOpenAI(draftText, instruction, apiKey, isReview = false, signal) {
-      const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        },
-        signal,
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a professional editor. Return ONLY the improved revised text with no quotes, preamble, or markdown backticks.'
-            },
-            {
-              role: 'user',
-              content: `Draft:\n${draftText}\n\nInstruction: ${instruction || 'Polish and improve clarity, grammar, and flow.'}`
-            }
-          ],
-          temperature: 0.3,
-        })
-      });
-
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.error?.message || `OpenAI returned status ${resp.status}`);
-      }
-
-      const data = await resp.json();
-      const text = data.choices?.[0]?.message?.content?.trim();
-      if (!text) throw new Error('OpenAI returned an empty response.');
-      return { revised: text, reason: 'Polished grammar and flow.' };
-    }
-
-    // ── Unified AI Router ──
     async function callAI(content, instruction, isReview = false, signal) {
       const plain = (content || '').replace(/<[^>]+>/g, ' ').trim();
       if (!plain) {
-        throw new Error('Your document is empty. Dictate or write some content first.');
+        throw new Error('Your document is empty. Dictate or type some content first.');
+      }
+
+      const activeKey = PERMANENT_GEMINI_KEY || VP_GEMINI_KEY;
+      if (!activeKey) {
+        throw new Error('No AI key found. Add your Gemini key in Settings (⚙) to enable cloud edits, or use hands-free formatting (bold, heading, list, undo, redo, read) which works 100% locally!');
       }
 
       const markdown = htmlToMarkdown(content);
-
-      if (VP_GEMINI_KEY) {
-        return await callGemini(markdown, instruction, VP_GEMINI_KEY, isReview, signal);
-      }
-      if (VP_OPENAI_KEY) {
-        return await callOpenAI(markdown, instruction, VP_OPENAI_KEY, isReview, signal);
-      }
-
-      throw new Error('No AI connected. Click ⚙️ in the top-right to add your free Google key in 1 click!');
+      return await callGemini(markdown, instruction, activeKey, isReview, signal);
     }
 
     // ── Command Routing & Execution ──
     async function executeCommand(parsed, insertedText) {
       const { action, arg } = parsed;
 
-      // ⚡ Cancel any in-flight old request immediately
       _currentOpId++;
       const thisOpId = _currentOpId;
       if (_activeAbortController) {
@@ -2132,13 +1561,12 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
       _activeAbortController = new AbortController();
       const signal = _activeAbortController.signal;
 
-      setStatus('listening', `Command: ${action}`);
+      setStatus('listening', 'Command: ' + action);
 
       switch (action) {
-        // Full Polish: Only Review shows Accept / Decline and Reason
         case 'review': {
-          showToast('Consulting AI editor for review...');
-          setStatus('review', 'AI Reviewing... (Click to stop)');
+          showToast('Consulting AI editor for polish...');
+          setStatus('review', 'Polishing... (Click to stop)');
           if (editorWrapper) editorWrapper.classList.add('thinking');
           try {
             const res = await callAI(state.acceptedDraft, 'Comprehensive Review', true, signal);
@@ -2151,7 +1579,7 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
             VPVoiceFeedback.speak('Review ready. Say Shazam accept or decline.');
           } catch (e) {
             if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
-            showToast(`Review failed: ${e.message}`, 6000);
+            showToast('Review notice: ' + e.message, 5000);
             setStatus('error', 'AI Review Failed');
           } finally {
             if (editorWrapper) editorWrapper.classList.remove('thinking');
@@ -2159,14 +1587,13 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           break;
         }
 
-        // Targeted Edit Instruction: Applied DIRECTLY into draft with undo support
         case 'ai_instruction': {
           if (!arg || !arg.trim()) {
             showToast('Please state what you want to edit.');
             break;
           }
-          showToast(`Applying: "${arg}"...`);
-          setStatus('review', 'Applying Edit... (Click to stop)');
+          showToast('Applying: "' + arg + '"...');
+          setStatus('review', 'Editing... (Click to stop)');
           if (editorWrapper) editorWrapper.classList.add('thinking');
           try {
             const res = await callAI(state.acceptedDraft, arg, false, signal);
@@ -2177,11 +1604,11 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
             writeToEditor(revisedHtml, true);
             renderState();
             moveCaretToEnd(draftEditor);
-            showToast(`✓ Applied: "${arg}"`);
+            showToast('✓ Applied: "' + arg + '"');
             VPVoiceFeedback.speak('Edit applied');
           } catch (e) {
             if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
-            showToast(`Edit failed: ${e.message}`, 6000);
+            showToast('Edit notice: ' + e.message, 5000);
             setStatus('error', 'AI Edit Failed');
           } finally {
             if (editorWrapper) editorWrapper.classList.remove('thinking');
@@ -2189,7 +1616,6 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           break;
         }
 
-        // Voice Formatting Commands (Instant & Local)
         case 'format_bold': {
           formatDoc('bold');
           showToast('Toggled Bold');
@@ -2220,7 +1646,6 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           break;
         }
 
-        // Accept Proposal (Option 2)
         case 'accept': {
           if (!state.pendingProposal) {
             showToast('No pending proposal to accept.');
@@ -2229,13 +1654,12 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
             writeToEditor(state.acceptedDraft, true);
             renderState();
             moveCaretToEnd(draftEditor);
-            showToast('✓ Proposal accepted into document.');
+            showToast('✓ Proposal accepted.');
             VPVoiceFeedback.speak('Proposal accepted');
           }
           break;
         }
 
-        // Decline Proposal (Option 1)
         case 'decline': {
           if (!state.pendingProposal) {
             showToast('No pending proposal to decline.');
@@ -2254,10 +1678,9 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           state = VPEditorState.undo(state);
           renderState();
           moveCaretToEnd(draftEditor);
-          if (state === prev) {
-            showToast('Nothing to undo.');
-          } else {
-            showToast('Undone.');
+          if (state === prev) showToast('Nothing to undo.');
+          else {
+            showToast('✓ Undone.');
             VPVoiceFeedback.speak('Undone');
           }
           break;
@@ -2268,36 +1691,34 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           state = VPEditorState.redo(state);
           renderState();
           moveCaretToEnd(draftEditor);
-          if (state === prev) {
-            showToast('Nothing to redo.');
-          } else {
-            showToast('Redone.');
+          if (state === prev) showToast('Nothing to redo.');
+          else {
+            showToast('✓ Redone.');
             VPVoiceFeedback.speak('Redone');
           }
           break;
         }
 
         case 'read': {
-          const text = draftEditor.innerText || '';
-          if (!text.trim()) {
-            showToast('Document is empty.');
-          } else {
-            showToast('Reading document aloud... (Say "Shazam, stop" to halt)');
-            setTimeout(() => VPVoiceFeedback.speak(text), 150);
+          const textToRead = state.pendingProposal
+            ? state.pendingProposal.text.replace(/<[^>]+>/g, ' ')
+            : (draftEditor.innerText || '');
+          if (!textToRead.trim()) showToast('Nothing to read.');
+          else {
+            showToast('🔊 Reading draft aloud...');
+            VPVoiceFeedback.speak(textToRead);
           }
           break;
         }
 
         case 'stop': {
-          if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-          }
+          if ('speechSynthesis' in window) window.speechSynthesis.cancel();
           if (_activeAbortController) {
             _activeAbortController.abort();
             _activeAbortController = null;
             _currentOpId++;
             if (editorWrapper) editorWrapper.classList.remove('thinking');
-            setStatus('ready', 'Wispr Flow Ready');
+            setStatus('ready', 'Wispr Ready');
             moveCaretToEnd(draftEditor);
           }
           showToast('Stopped.');
@@ -2305,22 +1726,17 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
         }
 
         case 'copy': {
-          const textToCopy = state.pendingProposal ? state.pendingProposal.text : state.acceptedDraft;
-          const cleanText = textToCopy.replace(/<[^>]+>/g, ' ').trim();
-          if (!cleanText) {
-            showToast('Document is empty.');
-          } else {
+          const cleanText = draftEditor.innerText || '';
+          if (!cleanText.trim()) showToast('Document is empty.');
+          else {
             navigator.clipboard.writeText(cleanText).then(() => {
               showToast('📋 Copied to clipboard!');
               VPVoiceFeedback.speak('Copied to clipboard');
-            }).catch(() => {
-              showToast('Could not copy to clipboard.');
-            });
+            }).catch(() => showToast('Could not copy.'));
           }
           break;
         }
 
-        // Clear Draft with Undo Safety Net
         case 'clear': {
           const currentText = draftEditor.innerText || '';
           if (!state.acceptedDraft && !currentText.trim()) {
@@ -2350,7 +1766,6 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
     function removeInsertedTextFromEditor(cmdText) {
       if (!cmdText) return;
       const clean = cmdText.trim();
-      // Search text nodes backward from last child to remove command text
       const walker = document.createTreeWalker(draftEditor, NodeFilter.SHOW_TEXT, null, false);
       const textNodes = [];
       while (walker.nextNode()) textNodes.push(walker.currentNode);
@@ -2360,13 +1775,10 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
         const idx = node.nodeValue.lastIndexOf(clean);
         if (idx !== -1) {
           node.nodeValue = node.nodeValue.slice(0, idx) + node.nodeValue.slice(idx + clean.length);
-          if (node.nodeValue.endsWith(' ')) {
-            node.nodeValue = node.nodeValue.trimEnd() + ' ';
-          }
+          if (node.nodeValue.endsWith(' ')) node.nodeValue = node.nodeValue.trimEnd() + ' ';
           return;
         }
       }
-      // Fallback
       draftEditor.innerHTML = draftEditor.innerHTML.replace(new RegExp('\\s*' + clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*', 'i'), ' ');
     }
 
@@ -2377,14 +1789,12 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
       const parsed = VPCommandParser.parse(trimmed, catchword);
 
       if (parsed) {
-        // Strip the Shazam command phrase from the editor DOM
-        removeInsertedTextFromEditor(trimmed);
+        removeInsertedTextFromEditor(parsed.commandText || trimmed);
         state.acceptedDraft = draftEditor.innerHTML;
         if (tracker) tracker.syncSnapshot();
 
         await executeCommand(parsed, insertedText);
       } else {
-        // Regular voice dictation from Wispr Flow
         if (state.pendingProposal) {
           state = VPEditorState.discardProposal(state);
         }
@@ -2397,7 +1807,7 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
     function attachTracker() {
       if (tracker) tracker.detach();
       tracker = VPSegmentTracker.attach(draftEditor, {
-        debounceMs: 450,
+        debounceMs: 400,
         onSegment: handleSegment,
       });
     }
@@ -2409,7 +1819,7 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
         _activeAbortController = null;
         _currentOpId++;
         if (editorWrapper) editorWrapper.classList.remove('thinking');
-        setStatus('ready', 'Wispr Flow Ready');
+        setStatus('ready', 'Wispr Ready');
         showToast('🛑 AI thinking stopped.');
         VPVoiceFeedback.speak('Stopped');
         moveCaretToEnd(draftEditor);
@@ -2419,14 +1829,6 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
     // ── Button Listeners ──
     document.getElementById('btn-trigger-review').addEventListener('click', () => {
       executeCommand({ action: 'review', arg: null }, '');
-    });
-
-    document.getElementById('btn-trigger-read').addEventListener('click', () => {
-      executeCommand({ action: 'read', arg: null }, '');
-    });
-
-    document.getElementById('btn-clear-doc').addEventListener('click', () => {
-      executeCommand({ action: 'clear', arg: null }, '');
     });
 
     document.getElementById('btn-inline-accept').addEventListener('click', () => {
@@ -2443,13 +1845,55 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
       }
     });
 
-    // Clicking diff display passes focus to editor for Wispr Flow
-    draftDiffDisplay.addEventListener('click', () => {
-      try { draftEditor.focus(); } catch (e) {}
+    // Formatting Toolbar Buttons
+    document.getElementById('t-bold').addEventListener('click', () => formatDoc('bold'));
+    document.getElementById('t-italic').addEventListener('click', () => formatDoc('italic'));
+    document.getElementById('t-strike').addEventListener('click', () => formatDoc('strikeThrough'));
+    document.getElementById('t-undo').addEventListener('click', () => executeCommand({ action: 'undo', arg: null }, ''));
+    document.getElementById('t-redo').addEventListener('click', () => executeCommand({ action: 'redo', arg: null }, ''));
+
+    // Dropdown Menus Handling
+    function closeAllMenus() {
+      document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+    }
+
+    function toggleMenu(menuEl, e) {
+      e.stopPropagation();
+      const isOpen = menuEl.classList.contains('show');
+      closeAllMenus();
+      if (!isOpen) menuEl.classList.add('show');
+    }
+
+    document.getElementById('btn-file-menu').addEventListener('click', (e) => toggleMenu(document.getElementById('file-menu'), e));
+    document.getElementById('btn-edit-menu').addEventListener('click', (e) => toggleMenu(document.getElementById('edit-menu'), e));
+    document.getElementById('btn-view-menu').addEventListener('click', (e) => toggleMenu(document.getElementById('view-menu'), e));
+    document.getElementById('btn-heading-dropdown').addEventListener('click', (e) => toggleMenu(document.getElementById('heading-menu'), e));
+    document.getElementById('btn-list-dropdown').addEventListener('click', (e) => toggleMenu(document.getElementById('list-menu'), e));
+
+    window.addEventListener('click', () => closeAllMenus());
+
+    // Heading Options
+    document.querySelectorAll('#heading-menu [data-format]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fmt = btn.getAttribute('data-format');
+        formatDoc('formatBlock', fmt);
+        document.getElementById('heading-label').textContent = fmt.toUpperCase();
+        closeAllMenus();
+      });
     });
 
-    // Load Rich Sample Document
-    document.getElementById('btn-load-sample').addEventListener('click', () => {
+    // List Options
+    document.getElementById('tool-bullet-list').addEventListener('click', () => {
+      formatDoc('insertUnorderedList');
+      closeAllMenus();
+    });
+    document.getElementById('tool-ordered-list').addEventListener('click', () => {
+      formatDoc('insertOrderedList');
+      closeAllMenus();
+    });
+
+    // File Menu Actions
+    function loadSampleDraft() {
       const sampleHtml = `
 <h1>Welcome to VoicePilot</h1>
 <p>VoicePilot is a <strong>hands-free voice text editor</strong> built specifically for dictating with <em>Wispr Flow</em>.</p>
@@ -2465,113 +1909,65 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
       state = VPEditorState.acceptDraft(state, sampleHtml);
       writeToEditor(sampleHtml);
       renderState();
-      showToast('🪄 Sample document loaded! Try saying "Shazam, review".');
-    });
-
-    // Document Title Auto-Save
-    docTitleInput.addEventListener('input', triggerAutoSave);
-
-    // ── Typography Selector ──
-    const fontDropdownMenu = document.getElementById('font-dropdown-menu');
-    const btnFontToggle = document.getElementById('btn-font-toggle');
-
-    btnFontToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      fontDropdownMenu.classList.toggle('show');
-      exportDropdownMenu.classList.remove('show');
-    });
-
-    document.querySelectorAll('[data-font]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const font = btn.getAttribute('data-font');
-        docPaper.className = `font-${font}` + (docPaper.classList.contains('full-width') ? ' full-width' : '');
-        localStorage.setItem('vp_doc_font', font);
-        fontDropdownMenu.classList.remove('show');
-        showToast(`Font changed to ${font}`);
-      });
-    });
-
-    // Full Width Toggle
-    const btnWidthToggle = document.getElementById('btn-width-toggle');
-    const widthIcon = document.getElementById('width-icon');
-
-    function applyWidth(isFull) {
-      docPaper.classList.toggle('full-width', isFull);
-      widthIcon.textContent = isFull ? '][ ' : '↔';
-      localStorage.setItem('vp_doc_full_width', isFull ? '1' : '0');
+      showToast('🪄 Sample document loaded!');
     }
 
-    btnWidthToggle.addEventListener('click', () => {
-      const isFull = !docPaper.classList.contains('full-width');
-      applyWidth(isFull);
-      showToast(isFull ? 'Switched to Full Width' : 'Switched to Reading Width');
+    document.getElementById('menu-file-new').addEventListener('click', () => {
+      executeCommand({ action: 'clear', arg: null }, '');
+      docTitleInput.value = 'Untitled Document';
+      closeAllMenus();
+    });
+    document.getElementById('btn-new-tab').addEventListener('click', () => {
+      executeCommand({ action: 'clear', arg: null }, '');
+      docTitleInput.value = 'Untitled Document';
+    });
+    document.getElementById('btn-tab-close').addEventListener('click', () => {
+      executeCommand({ action: 'clear', arg: null }, '');
     });
 
-    // Theme Switcher (Dark / Light)
-    const btnThemeToggle = document.getElementById('btn-theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-
-    function applyTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('vp_theme', theme);
-      themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
-    }
-
-    btnThemeToggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      applyTheme(current === 'dark' ? 'light' : 'dark');
+    document.getElementById('menu-file-sample').addEventListener('click', () => {
+      loadSampleDraft();
+      closeAllMenus();
     });
 
-    // Export Dropdown
-    const exportDropdownMenu = document.getElementById('export-dropdown-menu');
-    const btnExportToggle = document.getElementById('btn-export-toggle');
-
-    btnExportToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      exportDropdownMenu.classList.toggle('show');
-      fontDropdownMenu.classList.remove('show');
-    });
-
-    document.getElementById('export-copy-rich').addEventListener('click', () => {
+    document.getElementById('menu-file-copy-rich').addEventListener('click', () => {
       const html = draftEditor.innerHTML;
       const blob = new Blob([html], { type: 'text/html' });
       const textBlob = new Blob([draftEditor.innerText], { type: 'text/plain' });
       navigator.clipboard.write([
         new ClipboardItem({ 'text/html': blob, 'text/plain': textBlob })
-      ]).then(() => {
-        showToast('📋 Rich text copied to clipboard!');
-      }).catch(() => {
-        navigator.clipboard.writeText(draftEditor.innerText);
-        showToast('📋 Text copied to clipboard!');
-      });
-      exportDropdownMenu.classList.remove('show');
+      ]).then(() => showToast('📋 Rich text copied!')).catch(() => showToast('📋 Text copied!'));
+      closeAllMenus();
     });
 
-    document.getElementById('export-copy-markdown').addEventListener('click', () => {
+    document.getElementById('menu-file-copy-md').addEventListener('click', () => {
       const md = htmlToMarkdown(draftEditor.innerHTML);
-      navigator.clipboard.writeText(md).then(() => {
-        showToast('📝 Markdown copied to clipboard!');
-      });
-      exportDropdownMenu.classList.remove('show');
+      navigator.clipboard.writeText(md).then(() => showToast('📝 Markdown copied!'));
+      closeAllMenus();
     });
 
-    document.getElementById('export-download-md').addEventListener('click', () => {
+    document.getElementById('menu-file-download-md').addEventListener('click', () => {
       const md = htmlToMarkdown(draftEditor.innerHTML);
       const filename = (docTitleInput.value.trim() || 'document').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.md';
       downloadFile(filename, md, 'text/markdown');
-      exportDropdownMenu.classList.remove('show');
+      closeAllMenus();
     });
 
-    document.getElementById('export-download-txt').addEventListener('click', () => {
+    document.getElementById('menu-file-download-txt').addEventListener('click', () => {
       const txt = draftEditor.innerText || '';
       const filename = (docTitleInput.value.trim() || 'document').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.txt';
       downloadFile(filename, txt, 'text/plain');
-      exportDropdownMenu.classList.remove('show');
+      closeAllMenus();
     });
 
-    document.getElementById('export-print').addEventListener('click', () => {
+    document.getElementById('menu-file-print').addEventListener('click', () => {
       window.print();
-      exportDropdownMenu.classList.remove('show');
+      closeAllMenus();
+    });
+
+    document.getElementById('menu-file-clear').addEventListener('click', () => {
+      executeCommand({ action: 'clear', arg: null }, '');
+      closeAllMenus();
     });
 
     function downloadFile(filename, content, type) {
@@ -2582,28 +1978,45 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
       URL.revokeObjectURL(a.href);
     }
 
-    // Close Dropdowns on Click Outside
-    window.addEventListener('click', () => {
-      fontDropdownMenu.classList.remove('show');
-      exportDropdownMenu.classList.remove('show');
+    // Edit Menu Actions
+    document.getElementById('menu-edit-undo').addEventListener('click', () => { executeCommand({ action: 'undo', arg: null }, ''); closeAllMenus(); });
+    document.getElementById('menu-edit-redo').addEventListener('click', () => { executeCommand({ action: 'redo', arg: null }, ''); closeAllMenus(); });
+    document.getElementById('menu-edit-cut').addEventListener('click', () => { document.execCommand('cut'); closeAllMenus(); });
+    document.getElementById('menu-edit-copy').addEventListener('click', () => { document.execCommand('copy'); closeAllMenus(); });
+    document.getElementById('menu-edit-paste').addEventListener('click', () => { navigator.clipboard.readText().then(t => document.execCommand('insertText', false, t)); closeAllMenus(); });
+    document.getElementById('menu-edit-selectall').addEventListener('click', () => { document.execCommand('selectAll'); closeAllMenus(); });
+
+    // View Menu: Theme & Fonts
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('vp_theme', theme);
+    }
+
+    document.getElementById('menu-view-theme').addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+      closeAllMenus();
     });
 
-    // ── Voice Commands Guide Modal ──
-    const guideBackdrop = document.getElementById('guide-backdrop');
-    document.getElementById('btn-open-guide').addEventListener('click', () => guideBackdrop.classList.add('open'));
-    document.getElementById('btn-close-guide').addEventListener('click', () => guideBackdrop.classList.remove('open'));
-    guideBackdrop.addEventListener('click', (e) => {
-      if (e.target === guideBackdrop) guideBackdrop.classList.remove('open');
+    document.querySelectorAll('#view-menu [data-font]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const font = btn.getAttribute('data-font');
+        if (font === 'sans') draftEditor.style.fontFamily = 'var(--font-sans)';
+        if (font === 'serif') draftEditor.style.fontFamily = 'var(--font-serif)';
+        if (font === 'mono') draftEditor.style.fontFamily = 'var(--font-mono)';
+        localStorage.setItem('vp_doc_font', font);
+        closeAllMenus();
+      });
     });
 
-    // ── Settings Modal ──
+    // Settings Modal
     const settingsBackdrop = document.getElementById('settings-backdrop');
-    const inputGeminiKey = document.getElementById('input-gemini-key');
-    const inputOpenaiKey = document.getElementById('input-openai-key');
+    const inputGeminiKey   = document.getElementById('input-gemini-key');
+    const catchwordInput   = document.getElementById('catchword-input');
 
     document.getElementById('btn-open-settings').addEventListener('click', () => {
       inputGeminiKey.value = VP_GEMINI_KEY;
-      inputOpenaiKey.value = VP_OPENAI_KEY;
+      catchwordInput.value = catchword;
       settingsBackdrop.classList.add('open');
     });
 
@@ -2616,47 +2029,51 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
       const val = inputGeminiKey.value.trim();
       VP_GEMINI_KEY = val;
       localStorage.setItem('vp_gemini_key', val);
-      updateConnectionBadges();
       showToast('✓ Gemini API key saved!');
+      settingsBackdrop.classList.remove('open');
     });
 
-    document.getElementById('btn-save-openai').addEventListener('click', () => {
-      const val = inputOpenaiKey.value.trim();
-      VP_OPENAI_KEY = val;
-      localStorage.setItem('vp_openai_key', val);
-      updateConnectionBadges();
-      showToast('✓ OpenAI API key saved!');
+    catchwordInput.addEventListener('change', () => {
+      const val = catchwordInput.value.trim();
+      if (val) {
+        catchword = val;
+        showToast('Wake word set to "' + catchword + '"');
+      }
+    });
+
+    document.getElementById('spoken-feedback-toggle').addEventListener('change', (e) => {
+      VPVoiceFeedback.setEnabled(e.target.checked);
+      showToast(e.target.checked ? 'Spoken feedback enabled' : 'Spoken feedback muted');
     });
 
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         settingsBackdrop.classList.remove('open');
-        guideBackdrop.classList.remove('open');
         if (_activeAbortController) {
           _activeAbortController.abort();
           _activeAbortController = null;
           _currentOpId++;
           if (editorWrapper) editorWrapper.classList.remove('thinking');
-          setStatus('ready', 'Wispr Flow Ready');
+          setStatus('ready', 'Wispr Ready');
           showToast('🛑 AI thinking stopped.');
           moveCaretToEnd(draftEditor);
         }
       }
     });
 
+    // Auto-save title on edit
+    docTitleInput.addEventListener('input', triggerAutoSave);
+
     // ── Initialization ──
     function init() {
-      // 1. Theme
       const savedTheme = localStorage.getItem('vp_theme') || 'dark';
       applyTheme(savedTheme);
 
-      // 2. Font & Width
       const savedFont = localStorage.getItem('vp_doc_font') || 'sans';
-      docPaper.className = `font-${savedFont}`;
-      const savedWidth = localStorage.getItem('vp_doc_full_width') === '1';
-      applyWidth(savedWidth);
+      if (savedFont === 'sans') draftEditor.style.fontFamily = 'var(--font-sans)';
+      if (savedFont === 'serif') draftEditor.style.fontFamily = 'var(--font-serif)';
+      if (savedFont === 'mono') draftEditor.style.fontFamily = 'var(--font-mono)';
 
-      // 3. Document Title & Content Restore
       const savedTitle = localStorage.getItem('vp_doc_title');
       if (savedTitle) docTitleInput.value = savedTitle;
 
@@ -2665,11 +2082,9 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
         state = VPEditorState.acceptDraft(state, savedContent);
         writeToEditor(savedContent);
       } else {
-        // Load default welcome document
-        document.getElementById('btn-load-sample').click();
+        loadSampleDraft();
       }
 
-      // 4. Attach Tracker
       attachTracker();
       renderState();
     }

@@ -161,5 +161,13 @@ assertEqual(ai2 && ai2.action, 'ai_instruction', 'Explicit edit command routes t
 const emptyShazam = VPCommandParser.parse('Shazam');
 assertEqual(emptyShazam && emptyShazam.action, 'empty_prompt', 'Standalone catchword returns empty_prompt');
 
+// 10. Speech-preceded commands (speech + command in same dictation burst)
+const pre1 = VPCommandParser.parse('Here is a sentence. Shazam, bold');
+assertEqual(pre1 && pre1.action, 'format_bold', 'Dictated sentence followed by Shazam, bold works');
+assertEqual(pre1 && pre1.commandText, 'Shazam, bold', 'Command text extracted cleanly from sentence');
+
+const pre2 = VPCommandParser.parse('I want to improve this paragraph. Shazam, review.');
+assertEqual(pre2 && pre2.action, 'review', 'Dictated sentence followed by Shazam, review. works');
+
 process.stdout.write(`\nResults: ${passed} passed, ${failed} failed.\n`);
 if (failed > 0) process.exit(1);

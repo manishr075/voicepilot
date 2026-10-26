@@ -3,9 +3,10 @@
  * Parses Wispr Flow dictated segments for catchword triggers and commands.
  * 
  * Rules:
- * - Local commands (NEVER call AI): undo, redo, read, stop, copy, clear, review, accept, decline, separate note
+ * - Local commands (NEVER call AI): undo, redo, read, stop, copy, clear, review, accept, decline, format (bold, italic, heading, list)
  * - Tolerant to dictation punctuation (trailing periods, commas, spaces)
- * - ANY OTHER PHRASE following the catchword is treated as an AI instruction using Gemini 3.5 Flash-Lite.
+ * - Supports catchword at start OR following dictated speech (e.g. "We need this. Shazam, bold")
+ * - ANY OTHER PHRASE following the catchword is treated as an AI instruction using Gemini.
  */
 const VPCommandParser = (() => {
   const COMMAND_MAP = [
@@ -41,7 +42,8 @@ const VPCommandParser = (() => {
   function buildCatchwordRegex(catchword) {
     if (!catchword || !catchword.trim()) return null;
     const escaped = catchword.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp('^' + escaped + '\\s*[,.:;\\-]?\\s*(.*)', 'is');
+    // Match catchword at start OR preceded by boundary/space/punctuation
+    return new RegExp('(?:^|[\\s.,;:!?"\'—])(' + escaped + '(?:\\b|\\s*[,.:;\\-])\\s*([\\s\\S]*))$', 'i');
   }
 
   function parse(segment, catchword = 'Shazam') {
@@ -52,9 +54,10 @@ const VPCommandParser = (() => {
     const m = catchRe.exec(segment.trim());
     if (!m) return null;
 
-    const rawBody = m[1].trim();
+    const fullCommand = m[1];
+    const rawBody = m[2].trim();
     if (!rawBody) {
-      return { action: 'empty_prompt', arg: '', commandText: segment };
+      return { action: 'empty_prompt', arg: '', commandText: fullCommand };
     }
 
     // Strip surrounding punctuation common in dictation (e.g. "undo.", "read.", "copy.", "accept,")
@@ -67,7 +70,7 @@ const VPCommandParser = (() => {
         return {
           action,
           arg: hasArg ? (match[1] || '').trim() : null,
-          commandText: segment,
+          commandText: fullCommand,
         };
       }
     }
@@ -76,7 +79,7 @@ const VPCommandParser = (() => {
     return {
       action: 'ai_instruction',
       arg: cleanBody || rawBody,
-      commandText: segment,
+      commandText: fullCommand,
     };
   }
 
