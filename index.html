@@ -888,8 +888,8 @@
       <div class="icon">🎙️</div>
       <div>
         <strong>Hands-Free Editing:</strong> Speak freely using <strong>Wispr Flow</strong> (<kbd>Ctrl+Win</kbd> or <kbd>Fn</kbd>).
-        To change text, say <strong>"Shazam, &lt;any instruction&gt;"</strong> (e.g. <em>"Shazam, put a comma next to hello"</em> or <em>"Shazam, review"</em>).
-        A two-screen comparison will appear — choose hands-free by saying <strong>"Shazam, accept"</strong> or <strong>"Shazam, decline"</strong>!
+        To edit directly, say <strong>"Shazam, &lt;any instruction&gt;"</strong> (e.g. <em>"Shazam, put a comma next to hello"</em>).
+        To review and polish with before/after comparison, say <strong>"Shazam, review"</strong> and select hands-free with <strong>"Shazam, accept"</strong> or <strong>"Shazam, decline"</strong>!
       </div>
     </div>
 
@@ -976,19 +976,19 @@
         <div class="command-grid">
           <div class="command-item">
             <span class="cmd-phrase">Shazam, &lt;any instruction&gt;</span>
-            <span class="cmd-desc">Say ANY edit request (e.g. "Shazam, add a comma after hello" or "Shazam, make this more formal"). AI creates a side-by-side proposal!</span>
+            <span class="cmd-desc">Say ANY targeted edit (e.g. "Shazam, add a comma after hello" or "Shazam, make this friendlier"). Applies directly into your draft!</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, review</span>
-            <span class="cmd-desc">Full comprehensive polish for grammar, elegance, and clarity.</span>
+            <span class="cmd-desc">Comprehensive polish. Opens the two-screen comparison screen to review and accept/decline.</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, accept / keep new</span>
-            <span class="cmd-desc">Chooses Option 2 (Corrected Text) into your draft. Also works with "option two" or "yes".</span>
+            <span class="cmd-desc">Accepts the AI Review proposal into your draft. Also works with "option two" or "yes".</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, decline / keep previous</span>
-            <span class="cmd-desc">Chooses Option 1 (Original Text) and discards proposal. Also works with "option one" or "no".</span>
+            <span class="cmd-desc">Declines the AI Review proposal and keeps your original text. Also works with "option one" or "no".</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, undo</span>
@@ -1743,20 +1743,21 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           break;
         }
 
-        // ANY UNRECOGNIZED SHAZAM PHRASE OR EDIT INSTRUCTION GOES HERE!
+        // ANY TARGETED EDIT INSTRUCTION: APPLIED DIRECTLY (No comparison screen needed!)
         case 'ai_instruction': {
           if (!arg || !arg.trim()) {
             showToast('Please state what you want to edit.');
             break;
           }
-          showToast(`Applying instruction: "${arg}"...`);
-          setStatus('review', 'Consulting AI...');
+          showToast(`Applying edit: "${arg}"...`);
+          setStatus('review', 'Applying Edit...');
           try {
             const revised = await callAI(state.acceptedDraft, arg);
-            state = VPEditorState.setProposal(state, revised, arg);
+            // Apply edit directly into the draft, pushing previous draft into undo history
+            state = VPEditorState.acceptDraft(state, revised);
             renderState();
-            showToast(`Revision ready! Say "Shazam, accept" or "Shazam, decline".`);
-            VPVoiceFeedback.speak('Revision ready. Say Shazam accept to apply, or Shazam decline to keep previous.');
+            showToast(`✓ Edit applied: "${arg}". (Say "Shazam, undo" to revert)`);
+            VPVoiceFeedback.speak('Edit applied');
           } catch (e) {
             showToast(`Edit failed: ${e.message}`, 6500);
             setStatus('error', 'AI Edit Failed');
