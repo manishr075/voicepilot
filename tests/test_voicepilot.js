@@ -172,5 +172,32 @@ assertEqual(pre1 && pre1.commandText, 'Shazam, bold', 'Command text extracted cl
 const pre2 = VPCommandParser.parse('I want to improve this paragraph. Shazam, review.');
 assertEqual(pre2 && pre2.action, 'review', 'Dictated sentence followed by Shazam, review. works');
 
+// 11. Verification that leftover 'Shaz' / 'Shazam' is scrubbed from HTML/text
+function cleanCommandFromHtml(html, cmdText, catchword) {
+  let cleaned = html || '';
+  if (cmdText && cleaned.includes(cmdText)) {
+    const idx = cleaned.lastIndexOf(cmdText);
+    cleaned = cleaned.slice(0, idx) + cleaned.slice(idx + cmdText.length);
+  } else if (cmdText) {
+    const escCmd = cmdText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    cleaned = cleaned.replace(new RegExp(escCmd, 'gi'), '');
+  }
+  const escCatch = (catchword || 'Shazam').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  cleaned = cleaned.replace(new RegExp('\\b' + escCatch + '\\b[\\s,.:;!?-]*', 'gi'), '');
+  cleaned = cleaned.replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '');
+  cleaned = cleaned.replace(/<(?:div|p|span)[^>]*>\s*<\/(?:div|p|span)>/gi, '');
+  cleaned = cleaned.replace(/(?:&nbsp;|\s)+$/, '');
+  return cleaned.trim();
+}
+
+const cleaned1 = cleanCommandFromHtml('Hello world Shazam, bold', 'Shazam, bold', 'Shazam');
+assertEqual(cleaned1, 'Hello world', 'cleanCommandFromHtml removes full command without residual');
+
+const cleaned2 = cleanCommandFromHtml('<div>Hello world Shaz</div>', 'Shazam, bold', 'Shazam');
+assertEqual(cleaned2, '<div>Hello world </div>', 'cleanCommandFromHtml removes orphaned Shaz leftover');
+
+const cleaned3 = cleanCommandFromHtml('<p>Meeting tomorrow at five Shaz</p>', 'Shazam, review', 'Shazam');
+assertEqual(cleaned3, '<p>Meeting tomorrow at five </p>', 'cleanCommandFromHtml removes trailing Shaz from paragraph');
+
 process.stdout.write(`\nResults: ${passed} passed, ${failed} failed.\n`);
 if (failed > 0) process.exit(1);

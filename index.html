@@ -194,6 +194,31 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
+    /* Ambient Soundwave Equalizer Animation */
+    .wave-bars {
+      display: inline-flex;
+      align-items: center;
+      gap: 2.5px;
+      height: 16px;
+      margin-left: 3px;
+      opacity: 0.85;
+    }
+    .w-bar {
+      width: 2.5px;
+      background: var(--accent-primary);
+      border-radius: 99px;
+      animation: waveRhythm 1.4s ease-in-out infinite alternate;
+    }
+    .bar-1 { height: 6px; animation-delay: 0.05s; }
+    .bar-2 { height: 14px; animation-delay: 0.25s; }
+    .bar-3 { height: 8px; animation-delay: 0.45s; }
+    .bar-4 { height: 12px; animation-delay: 0.15s; }
+
+    @keyframes waveRhythm {
+      0% { transform: scaleY(0.4); opacity: 0.5; }
+      100% { transform: scaleY(1.15); opacity: 1; }
+    }
+
     .v-sep {
       width: 1px;
       height: 18px;
@@ -243,16 +268,18 @@
       font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: all var(--transition-fast), transform 0.12s ease;
       user-select: none;
     }
     .tool-btn:hover {
       background: var(--bg-subtle);
       color: var(--text-main);
       border-color: var(--border-subtle);
+      transform: translateY(-1px);
     }
     .tool-btn:active {
       background: var(--bg-hover);
+      transform: translateY(0.5px) scale(0.96);
     }
 
     .tool-btn strong {
@@ -260,7 +287,7 @@
       color: var(--text-main);
     }
 
-    /* Polish Button (AI Review) */
+    /* Polish Button (AI Review) with Celestial Glow & Hover Rotation */
     .btn-polish {
       background: var(--accent-subtle);
       border: 1px solid var(--accent-border);
@@ -274,12 +301,25 @@
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
-      transition: all var(--transition-fast);
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition-fast), transform 0.15s ease, box-shadow 0.2s ease;
+    }
+    .btn-polish svg {
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .btn-polish:hover {
       background: var(--accent-primary);
       color: var(--accent-pill-text);
       border-color: var(--accent-primary);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(216, 180, 254, 0.35);
+    }
+    .btn-polish:hover svg {
+      transform: rotate(20deg) scale(1.2);
+    }
+    .btn-polish:active {
+      transform: translateY(0.5px) scale(0.97);
     }
 
     /* ── VOICE STATUS PILL (Interactive: Click halts thinking!) ── */
@@ -294,9 +334,12 @@
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
-      transition: all var(--transition-fast);
+      transition: all var(--transition-fast), transform 0.12s ease;
       background: var(--bg-subtle);
       color: var(--text-muted);
+    }
+    #voice-status-pill:hover {
+      transform: translateY(-0.5px);
     }
     #voice-status-pill .dot {
       width: 7px;
@@ -309,6 +352,14 @@
       background: var(--bg-hover);
       color: var(--text-main);
       border-color: var(--border-subtle);
+    }
+    #voice-status-pill.ready .dot {
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+      animation: statusBreathing 3s ease-in-out infinite;
+    }
+    @keyframes statusBreathing {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px rgba(16, 185, 129, 0.9); }
     }
     #voice-status-pill.thinking {
       background: rgba(240, 215, 255, 0.16);
@@ -427,6 +478,24 @@
       padding: 28px 36px 60px;
       display: flex;
       flex-direction: column;
+      border-radius: var(--radius-lg);
+      transition: box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+
+    /* Ambient Aurora Glow when AI is thinking */
+    .editor-wrapper.thinking {
+      border-radius: var(--radius-lg);
+      box-shadow: 0 0 35px -5px rgba(216, 180, 254, 0.25), inset 0 0 25px -10px rgba(216, 180, 254, 0.12);
+      animation: auroraBreath 2.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes auroraBreath {
+      0% {
+        box-shadow: 0 0 20px -5px rgba(216, 180, 254, 0.16), inset 0 0 15px -10px rgba(216, 180, 254, 0.08);
+      }
+      100% {
+        box-shadow: 0 0 48px 0px rgba(216, 180, 254, 0.4), inset 0 0 30px -5px rgba(216, 180, 254, 0.22);
+      }
     }
 
     @media (max-width: 768px) {
@@ -585,6 +654,8 @@
       padding: 1px 4px;
       border: 1px solid var(--diff-curr-border);
       text-decoration: none; /* NO STRIKETHROUGH */
+      animation: highlightFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-block;
     }
 
     .diff-added-highlight {
@@ -594,6 +665,13 @@
       padding: 1px 4px;
       border: 1px solid var(--diff-prop-border);
       font-weight: 600;
+      animation: highlightFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-block;
+    }
+
+    @keyframes highlightFadeIn {
+      0% { opacity: 0; transform: scale(0.96); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
     /* ════════════════════ STATUS BAR ════════════════════ */
@@ -734,15 +812,15 @@
       color: var(--text-main);
       border: 1px solid var(--border-default);
       border-radius: var(--radius-md);
-      padding: 8px 14px;
+      padding: 9px 15px;
       font-size: 12.5px;
       font-weight: 500;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-subtle);
       display: none;
       align-items: center;
       gap: 10px;
       z-index: 2000;
-      animation: toastIn 0.18s ease-out;
+      animation: toastSpring 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     #vp-toast.show {
       display: flex;
@@ -758,9 +836,9 @@
     #vp-toast-close:hover {
       color: var(--text-main);
     }
-    @keyframes toastIn {
-      from { transform: translateY(10px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    @keyframes toastSpring {
+      0% { transform: translateY(16px) scale(0.92); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
     }
   </style>
 </head>
@@ -769,11 +847,17 @@
   <!-- ════════════════════ HEADER BAR ════════════════════ -->
   <header id="main-header" role="banner">
     <div class="header-left">
-      <!-- Clean, Simple, Highly Visible Logo from user image -->
+      <!-- Clean, Simple, Highly Visible Logo from user image with animated sound waves -->
       <div class="brand-group" id="btn-brand-home" title="FlowPad Voice Editor">
         <img src="assets/logo.png" alt="FlowPad Logo" class="brand-logo-img" />
         <span class="brand-title">FlowPad</span>
         <span class="brand-badge-pill">Voice Editor</span>
+        <div class="wave-bars" aria-hidden="true" title="Listening equalizer">
+          <span class="w-bar bar-1"></span>
+          <span class="w-bar bar-2"></span>
+          <span class="w-bar bar-3"></span>
+          <span class="w-bar bar-4"></span>
+        </div>
       </div>
 
       <div class="v-sep"></div>
@@ -1397,6 +1481,7 @@ function formatDoc(cmd, val = null) {
 // ── Ultra-Fast Local Heuristics for Common Targeted Commands (Latency < 5ms) ──
 function tryLocalFastEdit(draftText, instruction) {
   if (!draftText || !instruction) return null;
+  const cleanDraft = draftText.replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '').trim();
   const lowerInst = instruction.toLowerCase().trim();
 
   // "put a comma next to / after hello"
@@ -1404,8 +1489,8 @@ function tryLocalFastEdit(draftText, instruction) {
   if (commaMatch) {
     const targetWord = commaMatch[1];
     const re = new RegExp('(\\b' + targetWord + ')(?!,)', 'i');
-    if (re.test(draftText)) {
-      return draftText.replace(re, '$1,');
+    if (re.test(cleanDraft)) {
+      return cleanDraft.replace(re, '$1,');
     }
   }
 
@@ -1414,8 +1499,8 @@ function tryLocalFastEdit(draftText, instruction) {
   if (capMatch) {
     const targetWord = capMatch[1];
     const re = new RegExp('\\b' + targetWord + '\\b', 'gi');
-    if (re.test(draftText)) {
-      return draftText.replace(re, w => w.toUpperCase());
+    if (re.test(cleanDraft)) {
+      return cleanDraft.replace(re, w => w.toUpperCase());
     }
   }
 
@@ -1423,9 +1508,9 @@ function tryLocalFastEdit(draftText, instruction) {
   const delMatch = lowerInst.match(/(?:remove|delete)\s+["']?([^"']+)["']?$/);
   if (delMatch) {
     const targetPhrase = delMatch[1].trim();
-    if (draftText.toLowerCase().includes(targetPhrase.toLowerCase())) {
+    if (cleanDraft.toLowerCase().includes(targetPhrase.toLowerCase())) {
       const re = new RegExp(targetPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-      return draftText.replace(re, '').replace(/\s{2,}/g, ' ');
+      return cleanDraft.replace(re, '').replace(/\s{2,}/g, ' ');
     }
   }
 
@@ -1574,7 +1659,7 @@ async function executeCommand(cmd, originalSegment) {
       break;
 
     case 'review': {
-      const currentDraft = draftEditor.innerText || '';
+      let currentDraft = (draftEditor.innerText || '').replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '').trim();
       if (!currentDraft.trim()) {
         showToast('Draft is empty — nothing to polish.');
         return;
@@ -1597,7 +1682,8 @@ async function executeCommand(cmd, originalSegment) {
         const result = await callAI(currentDraft, '', true, signal);
         if (thisOpId !== _currentOpId) return;
 
-        state = VPEditorState.proposeEdit(state, result.revised, result.reason || 'Polished grammar and structure.', true);
+        let cleanRevised = (result.revised || '').replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '').trim();
+        state = VPEditorState.proposeEdit(state, cleanRevised, result.reason || 'Polished grammar and structure.', true);
         renderState();
         setStatus('ready', 'Wispr Ready');
         showToast('✨ Polish ready: Review in-place diff');
@@ -1613,7 +1699,7 @@ async function executeCommand(cmd, originalSegment) {
     }
 
     case 'ai_instruction': {
-      const currentDraft = draftEditor.innerText || '';
+      let currentDraft = (draftEditor.innerText || '').replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '').trim();
       if (!currentDraft.trim()) {
         showToast('Draft is empty — dictate some text first.');
         return;
@@ -1636,8 +1722,9 @@ async function executeCommand(cmd, originalSegment) {
         const result = await callAI(currentDraft, cmd.arg, false, signal);
         if (thisOpId !== _currentOpId) return;
 
-        state = VPEditorState.acceptDraft(state, result.revised);
-        writeToEditor(result.revised, true);
+        let cleanRevised = (result.revised || '').replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '').trim();
+        state = VPEditorState.acceptDraft(state, cleanRevised);
+        writeToEditor(cleanRevised, true);
         renderState();
         moveCaretToEnd(draftEditor);
         setStatus('ready', 'Wispr Ready');
@@ -1786,6 +1873,33 @@ async function executeCommand(cmd, originalSegment) {
   }
 }
 
+// ── Clean Command Text & Strip Any Stray 'Shaz' / 'Shazam' ──
+function cleanCommandFromHtml(html, cmdText, catchword) {
+  let cleaned = html || '';
+
+  // 1. If html contains the exact commandText, remove it directly
+  if (cmdText && cleaned.includes(cmdText)) {
+    const idx = cleaned.lastIndexOf(cmdText);
+    cleaned = cleaned.slice(0, idx) + cleaned.slice(idx + cmdText.length);
+  } else if (cmdText) {
+    const escCmd = cmdText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    cleaned = cleaned.replace(new RegExp(escCmd, 'gi'), '');
+  }
+
+  // 2. Strip any trailing or lingering wake word (e.g. 'Shazam')
+  const escCatch = (catchword || 'Shazam').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  cleaned = cleaned.replace(new RegExp('\\b' + escCatch + '\\b[\\s,.:;!?-]*', 'gi'), '');
+
+  // 3. Specifically strip any leftover 'Shaz' or 'Shaza' that Wispr stream truncation leaves behind
+  cleaned = cleaned.replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '');
+
+  // 4. Clean up any empty dangling HTML tags created by removal
+  cleaned = cleaned.replace(/<(?:div|p|span)[^>]*>\s*<\/(?:div|p|span)>/gi, '');
+  cleaned = cleaned.replace(/(?:&nbsp;|\s)+$/, '');
+
+  return cleaned.trim();
+}
+
 // ── Wispr Segment Router ──
 function handleSegment(insertedText, fullText) {
   const cmd = VPCommandParser.parse(insertedText, catchword);
@@ -1796,20 +1910,11 @@ function handleSegment(insertedText, fullText) {
     return;
   }
 
-  // Command detected in speech segment!
-  const commandLen = cmd.commandText.length;
-  const trailingIdx = insertedText.lastIndexOf(cmd.commandText);
-  const precedingDictation = trailingIdx > 0 ? insertedText.slice(0, trailingIdx).trim() : '';
-
-  if (precedingDictation) {
-    const rawInner = draftEditor.innerHTML;
-    const cleanInner = rawInner.slice(0, rawInner.length - commandLen).trim();
-    writeToEditor(cleanInner, true);
-  } else {
-    const rawInner = draftEditor.innerHTML;
-    const cleanInner = rawInner.slice(0, Math.max(0, rawInner.length - insertedText.length)).trim();
-    writeToEditor(cleanInner, true);
-  }
+  // Scrub the command and any leftover 'Shaz' from the editor content before executing
+  const rawInner = draftEditor.innerHTML;
+  const cleanInner = cleanCommandFromHtml(rawInner, cmd.commandText, catchword);
+  writeToEditor(cleanInner, true);
+  state = VPEditorState.acceptDraft(state, cleanInner);
 
   executeCommand(cmd, insertedText);
 }
