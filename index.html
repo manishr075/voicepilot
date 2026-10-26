@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -2378,8 +2378,7 @@ if (typeof module !== "undefined" && module.exports) {
       state = { ...state, acceptedDraft: cleaned };
 
       setStatus('command', `Command: ${action}`);
-      VPVoiceFeedback.speak(`${action.replace(/_/g, ' ')}`);
-      dbg(`Command: ${action} | arg: "${arg}"`);
+            dbg(`Command: ${action} | arg: "${arg}"`);
 
       // Paused mode: only allow resume
       if (state.paused && action !== 'resume') {
@@ -2459,7 +2458,8 @@ if (typeof module !== "undefined" && module.exports) {
           } else if (!state.acceptedDraft.trim()) {
             showToast('Draft is empty — nothing to read.');
           } else {
-            VPVoiceFeedback.speak(state.acceptedDraft, { rate: 0.95 });
+            const _draftToRead = state.acceptedDraft;
+            setTimeout(() => VPVoiceFeedback.speak(_draftToRead, { rate: 0.95 }), 200);
             showToast('Reading draft aloud…');
           }
           break;
@@ -2555,8 +2555,8 @@ if (typeof module !== "undefined" && module.exports) {
       // We must sync state.acceptedDraft with editor value before operating on it.
       const editorVal = draftEditor.value;
       if (state.acceptedDraft !== editorVal) {
-        // New text was inserted normally — sync without creating an undo entry
-        state = { ...state, acceptedDraft: editorVal };
+        // New text was inserted normally — creates undo entry so Shazam undo works
+        state = VPEditorState.acceptDraft(state, editorVal);
       }
 
       // Record this segment as lastSegment (for remove_last)
@@ -2611,7 +2611,8 @@ if (typeof module !== "undefined" && module.exports) {
         return;
       }
       if (!state.acceptedDraft.trim()) { showToast('Draft is empty.'); return; }
-      VPVoiceFeedback.speak(state.acceptedDraft, { rate: 0.95 });
+      const _draftToRead = state.acceptedDraft;
+            setTimeout(() => VPVoiceFeedback.speak(_draftToRead, { rate: 0.95 }), 200);
       showToast('Reading draft aloud…');
     });
 
