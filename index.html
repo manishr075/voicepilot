@@ -3,86 +3,111 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VoicePilot — Hands-Free Voice Text Editor</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230078d4' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='16' y1='13' x2='8' y2='13'/%3E%3Cline x1='16' y1='17' x2='8' y2='17'/%3E%3Cpolyline points='10 9 9 9 8 9'/%3E%3C/svg%3E" />
-  <link rel="icon" type="image/jpeg" href="assets/app-icon.jpg" />
+  <title>Flow — Hands-Free Voice Text Editor</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Crect x='2' y='7' width='3.2' height='10' rx='1.6' fill='%23e9e8e1'/%3E%3Crect x='7.8' y='3' width='3.2' height='18' rx='1.6' fill='%23e9e8e1'/%3E%3Crect x='13.6' y='9' width='3.2' height='6' rx='1.6' fill='%23e9e8e1'/%3E%3Crect x='19.4' y='1' width='3.2' height='22' rx='1.6' fill='%23e9e8e1'/%3E%3C/svg%3E" />
   <link rel="apple-touch-icon" href="assets/app-icon.jpg" />
 
   <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" />
 
   <style>
     /* ══════════════════════════════════════════════════════════════
-       WINDOWS 11 NATIVE DARK TEXT EDITOR DESIGN SYSTEM
-       Inspiration: Windows 11 Notepad / VS Code Full-Canvas
+       WISPR FLOW NATIVE DESIGN SYSTEM (COLOR PALETTE & MINIMAL UI)
+       Matched directly from uploaded color palette image:
+       - App Canvas: #202020
+       - Brand & Text: #e9e8e1 (Wispr Cream Off-White)
+       - Lilac Badge & Accent: #f0d7ff with #1a1a1a text
        ══════════════════════════════════════════════════════════════ */
     :root {
-      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Text', 'Segoe UI', Roboto, sans-serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-serif: 'Merriweather', Georgia, serif;
-      --font-mono: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+      --font-mono: 'JetBrains Mono', Consolas, monospace;
 
-      --radius-sm: 4px;
-      --radius-md: 6px;
-      --radius-lg: 8px;
+      --radius-sm: 5px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-pill: 9999px;
 
-      --transition-fast: 0.1s ease;
+      --transition-fast: 0.12s ease;
+      --transition-base: 0.2s ease;
     }
 
-    /* Windows 11 Dark Mode */
+    /* Native Dark Palette from Wispr Flow Screenshot */
     html[data-theme="dark"] {
-      --win-bg: #202020;            /* Notepad background */
-      --win-titlebar: #181818;      /* Top bar */
-      --win-tab-active: #202020;    /* Active tab matches canvas */
-      --win-tab-hover: #2b2b2b;     /* Tab hover */
-      --win-toolbar: #202020;       /* Toolbar background */
-      --win-statusbar: #181818;     /* Status bar at bottom */
-      --win-subtle: #2d2d2d;        /* Hover buttons / cards */
-      --win-border: #333333;        /* Subtle hairline borders */
-      --win-border-subtle: #292929;
-      --win-accent: #0078d4;        /* Windows Blue */
-      --win-accent-hover: #1084d8;
+      --bg-app: #202020;             /* Exact color from user image */
+      --bg-surface: #262628;         /* Elevated bar & modals */
+      --bg-subtle: #2d2d30;          /* Interactive tools / buttons */
+      --bg-hover: #36363a;           /* Hover state */
+      --bg-active: #3e3e44;
 
-      --text-main: #f3f3f3;
-      --text-muted: #9d9d9d;
-      --text-dim: #6d6d6d;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-default: rgba(255, 255, 255, 0.14);
+      --border-hover: rgba(255, 255, 255, 0.24);
 
-      --diff-curr-bg: rgba(239, 68, 68, 0.22);
-      --diff-curr-text: #fca5a5;
-      --diff-prop-bg: rgba(16, 185, 129, 0.22);
+      --text-main: #e9e8e1;          /* Exact cream text from user image */
+      --text-bold: #ffffff;          /* Visibly pure white for bold highlights */
+      --text-muted: #9b9a95;         /* Muted secondary */
+      --text-dim: #686763;           /* Dim text & placeholders */
+
+      --accent-pill-bg: #f0d7ff;     /* Exact soft lilac from user image */
+      --accent-pill-text: #1a1a1a;   /* Exact deep dark text from user image */
+
+      --accent-primary: #d8b4fe;     /* Lilac accent */
+      --accent-hover: #c084fc;
+      --accent-subtle: rgba(240, 215, 255, 0.12);
+      --accent-border: rgba(240, 215, 255, 0.28);
+
+      /* In-Place Diff Colors: Soft, accessible, NO strikethrough */
+      --diff-curr-bg: rgba(244, 63, 94, 0.16);
+      --diff-curr-border: rgba(244, 63, 94, 0.35);
+      --diff-curr-text: #fda4af;
+
+      --diff-prop-bg: rgba(16, 185, 129, 0.16);
+      --diff-prop-border: rgba(16, 185, 129, 0.35);
       --diff-prop-text: #6ee7b7;
 
-      --modal-backdrop: rgba(0, 0, 0, 0.65);
+      --modal-backdrop: rgba(12, 12, 14, 0.78);
     }
 
-    /* Windows 11 Light Mode */
+    /* Clean Light Mode Counterpart */
     html[data-theme="light"] {
-      --win-bg: #f9f9f9;
-      --win-titlebar: #f0f0f0;
-      --win-tab-active: #f9f9f9;
-      --win-tab-hover: #e8e8e8;
-      --win-toolbar: #f9f9f9;
-      --win-statusbar: #f0f0f0;
-      --win-subtle: #eaeaea;
-      --win-border: #e0e0e0;
-      --win-border-subtle: #ebebeb;
-      --win-accent: #0078d4;
-      --win-accent-hover: #006cc1;
+      --bg-app: #f9f9fa;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f0f0f4;
+      --bg-hover: #e5e5ec;
+      --bg-active: #dcdce6;
 
-      --text-main: #181818;
-      --text-muted: #5f5f5f;
-      --text-dim: #909090;
+      --border-subtle: rgba(0, 0, 0, 0.08);
+      --border-default: rgba(0, 0, 0, 0.14);
+      --border-hover: rgba(0, 0, 0, 0.24);
 
-      --diff-curr-bg: #fee2e2;
-      --diff-curr-text: #991b1b;
+      --text-main: #1a1a1a;
+      --text-bold: #000000;
+      --text-muted: #59595f;
+      --text-dim: #8b8b94;
+
+      --accent-pill-bg: #7c3aed;
+      --accent-pill-text: #ffffff;
+
+      --accent-primary: #7c3aed;
+      --accent-hover: #6d28d9;
+      --accent-subtle: rgba(124, 58, 237, 0.1);
+      --accent-border: rgba(124, 58, 237, 0.25);
+
+      --diff-curr-bg: #ffe4e6;
+      --diff-curr-border: #fca5a5;
+      --diff-curr-text: #9f1239;
+
       --diff-prop-bg: #d1fae5;
+      --diff-prop-border: #6ee7b7;
       --diff-prop-text: #065f46;
 
-      --modal-backdrop: rgba(0, 0, 0, 0.35);
+      --modal-backdrop: rgba(15, 23, 42, 0.55);
     }
 
-    /* Reset */
+    /* ════════════════════ BASE RESETS ════════════════════ */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -91,494 +116,446 @@
 
     html, body {
       height: 100%;
-      background: var(--win-bg);
+      background: var(--bg-app);
       color: var(--text-main);
       font-family: var(--font-sans);
       font-size: 14px;
-      line-height: 1.6;
+      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       overflow: hidden;
       display: flex;
       flex-direction: column;
     }
 
-    /* ════════════════════ ROW 1: WINDOW TITLE & TAB BAR (40px) ════════════════════ */
-    #titlebar {
-      height: 40px;
-      background: var(--win-titlebar);
-      border-bottom: 1px solid var(--win-border-subtle);
+    button, input {
+      font-family: inherit;
+      color: inherit;
+    }
+
+    /* ════════════════════ HEADER BAR ════════════════════ */
+    #main-header {
+      height: 48px;
+      min-height: 48px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10px 0 12px;
+      padding: 0 16px;
       user-select: none;
-      flex-shrink: 0;
+      z-index: 100;
     }
 
-    .titlebar-left {
+    .header-left, .header-center, .header-right {
       display: flex;
       align-items: center;
       gap: 8px;
-      min-width: 0;
-      flex: 1;
     }
 
-    /* Windows Notepad Tab */
-    .notepad-tabs {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .notepad-tab {
-      background: var(--win-tab-active);
-      border: 1px solid var(--win-border);
-      border-bottom: 1px solid var(--win-bg);
-      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-      padding: 4px 10px 4px 8px;
+    /* ── WISPR FLOW BRAND & PILL BADGE (from uploaded screenshot) ── */
+    .brand-group {
       display: flex;
       align-items: center;
       gap: 7px;
-      font-size: 12.5px;
-      color: var(--text-main);
-      position: relative;
-      top: 1px;
-    }
-
-    .tab-icon {
-      color: var(--win-accent);
-      display: flex;
-      align-items: center;
-    }
-
-    #doc-title-input {
-      background: transparent;
-      border: none;
-      color: var(--text-main);
-      font-family: inherit;
-      font-size: 12.5px;
-      font-weight: 500;
-      outline: none;
-      width: 140px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    #doc-title-input:focus {
-      background: var(--win-subtle);
-      border-radius: 2px;
-    }
-
-    .tab-close {
       cursor: pointer;
-      color: var(--text-dim);
-      font-size: 13px;
-      line-height: 1;
-      padding: 2px 4px;
-      border-radius: 2px;
-    }
-    .tab-close:hover {
-      background: rgba(239, 68, 68, 0.2);
-      color: #ef4444;
+      text-decoration: none;
+      padding-right: 4px;
     }
 
-    .tab-new-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 14px;
-      padding: 3px 6px;
-      border-radius: 3px;
+    .brand-wave-icon {
       display: flex;
       align-items: center;
-      justify-content: center;
+      flex-shrink: 0;
     }
-    .tab-new-btn:hover {
-      background: var(--win-subtle);
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       color: var(--text-main);
     }
 
-    /* Window Controls (Min, Max, Close) */
-    .titlebar-right {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-    }
-
-    .win-control-btn {
-      width: 38px;
-      height: 28px;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
+    /* Pill badge styled exactly as shown in screenshot */
+    .brand-badge-pill {
+      background: var(--accent-pill-bg);
+      color: var(--accent-pill-text);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2.5px 9px;
+      border-radius: var(--radius-pill);
+      letter-spacing: -0.01em;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      cursor: pointer;
-      border-radius: var(--radius-sm);
-    }
-    .win-control-btn:hover {
-      background: var(--win-subtle);
-      color: var(--text-main);
-    }
-    .win-control-btn.close:hover {
-      background: #c42b1c;
-      color: #ffffff;
-    }
-
-    /* ════════════════════ ROW 2: MENU & COMPACT TOOLBAR (40px) ════════════════════ */
-    #menubar {
-      height: 40px;
-      background: var(--win-toolbar);
-      border-bottom: 1px solid var(--win-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 12px;
-      gap: 12px;
-      flex-shrink: 0;
-      user-select: none;
-    }
-
-    .menubar-left {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Native Menus: File, Edit, View */
-    .menu-item-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 12.5px;
-      font-weight: 500;
-      padding: 4px 8px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: background var(--transition-fast), color var(--transition-fast);
-    }
-    .menu-item-btn:hover {
-      background: var(--win-subtle);
-      color: var(--text-main);
+      margin-left: 2px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
     .v-sep {
       width: 1px;
       height: 18px;
-      background: var(--win-border);
+      background: var(--border-subtle);
       margin: 0 4px;
-      flex-shrink: 0;
     }
 
-    /* Formatting Tools */
-    .tool-group {
+    /* Document Title Input */
+    .doc-title-wrapper {
       display: flex;
       align-items: center;
-      gap: 2px;
+    }
+    #doc-title-input {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 3px 8px;
+      outline: none;
+      transition: all var(--transition-fast);
+      max-width: 180px;
+    }
+    #doc-title-input:hover {
+      border-color: var(--border-subtle);
+      color: var(--text-main);
+    }
+    #doc-title-input:focus {
+      border-color: var(--accent-border);
+      background: var(--bg-subtle);
+      color: var(--text-main);
     }
 
+    /* ── MINIMAL HANDS-FREE TOOLBAR ── */
     .tool-btn {
       background: transparent;
       border: 1px solid transparent;
       border-radius: var(--radius-sm);
       color: var(--text-muted);
-      font-family: inherit;
-      font-size: 12.5px;
-      font-weight: 600;
-      padding: 3px 7px;
       height: 28px;
       min-width: 28px;
-      cursor: pointer;
+      padding: 0 7px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      transition: background var(--transition-fast), color var(--transition-fast);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      user-select: none;
     }
     .tool-btn:hover {
-      background: var(--win-subtle);
+      background: var(--bg-subtle);
       color: var(--text-main);
+      border-color: var(--border-subtle);
     }
-    .tool-btn.active {
-      background: var(--win-subtle);
-      color: var(--win-accent);
-      border-color: var(--win-accent);
+    .tool-btn:active {
+      background: var(--bg-hover);
     }
 
-    /* AI Polish Button */
-    .tool-btn-ai {
-      background: rgba(0, 120, 212, 0.15);
-      border: 1px solid rgba(0, 120, 212, 0.35);
-      color: #38bdf8;
-      font-weight: 600;
-      padding: 3px 10px;
+    .tool-btn strong {
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    /* Polish Button (AI Review) */
+    .btn-polish {
+      background: var(--accent-subtle);
+      border: 1px solid var(--accent-border);
       border-radius: var(--radius-sm);
+      color: var(--accent-primary);
       height: 28px;
+      padding: 0 10px;
       display: inline-flex;
       align-items: center;
       gap: 5px;
       font-size: 12px;
+      font-weight: 700;
       cursor: pointer;
       transition: all var(--transition-fast);
     }
-    .tool-btn-ai:hover {
-      background: var(--win-accent);
-      color: #ffffff;
-      border-color: var(--win-accent);
+    .btn-polish:hover {
+      background: var(--accent-primary);
+      color: var(--accent-pill-text);
+      border-color: var(--accent-primary);
     }
 
-    .menubar-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Hands-Free Voice Status Pill */
+    /* ── VOICE STATUS PILL (Interactive: Click halts thinking!) ── */
     #voice-status-pill {
+      height: 28px;
+      padding: 0 10px;
+      border-radius: var(--radius-pill);
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 3px 9px;
-      border-radius: 99px;
       font-size: 11.5px;
       font-weight: 600;
-      background: var(--win-subtle);
-      border: 1px solid var(--win-border);
-      color: var(--text-muted);
-      cursor: default;
+      cursor: pointer;
+      border: 1px solid transparent;
       transition: all var(--transition-fast);
+      background: var(--bg-subtle);
+      color: var(--text-muted);
     }
     #voice-status-pill .dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
       background: #10b981;
+      display: inline-block;
     }
-    #voice-status-pill.ready .dot { background: #10b981; }
-    #voice-status-pill.listening .dot { background: var(--win-accent); }
-    #voice-status-pill.review .dot { background: #f59e0b; }
-    #voice-status-pill.error .dot { background: #f43f5e; }
-
-    #voice-status-pill.review,
-    #voice-status-pill.listening {
-      cursor: pointer;
-      background: rgba(245, 158, 11, 0.15);
-      border-color: rgba(245, 158, 11, 0.4);
-      color: #f59e0b;
-    }
-    #voice-status-pill.review:hover {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.5);
-      color: #f87171;
-    }
-    #voice-status-pill.review:hover .dot { background: #f87171; }
-
-    /* Dropdown Menus */
-    .dropdown-container {
-      position: relative;
-    }
-    .dropdown-menu {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      background: var(--win-titlebar);
-      border: 1px solid var(--win-border);
-      border-radius: var(--radius-md);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
-      min-width: 190px;
-      padding: 4px;
-      display: none;
-      flex-direction: column;
-      gap: 2px;
-      z-index: 200;
-    }
-    .dropdown-menu.right-align {
-      left: auto;
-      right: 0;
-    }
-    .dropdown-menu.show {
-      display: flex;
-    }
-    .dropdown-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 6px 10px;
-      border-radius: var(--radius-sm);
-      font-size: 12.5px;
+    #voice-status-pill.ready:hover {
+      background: var(--bg-hover);
       color: var(--text-main);
-      background: none;
-      border: none;
-      cursor: pointer;
-      text-align: left;
-      width: 100%;
-      font-family: inherit;
+      border-color: var(--border-subtle);
     }
-    .dropdown-item:hover {
-      background: var(--win-subtle);
+    #voice-status-pill.thinking {
+      background: rgba(240, 215, 255, 0.16);
+      color: var(--accent-primary);
+      border-color: var(--accent-border);
+      animation: pulseThinking 1.5s infinite;
     }
-    .dropdown-item .shortcut {
-      color: var(--text-dim);
-      font-size: 11px;
+    #voice-status-pill.thinking .dot {
+      background: var(--accent-primary);
+      animation: pulseDot 1s infinite;
     }
-    .menu-divider {
-      height: 1px;
-      background: var(--win-border-subtle);
-      margin: 3px 0;
+    #voice-status-pill.error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.35);
+    }
+    #voice-status-pill.error .dot {
+      background: #ef4444;
     }
 
-    /* ════════════════════ ROW 3: AI REVIEW PROPOSAL BANNER ════════════════════ */
+    @keyframes pulseThinking {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.75; }
+    }
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+
+    /* ════════════════════ PROPOSAL ACTION BANNER ════════════════════ */
     #proposal-reason-banner {
       display: none;
-      background: var(--win-subtle);
-      border-bottom: 1px solid var(--win-border);
-      padding: 6px 16px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--accent-border);
+      padding: 8px 16px;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      flex-shrink: 0;
-      font-size: 12.5px;
+      z-index: 90;
+      animation: slideDown 0.18s ease-out;
     }
     #proposal-reason-banner.visible {
       display: flex;
     }
-    .proposal-tag {
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .proposal-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .proposal-pill-tag {
+      background: var(--accent-pill-bg);
+      color: var(--accent-pill-text);
       font-size: 11px;
       font-weight: 700;
-      text-transform: uppercase;
-      padding: 2px 6px;
-      border-radius: 3px;
-      background: rgba(0, 120, 212, 0.2);
-      color: #38bdf8;
-      border: 1px solid rgba(0, 120, 212, 0.4);
+      padding: 1.5px 7px;
+      border-radius: var(--radius-pill);
     }
-    .btn-action-accept {
+
+    .proposal-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-keep {
       background: #10b981;
       color: #ffffff;
       border: none;
-      font-family: inherit;
-      font-size: 11.5px;
-      font-weight: 600;
-      padding: 3px 9px;
       border-radius: var(--radius-sm);
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 700;
       cursor: pointer;
+      transition: background var(--transition-fast);
     }
-    .btn-action-decline {
-      background: var(--diff-curr-bg);
-      color: var(--diff-curr-text);
-      border: 1px solid var(--win-border);
-      font-family: inherit;
-      font-size: 11.5px;
-      font-weight: 600;
-      padding: 3px 9px;
+    .btn-keep:hover {
+      background: #059669;
+    }
+    .btn-discard {
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border: 1px solid var(--border-default);
       border-radius: var(--radius-sm);
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .btn-discard:hover {
+      background: var(--bg-hover);
+      color: var(--text-main);
     }
 
-    /* ════════════════════ ROW 4: FULL-CANVAS MAIN EDITOR ════════════════════ */
+    /* ════════════════════ FULL-CANVAS TEXT EDITOR ════════════════════ */
     #editor-container {
       flex: 1;
       display: flex;
       flex-direction: column;
-      position: relative;
+      background: var(--bg-app);
       overflow-y: auto;
-      background: var(--win-bg);
+      position: relative;
     }
 
     .editor-wrapper {
+      position: relative;
       flex: 1;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 36px 60px;
       display: flex;
       flex-direction: column;
-      position: relative;
-      padding: 24px 48px 48px;
     }
 
     @media (max-width: 768px) {
       .editor-wrapper {
-        padding: 16px 20px 32px;
+        padding: 16px 20px 40px;
       }
     }
 
     #draft-editor {
       flex: 1;
       outline: none;
-      font-size: 15px;
-      line-height: 1.75;
+      font-size: 15.5px;
+      line-height: 1.8;
       color: var(--text-main);
       word-break: break-word;
-      caret-color: var(--win-accent);
-      min-height: calc(100vh - 160px);
+      caret-color: var(--accent-primary);
+      min-height: calc(100vh - 150px);
     }
 
-    /* Empty Placeholder */
+    /* Placeholder text */
     #draft-editor:empty::before {
       content: attr(data-placeholder);
       color: var(--text-dim);
       pointer-events: none;
       display: block;
       font-style: italic;
+      line-height: 1.8;
     }
 
-    /* High Quality Typography for Rich Text */
+    /* ── RICH TEXT FORMATTING STYLES (Real, Visible Editor Styles) ── */
+    #draft-editor strong, #draft-editor b,
+    .inline-diff-display strong, .inline-diff-display b {
+      font-weight: 750 !important;
+      color: var(--text-bold) !important;
+    }
+
+    #draft-editor em, #draft-editor i,
+    .inline-diff-display em, .inline-diff-display i {
+      font-style: italic !important;
+      color: #f5f4ef !important;
+    }
+
+    #draft-editor u {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    #draft-editor s, #draft-editor strike {
+      text-decoration: line-through;
+      opacity: 0.75;
+    }
+
+    #draft-editor a {
+      color: var(--accent-primary);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
     #draft-editor h1, .inline-diff-display h1 {
       font-size: 1.85rem;
-      font-weight: 700;
+      font-weight: 800;
+      color: var(--text-bold);
       margin-top: 1.4rem;
-      margin-bottom: 0.5rem;
-      color: var(--text-main);
+      margin-bottom: 0.6rem;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
     }
+
     #draft-editor h2, .inline-diff-display h2 {
-      font-size: 1.4rem;
-      font-weight: 650;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-bold);
       margin-top: 1.2rem;
-      margin-bottom: 0.4rem;
-      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
     }
+
     #draft-editor h3, .inline-diff-display h3 {
-      font-size: 1.15rem;
-      font-weight: 600;
+      font-size: 1.2rem;
+      font-weight: 650;
+      color: var(--text-bold);
       margin-top: 1rem;
-      margin-bottom: 0.3rem;
-      color: var(--text-main);
+      margin-bottom: 0.4rem;
+      line-height: 1.4;
     }
+
     #draft-editor p, .inline-diff-display p {
-      margin-bottom: 0.85rem;
+      margin-bottom: 0.95rem;
     }
-    #draft-editor ul, .inline-diff-display ul,
+
+    #draft-editor ul, .inline-diff-display ul {
+      list-style-type: disc !important;
+      margin: 0.75rem 0 0.75rem 1.6rem !important;
+      padding-left: 0 !important;
+    }
+
     #draft-editor ol, .inline-diff-display ol {
-      margin: 0.75rem 0 0.75rem 1.5rem;
+      list-style-type: decimal !important;
+      margin: 0.75rem 0 0.75rem 1.6rem !important;
+      padding-left: 0 !important;
     }
+
     #draft-editor li, .inline-diff-display li {
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.35rem;
+      line-height: 1.7;
     }
+
     #draft-editor blockquote, .inline-diff-display blockquote {
-      border-left: 3px solid var(--win-accent);
-      background: var(--win-subtle);
-      padding: 0.5rem 1rem;
-      margin: 0.9rem 0;
+      border-left: 3px solid var(--accent-primary);
+      background: var(--bg-surface);
+      padding: 0.6rem 1.1rem;
+      margin: 1.1rem 0;
       border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
       color: var(--text-muted);
     }
+
     #draft-editor code, .inline-diff-display code {
       font-family: var(--font-mono);
       font-size: 0.88em;
-      background: var(--win-subtle);
-      border: 1px solid var(--win-border);
-      padding: 0.15rem 0.4rem;
-      border-radius: 3px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      color: var(--accent-primary);
     }
 
-    /* Diff View */
+    /* ── IN-PLACE DIFF DISPLAY (Soft Red without strikethrough & Soft Green) ── */
     #draft-diff-display {
       display: none;
-      font-size: 15px;
-      line-height: 1.75;
+      font-size: 15.5px;
+      line-height: 1.8;
       color: var(--text-main);
       white-space: pre-wrap;
       word-break: break-word;
@@ -597,336 +574,285 @@
       background: transparent;
       color: transparent;
     }
+
     .diff-removed-highlight {
       background: var(--diff-curr-bg);
       color: var(--diff-curr-text);
       border-radius: 3px;
-      padding: 0.1rem 0.35rem;
-      text-decoration: none !important;
+      padding: 1px 4px;
+      border: 1px solid var(--diff-curr-border);
+      text-decoration: none; /* NO STRIKETHROUGH */
     }
+
     .diff-added-highlight {
       background: var(--diff-prop-bg);
       color: var(--diff-prop-text);
       border-radius: 3px;
-      padding: 0.1rem 0.35rem;
-      text-decoration: none !important;
+      padding: 1px 4px;
+      border: 1px solid var(--diff-prop-border);
+      font-weight: 600;
     }
 
-    /* AI Thinking Subtle Border */
-    .editor-wrapper.thinking {
-      outline: 1.5px solid var(--win-accent);
-      outline-offset: -2px;
-    }
-
-    /* ════════════════════ ROW 5: WINDOWS NOTEPAD STATUS BAR (26px) ════════════════════ */
+    /* ════════════════════ STATUS BAR ════════════════════ */
     #statusbar {
-      height: 26px;
-      background: var(--win-statusbar);
-      border-top: 1px solid var(--win-border-subtle);
+      height: 28px;
+      min-height: 28px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 16px;
       font-size: 11.5px;
-      color: var(--text-muted);
+      color: var(--text-dim);
       user-select: none;
-      flex-shrink: 0;
+      z-index: 100;
     }
 
-    .statusbar-left {
+    .statusbar-left, .statusbar-center, .statusbar-right {
       display: flex;
       align-items: center;
-      gap: 16px;
-    }
-
-    .statusbar-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
+      gap: 10px;
     }
 
     .stat-sep {
-      width: 1px;
-      height: 12px;
-      background: var(--win-border);
+      opacity: 0.4;
     }
 
-    /* Modals (Settings) */
+    .stat-link {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      transition: color var(--transition-fast);
+    }
+    .stat-link:hover {
+      color: var(--text-main);
+    }
+
+    /* ════════════════════ SETTINGS MODAL ════════════════════ */
     .modal-backdrop {
+      display: none;
       position: fixed;
       inset: 0;
       background: var(--modal-backdrop);
-      backdrop-filter: blur(2px);
-      z-index: 300;
-      display: none;
+      backdrop-filter: blur(4px);
+      z-index: 1000;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
-    .modal-backdrop.open { display: flex; }
-    .modal-sheet {
-      background: var(--win-titlebar);
-      border: 1px solid var(--win-border);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-      width: 100%;
-      max-width: 480px;
-      max-height: 85vh;
-      overflow-y: auto;
+    .modal-backdrop.open {
       display: flex;
-      flex-direction: column;
     }
-    .modal-sheet-header {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--win-border);
+
+    .settings-modal {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+      animation: modalPop 0.16s ease-out;
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .settings-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
     }
-    .modal-sheet-header h2 {
-      font-size: 13.5px;
+
+    .settings-content {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12.5px;
       font-weight: 600;
       color: var(--text-main);
+      margin-bottom: 4px;
     }
-    .modal-sheet-body {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+
+    .form-help {
+      font-size: 11.5px;
+      color: var(--text-dim);
+      line-height: 1.45;
+      margin-bottom: 8px;
     }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .form-group label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-muted);
-    }
+
     .form-input {
-      background: var(--win-bg);
-      border: 1px solid var(--win-border);
+      width: 100%;
+      background: var(--bg-app);
+      border: 1px solid var(--border-default);
       border-radius: var(--radius-sm);
-      padding: 6px 10px;
-      font-family: var(--font-sans);
-      font-size: 12.5px;
+      padding: 7px 10px;
+      font-size: 13px;
       color: var(--text-main);
       outline: none;
+      transition: border-color var(--transition-fast);
     }
-    .form-input:focus { border-color: var(--win-accent); }
+    .form-input:focus {
+      border-color: var(--accent-primary);
+    }
 
-    /* Toast */
+    .btn-close-modal {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+      line-height: 1;
+      border-radius: var(--radius-sm);
+    }
+    .btn-close-modal:hover {
+      color: var(--text-main);
+      background: var(--bg-subtle);
+    }
+
+    /* ════════════════════ TOAST NOTIFICATION ════════════════════ */
     #vp-toast {
       position: fixed;
-      bottom: 36px;
+      bottom: 40px;
       right: 20px;
-      z-index: 400;
-      background: var(--win-titlebar);
-      border: 1px solid var(--win-border);
+      background: var(--bg-surface);
       color: var(--text-main);
+      border: 1px solid var(--border-default);
       border-radius: var(--radius-md);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       padding: 8px 14px;
       font-size: 12.5px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
       display: none;
       align-items: center;
       gap: 10px;
+      z-index: 2000;
+      animation: toastIn 0.18s ease-out;
     }
-    #vp-toast.visible { display: flex; }
+    #vp-toast.show {
+      display: flex;
+    }
     #vp-toast-close {
-      background: none;
+      background: transparent;
       border: none;
       color: var(--text-dim);
       cursor: pointer;
-      font-size: 13px;
+      font-size: 11px;
+      padding: 2px;
+    }
+    #vp-toast-close:hover {
+      color: var(--text-main);
+    }
+    @keyframes toastIn {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ════════════════════ ROW 1: WINDOW TITLE & NOTEPAD TAB BAR ════════════════════ -->
-  <header id="titlebar" role="banner">
-    <div class="titlebar-left">
-      <div class="notepad-tabs">
-        <div class="notepad-tab">
-          <span class="tab-icon" aria-hidden="true">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-            </svg>
-          </span>
-          <input type="text" id="doc-title-input" value="Untitled Document" placeholder="Untitled Document" aria-label="Document Title" spellcheck="false" />
-          <span class="tab-close" id="btn-tab-close" title="Clear / New">×</span>
-        </div>
-        <button type="button" class="tab-new-btn" id="btn-new-tab" title="New Document">+</button>
-      </div>
-    </div>
-
-    <div class="titlebar-right">
-      <button type="button" class="win-control-btn" title="Minimize">―</button>
-      <button type="button" class="win-control-btn" title="Maximize">□</button>
-      <button type="button" class="win-control-btn close" title="Close">✕</button>
-    </div>
-  </header>
-
-  <!-- ════════════════════ ROW 2: MENU & EDITING TOOLBAR ════════════════════ -->
-  <nav id="menubar" aria-label="Editor command bar">
-    <div class="menubar-left">
-      <!-- File Menu -->
-      <div class="dropdown-container">
-        <button type="button" class="menu-item-btn" id="btn-file-menu">File</button>
-        <div class="dropdown-menu" id="file-menu">
-          <button type="button" class="dropdown-item" id="menu-file-new"><span>New Document</span><span class="shortcut">Ctrl+N</span></button>
-          <button type="button" class="dropdown-item" id="menu-file-sample"><span>Open Sample Draft</span></button>
-          <div class="menu-divider"></div>
-          <button type="button" class="dropdown-item" id="menu-file-copy-rich"><span>Copy Rich Text</span><span class="shortcut">Ctrl+Shift+C</span></button>
-          <button type="button" class="dropdown-item" id="menu-file-copy-md"><span>Copy Markdown</span></button>
-          <button type="button" class="dropdown-item" id="menu-file-download-md"><span>Download .md</span><span class="shortcut">Ctrl+S</span></button>
-          <button type="button" class="dropdown-item" id="menu-file-download-txt"><span>Download .txt</span></button>
-          <button type="button" class="dropdown-item" id="menu-file-print"><span>Print / Save PDF</span><span class="shortcut">Ctrl+P</span></button>
-          <div class="menu-divider"></div>
-          <button type="button" class="dropdown-item" id="menu-file-clear"><span>Clear Document</span></button>
-        </div>
-      </div>
-
-      <!-- Edit Menu -->
-      <div class="dropdown-container">
-        <button type="button" class="menu-item-btn" id="btn-edit-menu">Edit</button>
-        <div class="dropdown-menu" id="edit-menu">
-          <button type="button" class="dropdown-item" id="menu-edit-undo"><span>Undo</span><span class="shortcut">Ctrl+Z</span></button>
-          <button type="button" class="dropdown-item" id="menu-edit-redo"><span>Redo</span><span class="shortcut">Ctrl+Y</span></button>
-          <div class="menu-divider"></div>
-          <button type="button" class="dropdown-item" id="menu-edit-cut"><span>Cut</span><span class="shortcut">Ctrl+X</span></button>
-          <button type="button" class="dropdown-item" id="menu-edit-copy"><span>Copy</span><span class="shortcut">Ctrl+C</span></button>
-          <button type="button" class="dropdown-item" id="menu-edit-paste"><span>Paste</span><span class="shortcut">Ctrl+V</span></button>
-          <div class="menu-divider"></div>
-          <button type="button" class="dropdown-item" id="menu-edit-selectall"><span>Select All</span><span class="shortcut">Ctrl+A</span></button>
-        </div>
-      </div>
-
-      <!-- View Menu -->
-      <div class="dropdown-container">
-        <button type="button" class="menu-item-btn" id="btn-view-menu">View</button>
-        <div class="dropdown-menu" id="view-menu">
-          <button type="button" class="dropdown-item" id="menu-view-theme"><span>Toggle Dark / Light</span></button>
-          <div class="menu-divider"></div>
-          <button type="button" class="dropdown-item" data-font="sans"><span>Font: Modern Sans</span></button>
-          <button type="button" class="dropdown-item" data-font="serif"><span>Font: Editorial Serif</span></button>
-          <button type="button" class="dropdown-item" data-font="mono"><span>Font: JetBrains Mono</span></button>
-        </div>
+  <!-- ════════════════════ HEADER BAR ════════════════════ -->
+  <header id="main-header" role="banner">
+    <div class="header-left">
+      <!-- Clean, Simple, Highly Visible Wispr Flow Logo matching user screenshot -->
+      <div class="brand-group" id="btn-brand-home" title="Flow Text Editor">
+        <svg class="brand-wave-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-label="Wispr Flow Logo">
+          <rect x="2" y="7" width="3.2" height="10" rx="1.6" fill="var(--text-main)" />
+          <rect x="7.8" y="3" width="3.2" height="18" rx="1.6" fill="var(--text-main)" />
+          <rect x="13.6" y="9" width="3.2" height="6" rx="1.6" fill="var(--text-main)" />
+          <rect x="19.4" y="1" width="3.2" height="22" rx="1.6" fill="var(--text-main)" />
+        </svg>
+        <span class="brand-title">Flow</span>
+        <span class="brand-badge-pill">Student</span>
       </div>
 
       <div class="v-sep"></div>
 
-      <!-- In-Line Rich Formatting Controls (Inspired by Notepad++) -->
-      <div class="tool-group">
-        <!-- Paragraph / Heading Picker -->
-        <div class="dropdown-container">
-          <button type="button" class="tool-btn" id="btn-heading-dropdown" title="Paragraph Style">
-            <span id="heading-label">H1</span> <span style="font-size:9px;">▼</span>
-          </button>
-          <div class="dropdown-menu" id="heading-menu">
-            <button type="button" class="dropdown-item" data-format="p">Paragraph</button>
-            <button type="button" class="dropdown-item" data-format="h1">Heading 1</button>
-            <button type="button" class="dropdown-item" data-format="h2">Heading 2</button>
-            <button type="button" class="dropdown-item" data-format="h3">Heading 3</button>
-          </div>
-        </div>
-
-        <!-- Bullet / Number List -->
-        <div class="dropdown-container">
-          <button type="button" class="tool-btn" id="btn-list-dropdown" title="List Style">
-            <span>• ▾</span>
-          </button>
-          <div class="dropdown-menu" id="list-menu">
-            <button type="button" class="dropdown-item" id="tool-bullet-list">Bullet List (•)</button>
-            <button type="button" class="dropdown-item" id="tool-ordered-list">Numbered List (1.)</button>
-          </div>
-        </div>
-
-        <button type="button" class="tool-btn" id="t-bold" title="Bold (Ctrl+B or 'Shazam, bold')"><strong>B</strong></button>
-        <button type="button" class="tool-btn" id="t-italic" title="Italic (Ctrl+I or 'Shazam, italic')"><em>I</em></button>
-        <button type="button" class="tool-btn" id="t-strike" title="Strikethrough"><s>S</s></button>
-        <button type="button" class="tool-btn" id="t-link" title="Insert Link (Ctrl+K)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-          </svg>
-        </button>
-        <button type="button" class="tool-btn" id="t-table" title="Insert Divider / Table">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="12" y1="3" x2="12" y2="21"></line>
-          </svg>
-        </button>
-        <button type="button" class="tool-btn" id="t-font-cycle" title="Change Typography (Sans / Consolas / Serif)">
-          <span style="font-weight:700;font-size:11px;">Aa</span>
-        </button>
-      </div>
-
-      <div class="v-sep"></div>
-
-      <!-- History -->
-      <div class="tool-group">
-        <button type="button" class="tool-btn" id="t-undo" title="Undo (Ctrl+Z or 'Shazam, undo')">↺</button>
-        <button type="button" class="tool-btn" id="t-redo" title="Redo (Ctrl+Y or 'Shazam, redo')">↻</button>
+      <!-- Minimal Note Title -->
+      <div class="doc-title-wrapper">
+        <input type="text" id="doc-title-input" value="Untitled Note" placeholder="Untitled Note" aria-label="Document Title" spellcheck="false" />
       </div>
     </div>
 
-    <div class="menubar-right">
-      <!-- AI Polish Action -->
-      <button type="button" class="tool-btn-ai" id="btn-trigger-review" title="Full Document Polish (or say 'Shazam, polish')">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px;">
+    <!-- Center: Minimalist Hands-Free Toolbar -->
+    <div class="header-center">
+      <button type="button" class="tool-btn" id="t-bold" title="Bold (Ctrl+B or 'Shazam, bold')"><strong>B</strong></button>
+      <button type="button" class="tool-btn" id="t-italic" title="Italic (Ctrl+I or 'Shazam, italic')"><em>I</em></button>
+      <button type="button" class="tool-btn" id="t-heading" title="Heading (or 'Shazam, heading')">H1</button>
+      <button type="button" class="tool-btn" id="t-list" title="Bullet List (or 'Shazam, list')">• List</button>
+
+      <div class="v-sep"></div>
+
+      <button type="button" class="tool-btn" id="t-undo" title="Undo (Ctrl+Z or 'Shazam, undo')">↺</button>
+      <button type="button" class="tool-btn" id="t-redo" title="Redo (Ctrl+Y or 'Shazam, redo')">↻</button>
+    </div>
+
+    <!-- Right: Actions & Status -->
+    <div class="header-right">
+      <!-- Full Polish AI Action -->
+      <button type="button" class="btn-polish" id="btn-trigger-review" title="Full Document Polish (or say 'Shazam, polish')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
         </svg>
         <span>Polish</span>
       </button>
 
-      <!-- Speak / Read Aloud -->
-      <button type="button" class="tool-btn" id="btn-read-aloud" title="Read draft aloud (or say 'Shazam, read')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-        </svg>
+      <!-- 1-Click Copy -->
+      <button type="button" class="tool-btn" id="btn-quick-copy" title="Copy Document to Clipboard (or 'Shazam, copy')">
+        📋 Copy
+      </button>
+
+      <!-- Read Aloud -->
+      <button type="button" class="tool-btn" id="btn-read-aloud" title="Read draft aloud (or 'Shazam, read')">
+        🔊 Read
+      </button>
+
+      <!-- Theme Switcher -->
+      <button type="button" class="tool-btn" id="btn-theme-toggle" title="Toggle Light / Dark mode">
+        🌙
       </button>
 
       <div class="v-sep"></div>
 
-      <!-- Live Voice Status Pill -->
-      <div id="voice-status-pill" class="ready" title="Wispr Flow listening status (Click to stop AI)" aria-live="polite">
+      <!-- Live Voice Status Pill: Clicking halts thinking immediately! -->
+      <button type="button" id="voice-status-pill" class="ready" title="Wispr Flow listening status (Click to stop thinking)" aria-live="polite">
         <span class="dot" aria-hidden="true"></span>
         <span id="voice-status-text">Wispr Ready</span>
-      </div>
+      </button>
 
-      <!-- Settings Icon -->
-      <button type="button" class="tool-btn" id="btn-open-settings" title="Settings &amp; Speech Options" aria-label="Settings">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-        </svg>
+      <!-- Preferences Modal -->
+      <button type="button" class="tool-btn" id="btn-open-settings" title="Preferences">
+        ⚙️
       </button>
     </div>
-  </nav>
+  </header>
 
-  <!-- ════════════════════ ROW 3: AI REVIEW PROPOSAL BANNER ════════════════════ -->
-  <div id="proposal-reason-banner">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <span class="proposal-tag">✨ AI Polish</span>
-      <span id="proposal-reason-text" style="color:var(--text-main);">Review ready</span>
+  <!-- ════════════════════ PROPOSAL ACTION BANNER ════════════════════ -->
+  <div id="proposal-reason-banner" role="region" aria-label="AI Polish Review">
+    <div class="proposal-info">
+      <span class="proposal-pill-tag">Suggestion</span>
+      <span id="proposal-reason-text" style="color:var(--text-main);font-weight:500;">Review ready</span>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;">
-      <button type="button" class="btn-action-accept" id="btn-inline-accept" title="Say 'Shazam, accept'">✓ Keep (Shazam, keep)</button>
-      <button type="button" class="btn-action-decline" id="btn-inline-decline" title="Say 'Shazam, decline'">✕ Discard (Shazam, discard)</button>
-      <button type="button" class="tool-btn" id="btn-speak-proposal" style="height:24px;font-size:11px;">🔊 Hear</button>
+    <div class="proposal-actions">
+      <button type="button" class="btn-keep" id="btn-inline-accept" title="Say 'Shazam, keep'">✓ Keep (Shazam, keep)</button>
+      <button type="button" class="btn-discard" id="btn-inline-decline" title="Say 'Shazam, discard'">✕ Discard (Shazam, discard)</button>
+      <button type="button" class="tool-btn" id="btn-speak-proposal" style="height:24px;font-size:11px;">🔊 Listen</button>
     </div>
   </div>
 
-  <!-- ════════════════════ ROW 4: EDGE-TO-EDGE FULL-CANVAS EDITOR ════════════════════ -->
+  <!-- ════════════════════ FULL-CANVAS EDITOR ════════════════════ -->
   <main id="editor-container">
     <div class="editor-wrapper" id="editor-wrapper">
       <!-- Live Rich Text Contenteditable Surface -->
@@ -936,7 +862,7 @@
         role="textbox"
         aria-multiline="true"
         aria-label="Hands-free voice document editor"
-        data-placeholder="Start dictating with Wispr Flow or typing...&#10;&#10;• Dictate naturally: your words flow directly into the document.&#10;• Format hands-free: say 'Shazam, bold', 'Shazam, heading', or 'Shazam, list'.&#10;• Instant targeted edits: say 'Shazam, put a comma next to hello'.&#10;• Full document polish: say 'Shazam, review'."
+        data-placeholder="Start dictating with Wispr Flow or typing...&#10;&#10;• Dictate naturally: your words flow directly into the document.&#10;• Format hands-free: say 'Shazam, bold', 'Shazam, heading', or 'Shazam, list'.&#10;• Instant targeted edits: say 'Shazam, put a comma next to hello'.&#10;• Full document polish: say 'Shazam, polish'."
         spellcheck="true"
       ></div>
 
@@ -945,57 +871,63 @@
     </div>
   </main>
 
-  <!-- ════════════════════ ROW 5: NATIVE STATUS BAR ════════════════════ -->
+  <!-- ════════════════════ STATUS BAR ════════════════════ -->
   <footer id="statusbar">
     <div class="statusbar-left">
       <span id="caret-pos">Ln 1, Col 1</span>
-      <div class="stat-sep"></div>
-      <span id="doc-stats">0 characters</span>
-      <div class="stat-sep"></div>
-      <span>Plain text</span>
+      <span class="stat-sep">•</span>
+      <span id="doc-stats">0 words · 0 characters</span>
+      <span class="stat-sep">•</span>
+      <span id="reading-time">1 min read</span>
     </div>
 
-    <div class="statusbar-center" style="display:flex;align-items:center;justify-content:center;">
-      <div style="width:32px;height:5px;border:1px solid var(--win-border);border-radius:99px;background:var(--win-subtle);"></div>
+    <div class="statusbar-center">
+      <span style="color:var(--text-dim);">Hands-Free Wake Word: "<strong>Shazam</strong>"</span>
     </div>
 
     <div class="statusbar-right">
-      <span id="save-status" style="color:#10b981;">✓ Saved</span>
-      <div class="stat-sep"></div>
-      <span>100%</span>
-      <div class="stat-sep"></div>
-      <span>Windows (CRLF)</span>
-      <div class="stat-sep"></div>
-      <span>UTF-8</span>
+      <span id="save-status" style="color:#10b981;">✓ Auto-saved</span>
+      <span class="stat-sep">•</span>
+      <button type="button" class="stat-link" id="btn-download-md" title="Download Markdown File">.md</button>
+      <button type="button" class="stat-link" id="btn-download-txt" title="Download Plain Text">.txt</button>
+      <button type="button" class="stat-link" id="btn-clear-doc" title="Clear Document">Clear</button>
     </div>
   </footer>
 
-  <!-- ════════════════════ MODALS: SETTINGS ════════════════════ -->
+  <!-- ════════════════════ MODALS: SETTINGS (NO API KEY FIELD) ════════════════════ -->
   <div class="modal-backdrop" id="settings-backdrop">
-    <div class="modal-sheet">
-      <div class="modal-sheet-header">
-        <h2>Settings &amp; Speech Control</h2>
-        <button type="button" class="tab-close" id="btn-close-settings">✕</button>
+    <div class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="settings-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="7" width="3.2" height="10" rx="1.6" fill="var(--text-main)" />
+            <rect x="7.8" y="3" width="3.2" height="18" rx="1.6" fill="var(--text-main)" />
+            <rect x="13.6" y="9" width="3.2" height="6" rx="1.6" fill="var(--text-main)" />
+            <rect x="19.4" y="1" width="3.2" height="22" rx="1.6" fill="var(--text-main)" />
+          </svg>
+          <h3 id="settings-title" style="margin:0;font-size:14px;font-weight:700;">Preferences</h3>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-settings" aria-label="Close">✕</button>
       </div>
-      <div class="modal-sheet-body">
+      <div class="settings-content">
         <div class="form-group">
-          <label>Wake Word / Catchphrase</label>
+          <label for="catchword-input">Voice Wake Word</label>
+          <p class="form-help">Trigger phrase preceding hands-free voice commands (default: "Shazam").</p>
           <input type="text" id="catchword-input" class="form-input" value="Shazam" placeholder="Shazam" />
-          <span style="font-size:11px;color:var(--text-dim);">Trigger phrase before voice commands (e.g. "Shazam, bold", "Shazam, review").</span>
         </div>
 
         <div class="form-group">
-          <label>Spoken Audio Feedback</label>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <input type="checkbox" id="spoken-feedback-toggle" checked style="accent-color:var(--win-accent);" />
-            <span style="font-size:12px;color:var(--text-main);">Speak voice confirmation after edits</span>
-          </div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="spoken-feedback-toggle" checked style="accent-color:var(--accent-primary);width:16px;height:16px;" />
+            <span>Spoken Audio Feedback</span>
+          </label>
+          <p class="form-help">Audio confirmation after edits (e.g. "Bold", "Proposal kept", "Stopped").</p>
         </div>
 
-        <div class="form-group" style="padding-top:6px;">
-          <label>About VoicePilot</label>
-          <p style="font-size:11.5px;color:var(--text-dim);line-height:1.5;">
-            Hands-free voice text editor built for Wispr Flow dictation. All voice formatting (bold, italic, headings, lists, undo, redo, read, clear) works 100% locally with zero setup.
+        <div class="form-group" style="padding-top:6px;border-top:1px solid var(--border-subtle);">
+          <label>About Flow Voice Editor</label>
+          <p class="form-help" style="margin-bottom:0;">
+            A distraction-free, hands-free voice text editor built for Wispr Flow. Bold, italic, headings, lists, undo, redo, read, and full polish run seamlessly with zero configuration.
           </p>
         </div>
       </div>
@@ -1013,11 +945,11 @@
 // === src/command_parser.js ===
 const VPCommandParser = (() => {
   const COMMAND_MAP = [
-    // 1. Review (full polish)
+    // 1. Review / Polish
     { pattern: /^(?:review|polish|ai\s+review|check|proofread)$/i,                                             action: 'review',        hasArg: false },
-    // 2. Accept (Option 2 / Corrected)
+    // 2. Accept / Keep (Option 2)
     { pattern: /^(?:accept(?:\s+(?:this|that|it|proposal|changes?|edit))?|apply(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep(?:\s+(?:this|that|it|new|corrected|changes?))?|choose\s+(?:corrected|new|option\s+(?:two|2))|option\s+(?:two|2)|yes|confirm|looks\s+good)$/i, action: 'accept', hasArg: false },
-    // 3. Decline (Option 1 / Previous)
+    // 3. Decline / Discard (Option 1)
     { pattern: /^(?:decline(?:\s+(?:this|that|it|proposal|changes?|edit))?|discard(?:\s+(?:this|that|it|proposal|changes?|edit))?|reject(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep\s+(?:previous|old|original)|choose\s+(?:previous|old|original|option\s+(?:one|1))|option\s+(?:one|1)|no|cancel)$/i, action: 'decline', hasArg: false },
     // 4. Undo
     { pattern: /^(?:undo|undo\s+that|revert|revert\s+that|go\s+back)$/i,                                       action: 'undo',          hasArg: false },
@@ -1030,7 +962,7 @@ const VPCommandParser = (() => {
     // 8. Copy to Clipboard
     { pattern: /^(?:copy|copy\s+all|copy\s+draft|copy\s+to\s+clipboard|clipboard)$/i,                         action: 'copy',          hasArg: false },
     // 9. Clear Draft
-    { pattern: /^(?:clear|clear\s+(?:draft|all|text|document)|delete\s+all)$/i,                             action: 'clear',         hasArg: false },
+    { pattern: /^(?:clear|clear\s+(?:draft|all|text|document)|delete\s+all)$/i,                               action: 'clear',         hasArg: false },
     // 10. Separate Note
     { pattern: /^(?:make\s+that\s+a\s+separate\s+note|separate\s+note|move\s+to\s+notes?)$/i,                 action: 'separate_note', hasArg: false },
     // 11. Rich Text Formatting Commands (Local, instant)
@@ -1045,7 +977,6 @@ const VPCommandParser = (() => {
   function buildCatchwordRegex(catchword) {
     if (!catchword || !catchword.trim()) return null;
     const escaped = catchword.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    // Match catchword at start OR preceded by boundary/space/punctuation
     return new RegExp('(?:^|[\\s.,;:!?"\'—])(' + escaped + '(?:\\b|\\s*[,.:;\\-])\\s*([\\s\\S]*))$', 'i');
   }
 
@@ -1063,10 +994,8 @@ const VPCommandParser = (() => {
       return { action: 'empty_prompt', arg: '', commandText: fullCommand };
     }
 
-    // Strip surrounding punctuation common in dictation (e.g. "undo.", "read.", "copy.", "accept,")
     const cleanBody = rawBody.replace(/^[.,;:!?"'—\s]+|[.,;:!?"'—\s]+$/g, '').trim();
 
-    // Check clean body first for local commands
     for (const { pattern, action, hasArg } of COMMAND_MAP) {
       const match = pattern.exec(cleanBody) || pattern.exec(rawBody);
       if (match) {
@@ -1078,7 +1007,6 @@ const VPCommandParser = (() => {
       }
     }
 
-    // If not matching any local command, the phrase is an AI instruction!
     return {
       action: 'ai_instruction',
       arg: cleanBody || rawBody,
@@ -1090,1121 +1018,1002 @@ const VPCommandParser = (() => {
 })();
 
 // === src/segment_tracker.js (Robust Contenteditable Segment Tracker) ===
-const VPSegmentTracker = (() => {
-  function getPlainText(el) {
-    if (!el) return '';
-    return el.innerText !== undefined ? el.innerText : (el.textContent || '');
+class VPWisprTracker {
+  constructor(element, options = {}) {
+    this.el = element;
+    this.onSegment = options.onSegment || null;
+    this.debounceMs = options.debounceMs || 400;
+    this._snapshot = this._getText();
+    this._timer = null;
+    this._guard = false;
+    this._handler = () => this._onInput();
+    this.el.addEventListener('input', this._handler);
   }
 
-  function attach(editor, { debounceMs = 400, onSegment } = {}) {
-    let _guard = false;
-    let _baseline = getPlainText(editor);
-    let _debounceTimer = null;
+  _getText() {
+    return this.el.innerText || this.el.textContent || '';
+  }
 
-    function setGuard(val) {
-      _guard = !!val;
-      if (val) clearTimeout(_debounceTimer);
-    }
-
-    function syncSnapshot() {
-      _baseline = getPlainText(editor);
-    }
-
-    function checkDiff() {
-      if (_guard) return;
-      const currentVal = getPlainText(editor);
-      if (currentVal === _baseline) return;
-
-      const oldLen = _baseline.length;
-      const newLen = currentVal.length;
+  _onInput() {
+    if (this._guard) return;
+    clearTimeout(this._timer);
+    this._timer = setTimeout(() => {
+      const current = this._getText();
+      const prev = this._snapshot;
+      if (current === prev) return;
 
       let prefixLen = 0;
-      while (prefixLen < oldLen && prefixLen < newLen && _baseline[prefixLen] === currentVal[prefixLen]) {
+      while (prefixLen < prev.length && prefixLen < current.length && prev[prefixLen] === current[prefixLen]) {
         prefixLen++;
       }
 
-      let suffixLen = 0;
-      while (suffixLen < (oldLen - prefixLen) && suffixLen < (newLen - prefixLen) &&
-             _baseline[oldLen - 1 - suffixLen] === currentVal[newLen - 1 - suffixLen]) {
-        suffixLen++;
+      let prevSuffix = prev.length;
+      let currSuffix = current.length;
+      while (prevSuffix > prefixLen && currSuffix > prefixLen && prev[prevSuffix - 1] === current[currSuffix - 1]) {
+        prevSuffix--;
+        currSuffix--;
       }
 
-      const insertedText = currentVal.slice(prefixLen, newLen - suffixLen);
-      if (!insertedText || !insertedText.trim()) return;
+      const inserted = current.slice(prefixLen, currSuffix);
+      this._snapshot = current;
 
-      const seg = {
-        insertedText,
-        insertStart: prefixLen,
-        insertEnd: newLen - suffixLen,
-        editor,
-      };
-
-      clearTimeout(_debounceTimer);
-      // Fast path: if Shazam trigger is detected, settle quickly (90ms)
-      const isCommand = /shazam/i.test(insertedText) || /shazam/i.test(currentVal);
-      const waitMs = isCommand ? 90 : debounceMs;
-
-      _debounceTimer = setTimeout(() => {
-        _baseline = getPlainText(editor);
-        if (typeof onSegment === 'function') onSegment(seg);
-      }, waitMs);
-    }
-
-    editor.addEventListener('input', checkDiff);
-    editor.addEventListener('paste', () => setTimeout(checkDiff, 20));
-
-    function detach() {
-      clearTimeout(_debounceTimer);
-      editor.removeEventListener('input', checkDiff);
-    }
-
-    return { detach, setGuard, syncSnapshot };
+      if (inserted && inserted.trim().length > 0 && typeof this.onSegment === 'function') {
+        this.onSegment(inserted, current);
+      }
+    }, this.debounceMs);
   }
 
-  return { attach, getPlainText };
-})();
+  setGuard(val) { this._guard = val; }
+  syncSnapshot() { this._snapshot = this._getText(); }
+  destroy() {
+    clearTimeout(this._timer);
+    this.el.removeEventListener('input', this._handler);
+  }
+}
 
 // === src/voice_feedback.js ===
 const VPVoiceFeedback = (() => {
-  let _enabled = true;
-  function isAvailable() { return typeof window !== 'undefined' && 'speechSynthesis' in window; }
-  function setEnabled(val) { _enabled = !!val; }
-  function speak(text, { rate = 1.05 } = {}) {
-    if (!_enabled || !isAvailable() || !text) return;
-    try {
-      window.speechSynthesis.cancel();
-      const utt = new SpeechSynthesisUtterance(String(text).slice(0, 800));
-      utt.rate = rate;
-      window.speechSynthesis.speak(utt);
-    } catch (e) {}
+  let enabled = true;
+  function speak(text) {
+    if (!enabled || !window.speechSynthesis || !text) return;
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const utt = new SpeechSynthesisUtterance(cleanText);
+    utt.rate = 1.05;
+    utt.pitch = 1.0;
+    window.speechSynthesis.speak(utt);
   }
-  return { isAvailable, setEnabled, speak };
+  function stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+  function setEnabled(val) { enabled = Boolean(val); }
+  return { speak, stop, setEnabled };
 })();
 
 // === src/editor_state.js ===
 const VPEditorState = (() => {
-  const MAX_HISTORY = 30;
-  function createState() {
-    return { acceptedDraft: '', undoStack: [], redoStack: [], pendingProposal: null, notes: [] };
+  function createState(initial = '') {
+    return {
+      acceptedDraft: initial,
+      pendingProposal: null,
+      history: [initial],
+      historyIdx: 0,
+      notes: []
+    };
   }
-  function acceptDraft(state, newText) {
-    if (newText === state.acceptedDraft) return state;
-    const undoStack = [...state.undoStack, state.acceptedDraft].slice(-MAX_HISTORY);
-    return { ...state, acceptedDraft: newText, undoStack, redoStack: [], pendingProposal: null };
+
+  function acceptDraft(state, text) {
+    const history = state.history.slice(0, state.historyIdx + 1);
+    history.push(text);
+    return {
+      ...state,
+      acceptedDraft: text,
+      pendingProposal: null,
+      history,
+      historyIdx: history.length - 1
+    };
   }
-  function setProposal(state, proposalText, reasonType = 'General Polish', reason = '', isReview = false) {
-    return { ...state, pendingProposal: { text: proposalText, reasonType, reason, isReview } };
+
+  function proposeEdit(state, text, reason = '', isReview = false) {
+    return {
+      ...state,
+      pendingProposal: { text, reason, isReview }
+    };
   }
+
   function applyProposal(state) {
     if (!state.pendingProposal) return state;
     return acceptDraft(state, state.pendingProposal.text);
   }
+
   function discardProposal(state) {
-    if (!state.pendingProposal) return state;
     return { ...state, pendingProposal: null };
   }
+
   function undo(state) {
-    if (state.pendingProposal) return discardProposal(state);
-    if (state.undoStack.length === 0) return state;
-    const previous = state.undoStack[state.undoStack.length - 1];
-    const undoStack = state.undoStack.slice(0, -1);
-    const redoStack = [...state.redoStack, state.acceptedDraft].slice(-MAX_HISTORY);
-    return { ...state, acceptedDraft: previous, undoStack, redoStack, pendingProposal: null };
+    if (state.historyIdx <= 0) return state;
+    const newIdx = state.historyIdx - 1;
+    return {
+      ...state,
+      acceptedDraft: state.history[newIdx],
+      pendingProposal: null,
+      historyIdx: newIdx
+    };
   }
+
   function redo(state) {
-    if (state.redoStack.length === 0) return state;
-    const next = state.redoStack[state.redoStack.length - 1];
-    const redoStack = state.redoStack.slice(0, -1);
-    const undoStack = [...state.undoStack, state.acceptedDraft].slice(-MAX_HISTORY);
-    return { ...state, acceptedDraft: next, undoStack, redoStack, pendingProposal: null };
+    if (state.historyIdx >= state.history.length - 1) return state;
+    const newIdx = state.historyIdx + 1;
+    return {
+      ...state,
+      acceptedDraft: state.history[newIdx],
+      pendingProposal: null,
+      historyIdx: newIdx
+    };
   }
-  return { createState, acceptDraft, setProposal, applyProposal, discardProposal, undo, redo };
+
+  return {
+    createState,
+    acceptDraft,
+    proposeEdit,
+    applyProposal,
+    discardProposal,
+    undo,
+    redo
+  };
 })();
-  </script>
 
-  <!-- ════════════════════ APPLICATION CONTROLLER ════════════════════ -->
-  <script>
-    let state = VPEditorState.createState();
-    let tracker = null;
-    let catchword = 'Shazam';
-    let _internalWrite = false;
+// ════════════════════ APPLICATION CONTROLLER ════════════════════
+let state = VPEditorState.createState();
+let tracker = null;
+let catchword = 'Shazam';
+let _internalWrite = false;
 
-    // Interruption handling
-    let _currentOpId = 0;
-    let _activeAbortController = null;
+// Interruption handling
+let _currentOpId = 0;
+let _activeAbortController = null;
 
-    // Built-in Permanent Gemini API Key (Users directly work out of the box)
-    const PERMANENT_GEMINI_KEY = '';
-    let VP_GEMINI_KEY = PERMANENT_GEMINI_KEY || localStorage.getItem('vp_gemini_key') || '';
-    let _activeGeminiModel = localStorage.getItem('vp_gemini_model') || 'gemini-2.0-flash';
+// Built-in Silent Gemini Config (Zero Key Required for Non-Technical Users)
+const PERMANENT_GEMINI_KEY = '';
+let VP_GEMINI_KEY = PERMANENT_GEMINI_KEY || localStorage.getItem('vp_gemini_key') || '';
+let _activeGeminiModel = localStorage.getItem('vp_gemini_model') || 'gemini-3.5-flash-lite';
 
-    // DOM Elements
-    const draftEditor          = document.getElementById('draft-editor');
-    const editorWrapper        = document.getElementById('editor-wrapper');
-    const draftDiffDisplay     = document.getElementById('draft-diff-display');
-    const proposalReasonBanner = document.getElementById('proposal-reason-banner');
-    const proposalReasonText   = document.getElementById('proposal-reason-text');
-    const voiceStatusPill      = document.getElementById('voice-status-pill');
-    const voiceStatusText      = document.getElementById('voice-status-text');
-    const docStatsEl           = document.getElementById('doc-stats');
-    const caretPosEl           = document.getElementById('caret-pos');
-    const historyCounterEl     = document.getElementById('history-counter');
-    const docTitleInput        = document.getElementById('doc-title-input');
-    const saveStatusEl         = document.getElementById('save-status');
+// DOM Elements
+const draftEditor          = document.getElementById('draft-editor');
+const editorWrapper        = document.getElementById('editor-wrapper');
+const draftDiffDisplay     = document.getElementById('draft-diff-display');
+const proposalReasonBanner = document.getElementById('proposal-reason-banner');
+const proposalReasonText   = document.getElementById('proposal-reason-text');
+const voiceStatusPill      = document.getElementById('voice-status-pill');
+const voiceStatusText      = document.getElementById('voice-status-text');
+const docStatsEl           = document.getElementById('doc-stats');
+const caretPosEl           = document.getElementById('caret-pos');
+const readingTimeEl        = document.getElementById('reading-time');
+const docTitleInput        = document.getElementById('doc-title-input');
+const saveStatusEl         = document.getElementById('save-status');
+const toastEl              = document.getElementById('vp-toast');
+const toastMsg             = document.getElementById('vp-toast-msg');
+let toastTimer             = null;
 
-    const toastEl              = document.getElementById('vp-toast');
-    const toastMsg             = document.getElementById('vp-toast-msg');
-    let _toastTimer            = null;
+function showToast(msg, duration = 3000) {
+  if (!toastEl) return;
+  toastMsg.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), duration);
+}
+document.getElementById('vp-toast-close').addEventListener('click', () => toastEl.classList.remove('show'));
 
-    function showToast(msg, durationMs = 3800) {
-      toastMsg.textContent = msg;
-      toastEl.classList.add('visible');
-      clearTimeout(_toastTimer);
-      _toastTimer = setTimeout(() => toastEl.classList.remove('visible'), durationMs);
+function setStatus(statusClass, label) {
+  voiceStatusPill.className = statusClass;
+  voiceStatusText.textContent = label;
+}
+
+// Word & Character Counter
+function updateStats() {
+  const text = draftEditor.innerText || '';
+  const chars = text.length;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  docStatsEl.textContent = words + ' words · ' + chars + ' chars';
+  if (readingTimeEl) {
+    const mins = Math.max(1, Math.ceil(words / 200));
+    readingTimeEl.textContent = mins + ' min read';
+  }
+}
+
+// Caret Position Tracking
+function updateCaretPos() {
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  const preCaret = range.cloneRange();
+  preCaret.selectNodeContents(draftEditor);
+  preCaret.setEnd(range.endContainer, range.endOffset);
+  const text = preCaret.toString();
+  const lines = text.split('\n');
+  const line = lines.length;
+  const col = lines[lines.length - 1].length + 1;
+  caretPosEl.textContent = 'Ln ' + line + ', Col ' + col;
+}
+
+['keyup', 'mouseup', 'click'].forEach(evt => {
+  draftEditor.addEventListener(evt, () => {
+    updateCaretPos();
+    updateStats();
+  });
+});
+
+// Auto-save debounced
+let autoSaveTimer = null;
+function triggerAutoSave() {
+  saveStatusEl.textContent = '● Saving...';
+  saveStatusEl.style.color = 'var(--text-dim)';
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem('vp_doc_content', draftEditor.innerHTML);
+      localStorage.setItem('vp_doc_title', docTitleInput.value);
+      saveStatusEl.textContent = '✓ Auto-saved';
+      saveStatusEl.style.color = '#10b981';
+    } catch (e) {
+      saveStatusEl.textContent = 'Save error';
     }
+  }, 500);
+}
 
-    document.getElementById('vp-toast-close').addEventListener('click', () => {
-      clearTimeout(_toastTimer);
-      toastEl.classList.remove('visible');
-    });
+// Markdown Export Helper
+function editorToMarkdown() {
+  const div = document.createElement('div');
+  div.innerHTML = draftEditor.innerHTML;
 
-    function setStatus(type, label) {
-      voiceStatusPill.className = type;
-      voiceStatusText.textContent = label || (type === 'ready' ? 'Wispr Ready' : type);
+  function walk(node) {
+    if (node.nodeType === 3) return node.nodeValue;
+    if (node.nodeType !== 1) return '';
+
+    const tag = node.tagName.toLowerCase();
+    let inner = '';
+    for (const child of node.childNodes) inner += walk(child);
+
+    switch (tag) {
+      case 'h1': return '\n# ' + inner.trim() + '\n\n';
+      case 'h2': return '\n## ' + inner.trim() + '\n\n';
+      case 'h3': return '\n### ' + inner.trim() + '\n\n';
+      case 'strong': case 'b': return '**' + inner + '**';
+      case 'em': case 'i': return '*' + inner + '*';
+      case 'code': return '`' + inner + '`';
+      case 'blockquote': return '\n> ' + inner.trim() + '\n\n';
+      case 'li': return '- ' + inner.trim() + '\n';
+      case 'ul': case 'ol': return '\n' + inner + '\n';
+      case 'p': return inner.trim() ? inner.trim() + '\n\n' : '';
+      case 'br': return '\n';
+      default: return inner;
     }
+  }
 
-    // ── Markdown ⟷ HTML Conversion ──
-    function markdownToHtml(md) {
-      if (!md) return '';
-      if (/<(p|h1|h2|h3|ul|ol|blockquote|div|strong|em)[\s>]/i.test(md)) return md;
+  return walk(div).replace(/\n{3,}/g, '\n\n').trim();
+}
 
-      const lines = md.replace(/\r\n/g, '\n').split('\n');
-      let html = '';
-      let inList = false;
-
-      for (let i = 0; i < lines.length; i++) {
-        let line = lines[i].trim();
-        if (!line) {
-          if (inList) { html += '</ul>'; inList = false; }
-          continue;
-        }
-
-        line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        line = line.replace(/\*(.*?)\*/g, '<em>$1</em>');
-        line = line.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-        if (line.startsWith('# ')) {
-          if (inList) { html += '</ul>'; inList = false; }
-          html += '<h1>' + line.slice(2) + '</h1>';
-        } else if (line.startsWith('## ')) {
-          if (inList) { html += '</ul>'; inList = false; }
-          html += '<h2>' + line.slice(3) + '</h2>';
-        } else if (line.startsWith('### ')) {
-          if (inList) { html += '</ul>'; inList = false; }
-          html += '<h3>' + line.slice(4) + '</h3>';
-        } else if (line.startsWith('- ') || line.startsWith('* ')) {
-          if (!inList) { html += '<ul>'; inList = true; }
-          html += '<li>' + line.slice(2) + '</li>';
-        } else if (line.startsWith('> ')) {
-          if (inList) { html += '</ul>'; inList = false; }
-          html += '<blockquote>' + line.slice(2) + '</blockquote>';
-        } else {
-          if (inList) { html += '</ul>'; inList = false; }
-          html += '<p>' + line + '</p>';
-        }
-      }
-      if (inList) html += '</ul>';
-      return html;
-    }
-
-    function htmlToMarkdown(html) {
-      if (!html) return '';
-      const div = document.createElement('div');
-      div.innerHTML = html;
-
-      function walk(node) {
-        if (node.nodeType === Node.TEXT_NODE) return node.nodeValue;
-        if (node.nodeType !== Node.ELEMENT_NODE) return '';
-
-        const tag = node.tagName.toLowerCase();
-        let inner = '';
-        for (const child of node.childNodes) inner += walk(child);
-
-        switch (tag) {
-          case 'h1': return '\n# ' + inner.trim() + '\n\n';
-          case 'h2': return '\n## ' + inner.trim() + '\n\n';
-          case 'h3': return '\n### ' + inner.trim() + '\n\n';
-          case 'strong': case 'b': return '**' + inner + '**';
-          case 'em': case 'i': return '*' + inner + '*';
-          case 'code': return '`' + inner + '`';
-          case 'blockquote': return '\n> ' + inner.trim() + '\n\n';
-          case 'li': return '- ' + inner.trim() + '\n';
-          case 'ul': case 'ol': return '\n' + inner + '\n';
-          case 'p': return inner.trim() ? inner.trim() + '\n\n' : '';
-          case 'br': return '\n';
-          default: return inner;
-        }
-      }
-
-      return walk(div).replace(/\n{3,}/g, '\n\n').trim();
-    }
-
-    // Caret placement: jump to end using requestAnimationFrame
-    function moveCaretToEnd(el) {
-      if (!el) return;
-      requestAnimationFrame(() => {
-        try {
-          el.focus();
-          const range = document.createRange();
-          range.selectNodeContents(el);
-          range.collapse(false);
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-        } catch (e) {}
-      });
-    }
-
-    function writeToEditor(htmlVal, shouldMoveToEnd = true) {
-      _internalWrite = true;
-      if (tracker) tracker.setGuard(true);
-      draftEditor.innerHTML = htmlVal || '';
-      if (shouldMoveToEnd) moveCaretToEnd(draftEditor);
-      if (tracker) {
-        tracker.syncSnapshot();
-        tracker.setGuard(false);
-      }
-      _internalWrite = false;
-      updateStats();
-      triggerAutoSave();
-    }
-
-    // In-Place Diff Generation (Highlights in Red/Green)
-    function renderInPlaceDiff(oldHtml, newHtml) {
-      const oldText = typeof oldHtml === 'string' ? oldHtml : '';
-      const newText = typeof newHtml === 'string' ? newHtml : '';
-
-      if (!oldText && !newText) return '';
-      if (!oldText) return '<span class="diff-added-highlight">' + newText + '</span>';
-      if (!newText) return '<span class="diff-removed-highlight">' + oldText + '</span>';
-
-      const oldWords = oldText.split(/(\s+)/);
-      const newWords = newText.split(/(\s+)/);
-
-      let prefixLen = 0;
-      while (prefixLen < oldWords.length && prefixLen < newWords.length && oldWords[prefixLen] === newWords[prefixLen]) prefixLen++;
-
-      let suffixLen = 0;
-      while (suffixLen < (oldWords.length - prefixLen) && suffixLen < (newWords.length - prefixLen) &&
-             oldWords[oldWords.length - 1 - suffixLen] === newWords[newWords.length - 1 - suffixLen]) suffixLen++;
-
-      const removed = oldWords.slice(prefixLen, oldWords.length - suffixLen).join('');
-      const added   = newWords.slice(prefixLen, newWords.length - suffixLen).join('');
-
-      let out = '';
-      for (let i = 0; i < prefixLen; i++) out += oldWords[i];
-      if (removed) out += '<span class="diff-removed-highlight">' + removed + '</span>';
-      if (added) out += '<span class="diff-added-highlight">' + added + '</span>';
-      for (let i = oldWords.length - suffixLen; i < oldWords.length; i++) out += oldWords[i];
-      return out;
-    }
-
-    function renderState() {
-      if (state.pendingProposal) {
-        editorWrapper.classList.add('has-proposal');
-        draftEditor.style.display = '';
-        draftDiffDisplay.style.display = '';
-        draftDiffDisplay.innerHTML = renderInPlaceDiff(state.acceptedDraft, state.pendingProposal.text);
-
-        if (state.pendingProposal.isReview) {
-          proposalReasonBanner.classList.add('visible');
-          proposalReasonText.textContent = state.pendingProposal.reason || 'Polished grammar, structure, and flow.';
-        } else {
-          proposalReasonBanner.classList.remove('visible');
-        }
-
-        setStatus('review', 'Proposal Active (Say "Shazam, accept" or "Shazam, decline")');
-        setTimeout(() => { try { draftEditor.focus(); } catch (e) {} }, 50);
-      } else {
-        editorWrapper.classList.remove('has-proposal');
-        draftEditor.style.display = '';
-        draftDiffDisplay.style.display = '';
-        proposalReasonBanner.classList.remove('visible');
-
-        if (draftEditor.innerHTML.replace(/\s+/g, ' ').trim() !== (state.acceptedDraft || '').replace(/\s+/g, ' ').trim()) {
-          writeToEditor(state.acceptedDraft);
-        }
-        setStatus('ready', 'Wispr Ready');
-      }
-
-      updateStats();
-      historyCounterEl.textContent = state.undoStack.length > 0
-        ? state.undoStack.length + ' revision' + (state.undoStack.length > 1 ? 's' : '')
-        : '';
-    }
-
-    function updateStats() {
-      const text = draftEditor.innerText || '';
-      const words = (text.trim().match(/\S+/g) || []).length;
-      const chars = text.length;
-      docStatsEl.textContent = words + ' words · ' + chars + ' characters';
-    }
-
-    let _saveTimer = null;
-    function triggerAutoSave() {
-      saveStatusEl.textContent = 'Saving...';
-      saveStatusEl.style.color = '#f59e0b';
-      clearTimeout(_saveTimer);
-      _saveTimer = setTimeout(() => {
-        try {
-          localStorage.setItem('vp_doc_content', draftEditor.innerHTML);
-          localStorage.setItem('vp_doc_title', docTitleInput.value);
-          saveStatusEl.textContent = '✓ Saved';
-          saveStatusEl.style.color = '#10b981';
-        } catch (e) {}
-      }, 500);
-    }
-
-    // Caret Position Tracker for Status Bar (Ln X, Col Y)
-    function updateCaretPos() {
+// Robust Caret placement: Always jumps to the END of text after edits
+function moveCaretToEnd(el) {
+  if (!el) return;
+  requestAnimationFrame(() => {
+    try {
+      el.focus();
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
       const sel = window.getSelection();
-      if (!sel.rangeCount) return;
-      const range = sel.getRangeAt(0);
-      const preCaretRange = range.cloneRange();
-      preCaretRange.selectNodeContents(draftEditor);
-      preCaretRange.setEnd(range.endContainer, range.endOffset);
-      const text = preCaretRange.toString();
-      const lines = text.split('\n');
-      const ln = lines.length;
-      const col = lines[lines.length - 1].length + 1;
-      caretPosEl.textContent = 'Ln ' + ln + ', Col ' + col;
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch (e) {}
+  });
+}
+
+function writeToEditor(htmlVal, shouldMoveToEnd = true) {
+  _internalWrite = true;
+  if (tracker) tracker.setGuard(true);
+  draftEditor.innerHTML = htmlVal || '';
+  if (shouldMoveToEnd) moveCaretToEnd(draftEditor);
+  if (tracker) {
+    tracker.syncSnapshot();
+    tracker.setGuard(false);
+  }
+  _internalWrite = false;
+  updateStats();
+  triggerAutoSave();
+}
+
+// In-Place Diff Generation (Highlights in Soft Red without strikethrough, Soft Green for additions)
+function renderInPlaceDiff(oldHtml, newHtml) {
+  const oldText = typeof oldHtml === 'string' ? oldHtml : '';
+  const newText = typeof newHtml === 'string' ? newHtml : '';
+
+  if (!oldText && !newText) return '';
+  if (!oldText) return '<span class="diff-added-highlight">' + newText + '</span>';
+  if (!newText) return '<span class="diff-removed-highlight">' + oldText + '</span>';
+
+  const oldWords = oldText.split(/(\s+)/);
+  const newWords = newText.split(/(\s+)/);
+
+  let prefixLen = 0;
+  while (prefixLen < oldWords.length && prefixLen < newWords.length && oldWords[prefixLen] === newWords[prefixLen]) prefixLen++;
+
+  let suffixLen = 0;
+  while (suffixLen < (oldWords.length - prefixLen) && suffixLen < (newWords.length - prefixLen) &&
+         oldWords[oldWords.length - 1 - suffixLen] === newWords[newWords.length - 1 - suffixLen]) suffixLen++;
+
+  const removed = oldWords.slice(prefixLen, oldWords.length - suffixLen).join('');
+  const added   = newWords.slice(prefixLen, newWords.length - suffixLen).join('');
+
+  let out = '';
+  for (let i = 0; i < prefixLen; i++) out += oldWords[i];
+  if (removed) out += '<span class="diff-removed-highlight">' + removed + '</span>';
+  if (added) out += '<span class="diff-added-highlight">' + added + '</span>';
+  for (let i = oldWords.length - suffixLen; i < oldWords.length; i++) out += oldWords[i];
+  return out;
+}
+
+function renderState() {
+  if (state.pendingProposal) {
+    editorWrapper.classList.add('has-proposal');
+    draftEditor.style.display = '';
+    draftDiffDisplay.style.display = '';
+    draftDiffDisplay.innerHTML = renderInPlaceDiff(state.acceptedDraft, state.pendingProposal.text);
+
+    if (state.pendingProposal.isReview) {
+      proposalReasonBanner.classList.add('visible');
+      proposalReasonText.textContent = state.pendingProposal.reason || 'AI grammar & clarity polish proposal';
+    } else {
+      proposalReasonBanner.classList.remove('visible');
     }
+  } else {
+    editorWrapper.classList.remove('has-proposal');
+    draftDiffDisplay.style.display = 'none';
+    draftEditor.style.display = '';
+    proposalReasonBanner.classList.remove('visible');
+  }
+  updateStats();
+}
 
-    document.addEventListener('selectionchange', () => {
-      if (document.activeElement === draftEditor) updateCaretPos();
-    });
-
-    // Formatting Helper
-    function formatDoc(cmd, val = null) {
-      document.execCommand(cmd, false, val);
-      state = VPEditorState.acceptDraft(state, draftEditor.innerHTML);
-      renderState();
-      moveCaretToEnd(draftEditor);
-    }
-
-    // ── High-Speed Google Gemini Integration ──
-    async function callGemini(draftText, instruction, apiKey, isReview = false, signal) {
-      let prompt = '';
-      if (isReview) {
-        prompt = 'Polish this document for grammar, flow, and clarity. Preserve markdown headings, lists, and bold words.\nDocument:\n"""\n' + draftText + '\n"""\n\nReturn ONLY a raw JSON object with this exact shape:\n{"revised": "the polished document text", "reason": "brief 1-sentence summary"}';
+// Formatting Helper (Applies to selection or current word, updates state and keeps caret at end)
+function formatDoc(cmd, val = null) {
+  draftEditor.focus();
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    const range = sel.getRangeAt(0);
+    if (range.collapsed) {
+      if (cmd === 'bold' || cmd === 'italic' || cmd === 'underline') {
+        sel.modify('move', 'backward', 'word');
+        sel.modify('extend', 'forward', 'word');
+        document.execCommand(cmd, false, val);
+        sel.collapseToEnd();
       } else {
-        prompt = 'Apply this instruction to the document:\nInstruction: "' + instruction + '"\n\nDocument:\n"""\n' + draftText + '\n"""\n\nReturn ONLY the final revised document text. Preserve all formatting. No preamble, no markdown fences.';
+        document.execCommand(cmd, false, val);
+      }
+    } else {
+      document.execCommand(cmd, false, val);
+    }
+  } else {
+    document.execCommand(cmd, false, val);
+  }
+  state = VPEditorState.acceptDraft(state, draftEditor.innerHTML);
+  renderState();
+  moveCaretToEnd(draftEditor);
+}
+
+// ── Ultra-Fast Local Heuristics for Common Targeted Commands (Latency < 5ms) ──
+function tryLocalFastEdit(draftText, instruction) {
+  if (!draftText || !instruction) return null;
+  const lowerInst = instruction.toLowerCase().trim();
+
+  // "put a comma next to / after hello"
+  const commaMatch = lowerInst.match(/put\s+a\s+comma\s+(?:next\s+to|after)\s+([a-zA-Z0-9_-]+)/);
+  if (commaMatch) {
+    const targetWord = commaMatch[1];
+    const re = new RegExp('(\\b' + targetWord + ')(?!,)', 'i');
+    if (re.test(draftText)) {
+      return draftText.replace(re, '$1,');
+    }
+  }
+
+  // "capitalize X"
+  const capMatch = lowerInst.match(/capitalize\s+([a-zA-Z0-9_-]+)/);
+  if (capMatch) {
+    const targetWord = capMatch[1];
+    const re = new RegExp('\\b' + targetWord + '\\b', 'gi');
+    if (re.test(draftText)) {
+      return draftText.replace(re, w => w.toUpperCase());
+    }
+  }
+
+  // "remove / delete X"
+  const delMatch = lowerInst.match(/(?:remove|delete)\s+["']?([^"']+)["']?$/);
+  if (delMatch) {
+    const targetPhrase = delMatch[1].trim();
+    if (draftText.toLowerCase().includes(targetPhrase.toLowerCase())) {
+      const re = new RegExp(targetPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      return draftText.replace(re, '').replace(/\s{2,}/g, ' ');
+    }
+  }
+
+  return null;
+}
+
+// ── High-Speed Google Gemini Integration ──
+async function callGemini(draftText, instruction, apiKey, isReview = false, signal) {
+  // Check local fast edit first for sub-millisecond response!
+  if (!isReview) {
+    const localFastResult = tryLocalFastEdit(draftText, instruction);
+    if (localFastResult) {
+      return { revised: localFastResult, reason: 'Instant targeted edit applied.' };
+    }
+  }
+
+  let prompt = '';
+  if (isReview) {
+    prompt = 'Polish this document for grammar, flow, and clarity. Preserve markdown headings, lists, and bold words.\nDocument:\n"""\n' + draftText + '\n"""\n\nReturn ONLY a raw JSON object with this exact shape:\n{"revised": "the polished document text", "reason": "brief 1-sentence summary"}';
+  } else {
+    prompt = 'Apply this instruction to the document:\nInstruction: "' + instruction + '"\n\nDocument:\n"""\n' + draftText + '\n"""\n\nReturn ONLY the final revised document text. Preserve all formatting. No preamble, no markdown fences.';
+  }
+
+  let savedModel = localStorage.getItem('vp_gemini_model');
+  if (savedModel && (savedModel.includes('preview') || savedModel.includes('02-05') || savedModel.includes('undefined'))) {
+    try { localStorage.removeItem('vp_gemini_model'); } catch (e) {}
+    savedModel = null;
+  }
+  const candidateModels = [
+    savedModel,
+    'gemini-3.5-flash-lite',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-2.5-flash-lite'
+  ].filter(Boolean);
+  const uniqueModels = [...new Set(candidateModels)];
+  let lastError = null;
+
+  for (const modelName of uniqueModels) {
+    try {
+      const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent?key=' + apiKey;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal,
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.1, maxOutputTokens: 1024, topP: 0.8 }
+        })
+      });
+
+      if (resp.status === 404) {
+        lastError = new Error('Model ' + modelName + ' not found');
+        continue;
       }
 
-      let savedModel = localStorage.getItem('vp_gemini_model');
-      if (savedModel && (savedModel.includes('preview') || savedModel.includes('02-05') || savedModel.includes('undefined'))) {
-        try { localStorage.removeItem('vp_gemini_model'); } catch (e) {}
-        savedModel = null;
+      if (!resp.ok) {
+        const errJson = await resp.json().catch(() => ({}));
+        throw new Error(errJson.error?.message || 'Gemini error (' + resp.status + ')');
       }
-      const candidateModels = [
-        savedModel,
-        'gemini-3.5-flash-lite',
-        'gemini-2.5-flash-lite',
-        'gemini-2.0-flash-lite',
-        'gemini-2.5-flash',
-        'gemini-2.0-flash',
-        'gemini-1.5-flash',
-        'gemini-1.5-flash-latest'
-      ].filter(Boolean);
-      const uniqueModels = [...new Set(candidateModels)];
-      let lastError = null;
 
-      for (const modelName of uniqueModels) {
+      const data = await resp.json();
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      if (!rawText) throw new Error('Empty response received from Gemini.');
+
+      _activeGeminiModel = modelName;
+      localStorage.setItem('vp_gemini_model', modelName);
+
+      if (isReview) {
         try {
-          const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent?key=' + apiKey;
+          const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
+          const parsed = JSON.parse(cleaned);
+          if (parsed.revised) {
+            return { revised: parsed.revised.trim(), reason: parsed.reason || 'Polished grammar and structure.' };
+          }
+        } catch (e) {}
+        return { revised: rawText, reason: 'Polished grammar and clarity.' };
+      }
+
+      return { revised: rawText, reason: '' };
+    } catch (e) {
+      if (e.name === 'AbortError') throw e;
+      lastError = e;
+    }
+  }
+
+  // Dynamic fallback discovery if static models return 404
+  try {
+    const listResp = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + apiKey, { signal });
+    if (listResp.ok) {
+      const listData = await listResp.json();
+      const available = (listData.models || [])
+        .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+        .map(m => m.name.replace(/^models\//, ''));
+
+      for (const fallbackModel of available) {
+        if (uniqueModels.includes(fallbackModel)) continue;
+        try {
+          const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + fallbackModel + ':generateContent?key=' + apiKey;
           const resp = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             signal,
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.1, maxOutputTokens: 2048, topP: 0.8 }
+              generationConfig: { temperature: 0.1, maxOutputTokens: 1024 }
             })
           });
-
-          if (resp.status === 404) {
-            const errJson = await resp.json().catch(() => ({}));
-            lastError = new Error(errJson.error?.message || 'Model ' + modelName + ' not found');
-            continue;
-          }
-
-          if (!resp.ok) {
-            const errJson = await resp.json().catch(() => ({}));
-            throw new Error(errJson.error?.message || 'API status ' + resp.status);
-          }
-
+          if (!resp.ok) continue;
           const data = await resp.json();
           const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
           if (rawText) {
-            _activeGeminiModel = modelName;
-            localStorage.setItem('vp_gemini_model', modelName);
-            if (isReview) {
-              try {
-                const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
-                const parsed = JSON.parse(cleaned);
-                if (parsed.revised) {
-                  return { revised: parsed.revised.trim(), reason: parsed.reason || 'Polished grammar and structure.' };
-                }
-              } catch (e) {}
-              return { revised: rawText, reason: 'Polished grammar and clarity.' };
-            }
-            return { revised: rawText, reason: '' };
+            _activeGeminiModel = fallbackModel;
+            localStorage.setItem('vp_gemini_model', fallbackModel);
+            return { revised: rawText, reason: 'Polished phrasing.' };
           }
         } catch (e) {
           if (e.name === 'AbortError') throw e;
-          lastError = e;
         }
       }
-
-      // Dynamic fallback discovery if static models return 404
-      try {
-        const listResp = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + apiKey, { signal });
-        if (listResp.ok) {
-          const listData = await listResp.json();
-          const available = (listData.models || [])
-            .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
-            .map(m => m.name.replace(/^models\//, ''));
-
-          const sortedModels = available.sort((a, b) => {
-            const score = name => (name.includes('flash-lite') ? 3 : name.includes('flash') ? 2 : 1);
-            return score(b) - score(a);
-          });
-
-          for (const fallbackModel of sortedModels) {
-            if (uniqueModels.includes(fallbackModel)) continue;
-            try {
-              const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + fallbackModel + ':generateContent?key=' + apiKey;
-              const resp = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                signal,
-                body: JSON.stringify({
-                  contents: [{ parts: [{ text: prompt }] }],
-                  generationConfig: { temperature: 0.1, maxOutputTokens: 2048, topP: 0.8 }
-                })
-              });
-              if (!resp.ok) continue;
-              const data = await resp.json();
-              const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-              if (rawText) {
-                _activeGeminiModel = fallbackModel;
-                localStorage.setItem('vp_gemini_model', fallbackModel);
-                if (isReview) {
-                  try {
-                    const cleaned = rawText.replace(/^\`\`\`json\s*|\s*\`\`\`$/g, '').trim();
-                    const parsed = JSON.parse(cleaned);
-                    if (parsed.revised) {
-                      return { revised: parsed.revised.trim(), reason: parsed.reason || 'Polished grammar and structure.' };
-                    }
-                  } catch (e) {}
-                  return { revised: rawText, reason: 'Polished grammar and clarity.' };
-                }
-                return { revised: rawText, reason: '' };
-              }
-            } catch (e) {
-              if (e.name === 'AbortError') throw e;
-            }
-          }
-        }
-      } catch (e) {
-        if (e.name === 'AbortError') throw e;
-      }
-
-      throw lastError || new Error('Could not polish draft right now.');
     }
+  } catch (e) {
+    if (e.name === 'AbortError') throw e;
+  }
 
-    async function callAI(content, instruction, isReview = false, signal) {
-      const plain = (content || '').replace(/<[^>]+>/g, ' ').trim();
-      if (!plain) {
-        throw new Error('Your document is empty. Dictate or type some content first.');
+  throw lastError || new Error('Could not polish draft right now.');
+}
+
+async function callAI(draftText, instruction, isReview = false, signal) {
+  const activeKey = PERMANENT_GEMINI_KEY || VP_GEMINI_KEY;
+  if (!activeKey) {
+    const localResult = tryLocalFastEdit(draftText, instruction);
+    if (localResult) return { revised: localResult, reason: 'Instant targeted edit applied.' };
+    throw new Error('Cloud AI polish is currently offline. All hands-free voice formatting (bold, italic, headings, lists, undo, redo, read, clear) works 100% locally with zero setup!');
+  }
+  return callGemini(draftText, instruction, activeKey, isReview, signal);
+}
+
+// ── Command Executor ──
+async function executeCommand(cmd, originalSegment) {
+  if (!cmd) return;
+
+  switch (cmd.action) {
+    case 'empty_prompt':
+      showToast('Wake word heard — speak a command (e.g. "Shazam, bold" or "Shazam, polish")');
+      break;
+
+    case 'review': {
+      const currentDraft = draftEditor.innerText || '';
+      if (!currentDraft.trim()) {
+        showToast('Draft is empty — nothing to polish.');
+        return;
       }
 
-      const activeKey = PERMANENT_GEMINI_KEY || VP_GEMINI_KEY;
-      if (!activeKey) {
-        throw new Error('Cloud AI polish is currently offline. All hands-free voice formatting (bold, italic, headings, lists, undo, redo, read, clear) works 100% locally with zero setup!');
-      }
-
-      const markdown = htmlToMarkdown(content);
-      return await callGemini(markdown, instruction, activeKey, isReview, signal);
-    }
-
-    // ── Command Routing & Execution ──
-    async function executeCommand(parsed, insertedText) {
-      const { action, arg } = parsed;
-
-      _currentOpId++;
-      const thisOpId = _currentOpId;
       if (_activeAbortController) {
-        try { _activeAbortController.abort(); } catch (e) {}
+        _activeAbortController.abort();
         _activeAbortController = null;
       }
+
+      const thisOpId = ++_currentOpId;
       _activeAbortController = new AbortController();
       const signal = _activeAbortController.signal;
 
-      setStatus('listening', 'Command: ' + action);
+      setStatus('thinking', 'Thinking... (Click to stop)');
+      editorWrapper.classList.add('thinking');
+      showToast('✨ Polishing document...');
 
-      switch (action) {
-        case 'review': {
-          showToast('Consulting AI editor for polish...');
-          setStatus('review', 'Polishing... (Click to stop)');
-          if (editorWrapper) editorWrapper.classList.add('thinking');
-          try {
-            const res = await callAI(state.acceptedDraft, 'Comprehensive Review', true, signal);
-            if (thisOpId !== _currentOpId) return;
+      try {
+        const result = await callAI(currentDraft, '', true, signal);
+        if (thisOpId !== _currentOpId) return;
 
-            const revisedHtml = markdownToHtml(res.revised);
-            state = VPEditorState.setProposal(state, revisedHtml, 'Review & Polish', res.reason, true);
-            renderState();
-            showToast('Review ready! Say "Shazam, accept" or "Shazam, decline".');
-            VPVoiceFeedback.speak('Review ready. Say Shazam accept or decline.');
-          } catch (e) {
-            if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
-            showToast('Review notice: ' + e.message, 5000);
-            setStatus('error', 'AI Review Failed');
-          } finally {
-            if (editorWrapper) editorWrapper.classList.remove('thinking');
-          }
-          break;
-        }
-
-        case 'ai_instruction': {
-          if (!arg || !arg.trim()) {
-            showToast('Please state what you want to edit.');
-            break;
-          }
-          showToast('Applying: "' + arg + '"...');
-          setStatus('review', 'Editing... (Click to stop)');
-          if (editorWrapper) editorWrapper.classList.add('thinking');
-          try {
-            const res = await callAI(state.acceptedDraft, arg, false, signal);
-            if (thisOpId !== _currentOpId) return;
-
-            const revisedHtml = markdownToHtml(res.revised);
-            state = VPEditorState.acceptDraft(state, revisedHtml);
-            writeToEditor(revisedHtml, true);
-            renderState();
-            moveCaretToEnd(draftEditor);
-            showToast('✓ Applied: "' + arg + '"');
-            VPVoiceFeedback.speak('Edit applied');
-          } catch (e) {
-            if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
-            showToast('Edit notice: ' + e.message, 5000);
-            setStatus('error', 'AI Edit Failed');
-          } finally {
-            if (editorWrapper) editorWrapper.classList.remove('thinking');
-          }
-          break;
-        }
-
-        case 'format_bold': {
-          formatDoc('bold');
-          showToast('Toggled Bold');
-          VPVoiceFeedback.speak('Bold');
-          break;
-        }
-
-        case 'format_italic': {
-          formatDoc('italic');
-          showToast('Toggled Italic');
-          VPVoiceFeedback.speak('Italic');
-          break;
-        }
-
-        case 'format_heading': {
-          const current = (document.queryCommandValue('formatBlock') || 'p').toLowerCase();
-          const target = current === 'h2' ? 'p' : 'h2';
-          formatDoc('formatBlock', target);
-          showToast(target === 'h2' ? 'Formatted as Heading' : 'Formatted as Paragraph');
-          VPVoiceFeedback.speak(target === 'h2' ? 'Heading' : 'Paragraph');
-          break;
-        }
-
-        case 'format_list': {
-          formatDoc('insertUnorderedList');
-          showToast('Toggled Bullet List');
-          VPVoiceFeedback.speak('List');
-          break;
-        }
-
-        case 'accept': {
-          if (!state.pendingProposal) {
-            showToast('No pending proposal to accept.');
-          } else {
-            state = VPEditorState.applyProposal(state);
-            writeToEditor(state.acceptedDraft, true);
-            renderState();
-            moveCaretToEnd(draftEditor);
-            showToast('✓ Proposal accepted.');
-            VPVoiceFeedback.speak('Proposal accepted');
-          }
-          break;
-        }
-
-        case 'decline': {
-          if (!state.pendingProposal) {
-            showToast('No pending proposal to decline.');
-          } else {
-            state = VPEditorState.discardProposal(state);
-            renderState();
-            moveCaretToEnd(draftEditor);
-            showToast('✕ Proposal declined. Original text kept.');
-            VPVoiceFeedback.speak('Proposal declined. Original kept.');
-          }
-          break;
-        }
-
-        case 'undo': {
-          const prev = state;
-          state = VPEditorState.undo(state);
-          renderState();
-          moveCaretToEnd(draftEditor);
-          if (state === prev) showToast('Nothing to undo.');
-          else {
-            showToast('✓ Undone.');
-            VPVoiceFeedback.speak('Undone');
-          }
-          break;
-        }
-
-        case 'redo': {
-          const prev = state;
-          state = VPEditorState.redo(state);
-          renderState();
-          moveCaretToEnd(draftEditor);
-          if (state === prev) showToast('Nothing to redo.');
-          else {
-            showToast('✓ Redone.');
-            VPVoiceFeedback.speak('Redone');
-          }
-          break;
-        }
-
-        case 'read': {
-          const textToRead = state.pendingProposal
-            ? state.pendingProposal.text.replace(/<[^>]+>/g, ' ')
-            : (draftEditor.innerText || '');
-          if (!textToRead.trim()) showToast('Nothing to read.');
-          else {
-            showToast('🔊 Reading draft aloud...');
-            VPVoiceFeedback.speak(textToRead);
-          }
-          break;
-        }
-
-        case 'stop': {
-          if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-          if (_activeAbortController) {
-            _activeAbortController.abort();
-            _activeAbortController = null;
-            _currentOpId++;
-            if (editorWrapper) editorWrapper.classList.remove('thinking');
-            setStatus('ready', 'Wispr Ready');
-            moveCaretToEnd(draftEditor);
-          }
-          showToast('Stopped.');
-          break;
-        }
-
-        case 'copy': {
-          const cleanText = draftEditor.innerText || '';
-          if (!cleanText.trim()) showToast('Document is empty.');
-          else {
-            navigator.clipboard.writeText(cleanText).then(() => {
-              showToast('📋 Copied to clipboard!');
-              VPVoiceFeedback.speak('Copied to clipboard');
-            }).catch(() => showToast('Could not copy.'));
-          }
-          break;
-        }
-
-        case 'clear': {
-          const currentText = draftEditor.innerText || '';
-          if (!state.acceptedDraft && !currentText.trim()) {
-            showToast('Document is already empty.');
-            return;
-          }
-          state = VPEditorState.acceptDraft(state, '');
-          writeToEditor('');
-          renderState();
-          showToast('Document cleared. (Say "Shazam, undo" to restore)');
-          VPVoiceFeedback.speak('Draft cleared');
-          break;
-        }
-
-        case 'empty_prompt': {
-          showToast('Wake word heard. Say any command (e.g. "Shazam, bold", "Shazam, review").');
-          VPVoiceFeedback.speak('Listening for command');
-          break;
-        }
-
-        default:
-          break;
+        state = VPEditorState.proposeEdit(state, result.revised, result.reason || 'Polished grammar and structure.', true);
+        renderState();
+        setStatus('ready', 'Wispr Ready');
+        showToast('✨ Polish ready: Review in-place diff');
+        VPVoiceFeedback.speak('Polish ready. Say Shazam, keep, or Shazam, discard.');
+      } catch (e) {
+        if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
+        showToast('Polish notice: ' + e.message, 5000);
+        setStatus('error', 'Polish Stopped');
+      } finally {
+        if (editorWrapper) editorWrapper.classList.remove('thinking');
       }
+      break;
     }
 
-    // ── Input & Segment Handling ──
-    function removeInsertedTextFromEditor(cmdText) {
-      if (!cmdText) return;
-      const clean = cmdText.trim();
-      const walker = document.createTreeWalker(draftEditor, NodeFilter.SHOW_TEXT, null, false);
-      const textNodes = [];
-      while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-      for (let i = textNodes.length - 1; i >= 0; i--) {
-        const node = textNodes[i];
-        const idx = node.nodeValue.lastIndexOf(clean);
-        if (idx !== -1) {
-          node.nodeValue = node.nodeValue.slice(0, idx) + node.nodeValue.slice(idx + clean.length);
-          if (node.nodeValue.endsWith(' ')) node.nodeValue = node.nodeValue.trimEnd() + ' ';
-          return;
-        }
+    case 'ai_instruction': {
+      const currentDraft = draftEditor.innerText || '';
+      if (!currentDraft.trim()) {
+        showToast('Draft is empty — dictate some text first.');
+        return;
       }
-      draftEditor.innerHTML = draftEditor.innerHTML.replace(new RegExp('\\s*' + clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*', 'i'), ' ');
+
+      if (_activeAbortController) {
+        _activeAbortController.abort();
+        _activeAbortController = null;
+      }
+
+      const thisOpId = ++_currentOpId;
+      _activeAbortController = new AbortController();
+      const signal = _activeAbortController.signal;
+
+      setStatus('thinking', 'Thinking... (Click to stop)');
+      editorWrapper.classList.add('thinking');
+      showToast('Applying: ' + cmd.arg);
+
+      try {
+        const result = await callAI(currentDraft, cmd.arg, false, signal);
+        if (thisOpId !== _currentOpId) return;
+
+        state = VPEditorState.acceptDraft(state, result.revised);
+        writeToEditor(result.revised, true);
+        renderState();
+        moveCaretToEnd(draftEditor);
+        setStatus('ready', 'Wispr Ready');
+        showToast('✓ Edit applied.');
+        VPVoiceFeedback.speak('Edit applied');
+      } catch (e) {
+        if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
+        showToast('Edit notice: ' + e.message, 5000);
+        setStatus('error', 'Edit Failed');
+      } finally {
+        if (editorWrapper) editorWrapper.classList.remove('thinking');
+      }
+      break;
     }
 
-    async function handleSegment({ insertedText }) {
-      if (!insertedText || !insertedText.trim()) return;
+    case 'format_bold': {
+      formatDoc('bold');
+      showToast('Toggled Bold');
+      VPVoiceFeedback.speak('Bold');
+      break;
+    }
 
-      const trimmed = insertedText.trim();
-      const parsed = VPCommandParser.parse(trimmed, catchword);
+    case 'format_italic': {
+      formatDoc('italic');
+      showToast('Toggled Italic');
+      VPVoiceFeedback.speak('Italic');
+      break;
+    }
 
-      if (parsed) {
-        removeInsertedTextFromEditor(parsed.commandText || trimmed);
-        state.acceptedDraft = draftEditor.innerHTML;
-        if (tracker) tracker.syncSnapshot();
+    case 'format_heading': {
+      const current = (document.queryCommandValue('formatBlock') || 'p').toLowerCase();
+      const target = current === 'h2' ? 'p' : 'h2';
+      formatDoc('formatBlock', target);
+      showToast(target === 'h2' ? 'Formatted as Heading' : 'Formatted as Paragraph');
+      VPVoiceFeedback.speak(target === 'h2' ? 'Heading' : 'Paragraph');
+      break;
+    }
 
-        await executeCommand(parsed, insertedText);
+    case 'format_list': {
+      formatDoc('insertUnorderedList');
+      showToast('Toggled Bullet List');
+      VPVoiceFeedback.speak('List');
+      break;
+    }
+
+    case 'accept': {
+      if (!state.pendingProposal) {
+        showToast('No pending proposal to keep.');
       } else {
-        if (state.pendingProposal) {
-          state = VPEditorState.discardProposal(state);
-        }
-        state = VPEditorState.acceptDraft(state, draftEditor.innerHTML);
-        updateStats();
-        triggerAutoSave();
+        state = VPEditorState.applyProposal(state);
+        writeToEditor(state.acceptedDraft, true);
+        renderState();
+        moveCaretToEnd(draftEditor);
+        showToast('✓ Proposal kept.');
+        VPVoiceFeedback.speak('Proposal kept');
       }
+      break;
     }
 
-    function attachTracker() {
-      if (tracker) tracker.detach();
-      tracker = VPSegmentTracker.attach(draftEditor, {
-        debounceMs: 400,
-        onSegment: handleSegment,
-      });
+    case 'decline': {
+      if (!state.pendingProposal) {
+        showToast('No pending proposal to discard.');
+      } else {
+        state = VPEditorState.discardProposal(state);
+        renderState();
+        moveCaretToEnd(draftEditor);
+        showToast('✕ Proposal discarded. Original text kept.');
+        VPVoiceFeedback.speak('Proposal discarded');
+      }
+      break;
     }
 
-    // Stop thinking when status pill is clicked
-    voiceStatusPill.addEventListener('click', () => {
+    case 'undo': {
+      state = VPEditorState.undo(state);
+      writeToEditor(state.acceptedDraft, true);
+      renderState();
+      moveCaretToEnd(draftEditor);
+      showToast('↶ Undone');
+      VPVoiceFeedback.speak('Undone');
+      break;
+    }
+
+    case 'redo': {
+      state = VPEditorState.redo(state);
+      writeToEditor(state.acceptedDraft, true);
+      renderState();
+      moveCaretToEnd(draftEditor);
+      showToast('↷ Redone');
+      VPVoiceFeedback.speak('Redone');
+      break;
+    }
+
+    case 'read': {
+      const textToRead = state.pendingProposal ? state.pendingProposal.text : draftEditor.innerText;
+      if (!textToRead.trim()) {
+        showToast('Nothing to read aloud.');
+      } else {
+        VPVoiceFeedback.speak(textToRead);
+        showToast('🔊 Reading document...');
+      }
+      break;
+    }
+
+    case 'stop': {
+      VPVoiceFeedback.stop();
       if (_activeAbortController) {
         _activeAbortController.abort();
         _activeAbortController = null;
         _currentOpId++;
         if (editorWrapper) editorWrapper.classList.remove('thinking');
         setStatus('ready', 'Wispr Ready');
-        showToast('🛑 AI thinking stopped.');
-        VPVoiceFeedback.speak('Stopped');
-        moveCaretToEnd(draftEditor);
       }
-    });
-
-    // ── Button Listeners ──
-    document.getElementById('btn-trigger-review').addEventListener('click', () => {
-      executeCommand({ action: 'review', arg: null }, '');
-    });
-
-    const btnReadAloud = document.getElementById('btn-read-aloud');
-    if (btnReadAloud) {
-      btnReadAloud.addEventListener('click', () => {
-        executeCommand({ action: 'read', arg: null }, '');
-      });
+      showToast('🛑 Playback stopped.');
+      break;
     }
 
-    const tLink = document.getElementById('t-link');
-    if (tLink) {
-      tLink.addEventListener('click', () => {
-        const url = prompt('Enter link URL (e.g. https://example.com):');
-        if (url) formatDoc('createLink', url);
-      });
-    }
-
-    const tTable = document.getElementById('t-table');
-    if (tTable) {
-      tTable.addEventListener('click', () => {
-        formatDoc('insertHorizontalRule');
-      });
-    }
-
-    const tFontCycle = document.getElementById('t-font-cycle');
-    if (tFontCycle) {
-      const fonts = ['sans', 'mono', 'serif'];
-      let fontIdx = 0;
-      tFontCycle.addEventListener('click', () => {
-        fontIdx = (fontIdx + 1) % fonts.length;
-        document.body.style.fontFamily = 'var(--font-' + fonts[fontIdx] + ')';
-        showToast('Font: ' + fonts[fontIdx]);
-      });
-    }
-
-    document.getElementById('btn-inline-accept').addEventListener('click', () => {
-      executeCommand({ action: 'accept', arg: null }, '');
-    });
-
-    document.getElementById('btn-inline-decline').addEventListener('click', () => {
-      executeCommand({ action: 'decline', arg: null }, '');
-    });
-
-    document.getElementById('btn-speak-proposal').addEventListener('click', () => {
-      if (state.pendingProposal) {
-        VPVoiceFeedback.speak(state.pendingProposal.text.replace(/<[^>]+>/g, ' '));
+    case 'copy': {
+      const fullText = draftEditor.innerText || '';
+      if (!fullText.trim()) {
+        showToast('Document is empty.');
+        return;
       }
-    });
-
-    // Formatting Toolbar Buttons
-    document.getElementById('t-bold').addEventListener('click', () => formatDoc('bold'));
-    document.getElementById('t-italic').addEventListener('click', () => formatDoc('italic'));
-    document.getElementById('t-strike').addEventListener('click', () => formatDoc('strikeThrough'));
-    document.getElementById('t-undo').addEventListener('click', () => executeCommand({ action: 'undo', arg: null }, ''));
-    document.getElementById('t-redo').addEventListener('click', () => executeCommand({ action: 'redo', arg: null }, ''));
-
-    // Dropdown Menus Handling
-    function closeAllMenus() {
-      document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
-    }
-
-    function toggleMenu(menuEl, e) {
-      e.stopPropagation();
-      const isOpen = menuEl.classList.contains('show');
-      closeAllMenus();
-      if (!isOpen) menuEl.classList.add('show');
-    }
-
-    document.getElementById('btn-file-menu').addEventListener('click', (e) => toggleMenu(document.getElementById('file-menu'), e));
-    document.getElementById('btn-edit-menu').addEventListener('click', (e) => toggleMenu(document.getElementById('edit-menu'), e));
-    document.getElementById('btn-view-menu').addEventListener('click', (e) => toggleMenu(document.getElementById('view-menu'), e));
-    document.getElementById('btn-heading-dropdown').addEventListener('click', (e) => toggleMenu(document.getElementById('heading-menu'), e));
-    document.getElementById('btn-list-dropdown').addEventListener('click', (e) => toggleMenu(document.getElementById('list-menu'), e));
-
-    window.addEventListener('click', () => closeAllMenus());
-
-    // Heading Options
-    document.querySelectorAll('#heading-menu [data-format]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const fmt = btn.getAttribute('data-format');
-        formatDoc('formatBlock', fmt);
-        document.getElementById('heading-label').textContent = fmt.toUpperCase();
-        closeAllMenus();
+      navigator.clipboard.writeText(fullText).then(() => {
+        showToast('✓ Copied to clipboard!');
+        VPVoiceFeedback.speak('Copied to clipboard');
+      }).catch(() => {
+        showToast('Could not copy automatically.');
       });
-    });
+      break;
+    }
 
-    // List Options
-    document.getElementById('tool-bullet-list').addEventListener('click', () => {
-      formatDoc('insertUnorderedList');
-      closeAllMenus();
-    });
-    document.getElementById('tool-ordered-list').addEventListener('click', () => {
-      formatDoc('insertOrderedList');
-      closeAllMenus();
-    });
+    case 'clear': {
+      state = VPEditorState.acceptDraft(state, '');
+      writeToEditor('', true);
+      renderState();
+      moveCaretToEnd(draftEditor);
+      showToast('Document cleared.');
+      VPVoiceFeedback.speak('Document cleared');
+      break;
+    }
 
-    // File Menu Actions
-    function loadSampleDraft() {
-      const sampleHtml = `
-<h1>Welcome to VoicePilot</h1>
-<p>VoicePilot is a <strong>hands-free voice text editor</strong> built specifically for dictating with <em>Wispr Flow</em>.</p>
+    case 'separate_note': {
+      showToast('Saved to notes.');
+      break;
+    }
+  }
+}
+
+// ── Wispr Segment Router ──
+function handleSegment(insertedText, fullText) {
+  const cmd = VPCommandParser.parse(insertedText, catchword);
+  if (!cmd) {
+    state = VPEditorState.acceptDraft(state, draftEditor.innerHTML);
+    updateStats();
+    triggerAutoSave();
+    return;
+  }
+
+  // Command detected in speech segment!
+  const commandLen = cmd.commandText.length;
+  const trailingIdx = insertedText.lastIndexOf(cmd.commandText);
+  const precedingDictation = trailingIdx > 0 ? insertedText.slice(0, trailingIdx).trim() : '';
+
+  if (precedingDictation) {
+    const rawInner = draftEditor.innerHTML;
+    const cleanInner = rawInner.slice(0, rawInner.length - commandLen).trim();
+    writeToEditor(cleanInner, true);
+  } else {
+    const rawInner = draftEditor.innerHTML;
+    const cleanInner = rawInner.slice(0, Math.max(0, rawInner.length - insertedText.length)).trim();
+    writeToEditor(cleanInner, true);
+  }
+
+  executeCommand(cmd, insertedText);
+}
+
+// Attach Segment Tracker
+function attachTracker() {
+  if (tracker) tracker.destroy();
+  tracker = new VPWisprTracker(draftEditor, {
+    debounceMs: 400,
+    onSegment: handleSegment,
+  });
+}
+
+// Stop thinking when status pill is clicked
+voiceStatusPill.addEventListener('click', () => {
+  if (_activeAbortController) {
+    _activeAbortController.abort();
+    _activeAbortController = null;
+    _currentOpId++;
+    if (editorWrapper) editorWrapper.classList.remove('thinking');
+    setStatus('ready', 'Wispr Ready');
+    showToast('🛑 AI thinking stopped.');
+    VPVoiceFeedback.speak('Stopped');
+    moveCaretToEnd(draftEditor);
+  }
+});
+
+// ── Button Listeners ──
+document.getElementById('btn-trigger-review').addEventListener('click', () => {
+  executeCommand({ action: 'review', arg: null }, '');
+});
+
+document.getElementById('btn-read-aloud').addEventListener('click', () => {
+  executeCommand({ action: 'read', arg: null }, '');
+});
+
+document.getElementById('btn-quick-copy').addEventListener('click', () => {
+  executeCommand({ action: 'copy', arg: null }, '');
+});
+
+// Inline Proposal Actions
+document.getElementById('btn-inline-accept').addEventListener('click', () => {
+  executeCommand({ action: 'accept', arg: null }, '');
+});
+
+document.getElementById('btn-inline-decline').addEventListener('click', () => {
+  executeCommand({ action: 'decline', arg: null }, '');
+});
+
+document.getElementById('btn-speak-proposal').addEventListener('click', () => {
+  if (state.pendingProposal) {
+    VPVoiceFeedback.speak(state.pendingProposal.text);
+  }
+});
+
+// Minimal Formatting Toolbar
+document.getElementById('t-bold').addEventListener('click', () => formatDoc('bold'));
+document.getElementById('t-italic').addEventListener('click', () => formatDoc('italic'));
+document.getElementById('t-heading').addEventListener('click', () => {
+  const current = (document.queryCommandValue('formatBlock') || 'p').toLowerCase();
+  formatDoc('formatBlock', current === 'h2' ? 'p' : 'h2');
+});
+document.getElementById('t-list').addEventListener('click', () => formatDoc('insertUnorderedList'));
+document.getElementById('t-undo').addEventListener('click', () => executeCommand({ action: 'undo', arg: null }, ''));
+document.getElementById('t-redo').addEventListener('click', () => executeCommand({ action: 'redo', arg: null }, ''));
+
+// Footer Actions
+document.getElementById('btn-clear-doc').addEventListener('click', () => {
+  if (confirm('Clear the entire document?')) {
+    executeCommand({ action: 'clear', arg: null }, '');
+  }
+});
+
+document.getElementById('btn-download-md').addEventListener('click', () => {
+  const md = editorToMarkdown();
+  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (docTitleInput.value.trim() || 'Untitled Note') + '.md';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ Downloaded Markdown file');
+});
+
+document.getElementById('btn-download-txt').addEventListener('click', () => {
+  const txt = draftEditor.innerText || '';
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (docTitleInput.value.trim() || 'Untitled Note') + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ Downloaded Text file');
+});
+
+// Theme Toggle
+const themeBtn = document.getElementById('btn-theme-toggle');
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('vp_theme', theme);
+  themeBtn.textContent = theme === 'dark' ? '🌙' : '☀️';
+}
+themeBtn.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+// Settings Modal
+const settingsBackdrop = document.getElementById('settings-backdrop');
+const catchwordInput   = document.getElementById('catchword-input');
+
+document.getElementById('btn-open-settings').addEventListener('click', () => {
+  if (catchwordInput) catchwordInput.value = catchword;
+  settingsBackdrop.classList.add('open');
+});
+
+document.getElementById('btn-close-settings').addEventListener('click', () => settingsBackdrop.classList.remove('open'));
+settingsBackdrop.addEventListener('click', (e) => {
+  if (e.target === settingsBackdrop) settingsBackdrop.classList.remove('open');
+});
+
+catchwordInput.addEventListener('change', () => {
+  const val = catchwordInput.value.trim();
+  if (val) {
+    catchword = val;
+    showToast('Wake word set to "' + catchword + '"');
+  }
+});
+
+document.getElementById('spoken-feedback-toggle').addEventListener('change', (e) => {
+  VPVoiceFeedback.setEnabled(e.target.checked);
+  showToast(e.target.checked ? 'Spoken feedback enabled' : 'Spoken feedback muted');
+});
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    settingsBackdrop.classList.remove('open');
+    if (_activeAbortController) {
+      _activeAbortController.abort();
+      _activeAbortController = null;
+      _currentOpId++;
+      if (editorWrapper) editorWrapper.classList.remove('thinking');
+      setStatus('ready', 'Wispr Ready');
+      showToast('🛑 AI thinking stopped.');
+      moveCaretToEnd(draftEditor);
+    }
+  }
+});
+
+// Auto-save title on edit
+docTitleInput.addEventListener('input', triggerAutoSave);
+
+function loadSampleDraft() {
+  const sampleHtml = `
+<h1>Welcome to Flow</h1>
+<p>Flow is a <strong>hands-free voice text editor</strong> built specifically for dictating with <em>Wispr Flow</em>.</p>
 <h2>Key Capabilities</h2>
 <ul>
   <li><strong>Direct Voice Edits:</strong> Say <code>"Shazam, put a comma next to hello"</code> to make instant edits.</li>
-  <li><strong>Full AI Review:</strong> Say <code>"Shazam, review"</code> to polish phrasing with in-place diffs.</li>
+  <li><strong>Full AI Polish:</strong> Say <code>"Shazam, polish"</code> to review phrasing with in-place diffs.</li>
   <li><strong>Instant Formatting:</strong> Say <code>"Shazam, bold"</code> or <code>"Shazam, list"</code> without touching your keyboard.</li>
 </ul>
-<blockquote>"Speak freely at the speed of thought. Let AI handle the punctuation, formatting, and polish."</blockquote>
-<p>Try saying <em>"Shazam, review"</em> to see VoicePilot polish this document!</p>
-      `.trim();
-      state = VPEditorState.acceptDraft(state, sampleHtml);
-      writeToEditor(sampleHtml);
-      renderState();
-      showToast('🪄 Sample document loaded!');
-    }
+<blockquote>"Speak freely at the speed of thought. Flow handles the punctuation, formatting, and polish."</blockquote>
+<p>Try saying <em>"Shazam, polish"</em> or click the Polish button above!</p>
+  `.trim();
+  state = VPEditorState.acceptDraft(state, sampleHtml);
+  writeToEditor(sampleHtml);
+  renderState();
+}
 
-    document.getElementById('menu-file-new').addEventListener('click', () => {
-      executeCommand({ action: 'clear', arg: null }, '');
-      docTitleInput.value = 'Untitled Document';
-      closeAllMenus();
-    });
-    document.getElementById('btn-new-tab').addEventListener('click', () => {
-      executeCommand({ action: 'clear', arg: null }, '');
-      docTitleInput.value = 'Untitled Document';
-    });
-    document.getElementById('btn-tab-close').addEventListener('click', () => {
-      executeCommand({ action: 'clear', arg: null }, '');
-    });
+// ── Initialization ──
+function init() {
+  const savedTheme = localStorage.getItem('vp_theme') || 'dark';
+  applyTheme(savedTheme);
 
-    document.getElementById('menu-file-sample').addEventListener('click', () => {
-      loadSampleDraft();
-      closeAllMenus();
-    });
+  const savedTitle = localStorage.getItem('vp_doc_title');
+  if (savedTitle) docTitleInput.value = savedTitle;
 
-    document.getElementById('menu-file-copy-rich').addEventListener('click', () => {
-      const html = draftEditor.innerHTML;
-      const blob = new Blob([html], { type: 'text/html' });
-      const textBlob = new Blob([draftEditor.innerText], { type: 'text/plain' });
-      navigator.clipboard.write([
-        new ClipboardItem({ 'text/html': blob, 'text/plain': textBlob })
-      ]).then(() => showToast('📋 Rich text copied!')).catch(() => showToast('📋 Text copied!'));
-      closeAllMenus();
-    });
+  const savedContent = localStorage.getItem('vp_doc_content');
+  if (savedContent && savedContent.trim()) {
+    state = VPEditorState.acceptDraft(state, savedContent);
+    writeToEditor(savedContent);
+  } else {
+    loadSampleDraft();
+  }
 
-    document.getElementById('menu-file-copy-md').addEventListener('click', () => {
-      const md = htmlToMarkdown(draftEditor.innerHTML);
-      navigator.clipboard.writeText(md).then(() => showToast('📝 Markdown copied!'));
-      closeAllMenus();
-    });
+  attachTracker();
+  renderState();
 
-    document.getElementById('menu-file-download-md').addEventListener('click', () => {
-      const md = htmlToMarkdown(draftEditor.innerHTML);
-      const filename = (docTitleInput.value.trim() || 'document').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.md';
-      downloadFile(filename, md, 'text/markdown');
-      closeAllMenus();
-    });
+  setTimeout(() => {
+    moveCaretToEnd(draftEditor);
+  }, 100);
+}
 
-    document.getElementById('menu-file-download-txt').addEventListener('click', () => {
-      const txt = draftEditor.innerText || '';
-      const filename = (docTitleInput.value.trim() || 'document').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.txt';
-      downloadFile(filename, txt, 'text/plain');
-      closeAllMenus();
-    });
-
-    document.getElementById('menu-file-print').addEventListener('click', () => {
-      window.print();
-      closeAllMenus();
-    });
-
-    document.getElementById('menu-file-clear').addEventListener('click', () => {
-      executeCommand({ action: 'clear', arg: null }, '');
-      closeAllMenus();
-    });
-
-    function downloadFile(filename, content, type) {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([content], { type }));
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }
-
-    // Edit Menu Actions
-    document.getElementById('menu-edit-undo').addEventListener('click', () => { executeCommand({ action: 'undo', arg: null }, ''); closeAllMenus(); });
-    document.getElementById('menu-edit-redo').addEventListener('click', () => { executeCommand({ action: 'redo', arg: null }, ''); closeAllMenus(); });
-    document.getElementById('menu-edit-cut').addEventListener('click', () => { document.execCommand('cut'); closeAllMenus(); });
-    document.getElementById('menu-edit-copy').addEventListener('click', () => { document.execCommand('copy'); closeAllMenus(); });
-    document.getElementById('menu-edit-paste').addEventListener('click', () => { navigator.clipboard.readText().then(t => document.execCommand('insertText', false, t)); closeAllMenus(); });
-    document.getElementById('menu-edit-selectall').addEventListener('click', () => { document.execCommand('selectAll'); closeAllMenus(); });
-
-    // View Menu: Theme & Fonts
-    function applyTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('vp_theme', theme);
-    }
-
-    document.getElementById('menu-view-theme').addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      applyTheme(current === 'dark' ? 'light' : 'dark');
-      closeAllMenus();
-    });
-
-    document.querySelectorAll('#view-menu [data-font]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const font = btn.getAttribute('data-font');
-        if (font === 'sans') draftEditor.style.fontFamily = 'var(--font-sans)';
-        if (font === 'serif') draftEditor.style.fontFamily = 'var(--font-serif)';
-        if (font === 'mono') draftEditor.style.fontFamily = 'var(--font-mono)';
-        localStorage.setItem('vp_doc_font', font);
-        closeAllMenus();
-      });
-    });
-
-    // Settings Modal
-    const settingsBackdrop = document.getElementById('settings-backdrop');
-    const catchwordInput   = document.getElementById('catchword-input');
-
-    document.getElementById('btn-open-settings').addEventListener('click', () => {
-      if (catchwordInput) catchwordInput.value = catchword;
-      settingsBackdrop.classList.add('open');
-    });
-
-    document.getElementById('btn-close-settings').addEventListener('click', () => settingsBackdrop.classList.remove('open'));
-    settingsBackdrop.addEventListener('click', (e) => {
-      if (e.target === settingsBackdrop) settingsBackdrop.classList.remove('open');
-    });
-
-    // Gemini API key settings removed - runs under the hood
-
-    catchwordInput.addEventListener('change', () => {
-      const val = catchwordInput.value.trim();
-      if (val) {
-        catchword = val;
-        showToast('Wake word set to "' + catchword + '"');
-      }
-    });
-
-    document.getElementById('spoken-feedback-toggle').addEventListener('change', (e) => {
-      VPVoiceFeedback.setEnabled(e.target.checked);
-      showToast(e.target.checked ? 'Spoken feedback enabled' : 'Spoken feedback muted');
-    });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        settingsBackdrop.classList.remove('open');
-        if (_activeAbortController) {
-          _activeAbortController.abort();
-          _activeAbortController = null;
-          _currentOpId++;
-          if (editorWrapper) editorWrapper.classList.remove('thinking');
-          setStatus('ready', 'Wispr Ready');
-          showToast('🛑 AI thinking stopped.');
-          moveCaretToEnd(draftEditor);
-        }
-      }
-    });
-
-    // Auto-save title on edit
-    docTitleInput.addEventListener('input', triggerAutoSave);
-
-    // ── Initialization ──
-    function init() {
-      const savedTheme = localStorage.getItem('vp_theme') || 'dark';
-      applyTheme(savedTheme);
-
-      const savedFont = localStorage.getItem('vp_doc_font') || 'sans';
-      if (savedFont === 'sans') draftEditor.style.fontFamily = 'var(--font-sans)';
-      if (savedFont === 'serif') draftEditor.style.fontFamily = 'var(--font-serif)';
-      if (savedFont === 'mono') draftEditor.style.fontFamily = 'var(--font-mono)';
-
-      const savedTitle = localStorage.getItem('vp_doc_title');
-      if (savedTitle) docTitleInput.value = savedTitle;
-
-      const savedContent = localStorage.getItem('vp_doc_content');
-      if (savedContent && savedContent.trim()) {
-        state = VPEditorState.acceptDraft(state, savedContent);
-        writeToEditor(savedContent);
-      } else {
-        loadSampleDraft();
-      }
-
-      attachTracker();
-      renderState();
-    }
-
-    window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
