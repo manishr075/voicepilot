@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -707,7 +707,7 @@
       <textarea
         id="draft-editor"
         aria-label="Voice draft editor — focus here to receive Wispr Flow input"
-        placeholder="Focus here, then use Wispr Flow to dictate. Your text will appear below.&#10;&#10;Say 'Shazam, edit: make this more formal' to request an AI revision, or use any other Shazam command."
+        placeholder="Focus here, then use Wispr Flow to dictate. Your text will appear below.&#10;&#10;Say 'Shazam, edit make this friendly and concise' to request an AI revision, or use voice commands like 'Shazam, read' and 'Shazam, undo'."
         spellcheck="true"
         autocomplete="off"
       ></textarea>
@@ -772,7 +772,7 @@
         <summary>Command reference — say "Shazam, &lt;command&gt;"</summary>
         <div class="command-grid" aria-label="Available voice commands">
           <div class="command-item">
-            <span class="cmd-phrase">Shazam, edit: [instruction]</span>
+            <span class="cmd-phrase">Shazam, edit [instruction]</span>
             <span class="cmd-desc">Create an AI-powered revision proposal from the current draft.</span>
           </div>
           <div class="command-item">
@@ -811,18 +811,7 @@
             <span class="cmd-phrase">Shazam, make that a separate note</span>
             <span class="cmd-desc">Move the flagged segment to the Notes area.</span>
           </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, pause</span>
-            <span class="cmd-desc">Suspend command processing (dictation still enters as text).</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, resume</span>
-            <span class="cmd-desc">Resume normal command processing.</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, finish</span>
-            <span class="cmd-desc">End the session; draft is preserved.</span>
-          </div>
+
         </div>
       </details>
     </div>
@@ -841,7 +830,27 @@
               maxlength="40"
               aria-describedby="catchword-hint"
             />
-            <span class="muted small" id="catchword-hint">Case-insensitive; used at start of new insertions only.</span>
+            <span class="muted small" id="catchword-hint">Case-insensitive trigger (e.g. "Shazam").</span>
+          </div>
+          <div class="setting-row">
+            <label for="openai-key-input">OpenAI API Key (Optional)</label>
+            <input
+              type="password"
+              id="openai-key-input"
+              placeholder="sk-..."
+              style="font-family:monospace;min-width:250px;"
+            />
+            <span class="muted small">Direct in-browser AI editing (no backend required, stored locally only).</span>
+          </div>
+          <div class="setting-row">
+            <label for="backend-url-input">Custom Backend URL (Optional)</label>
+            <input
+              type="text"
+              id="backend-url-input"
+              placeholder="https://your-service.onrender.com"
+              style="min-width:250px;"
+            />
+            <span class="muted small">If using a hosted VoicePilot Flask backend.</span>
           </div>
           <div class="setting-row">
             <label class="toggle-label">
@@ -897,20 +906,18 @@
 const VPCommandParser = (() => {
   // Recognised command keywords → internal action names
   const COMMAND_MAP = [
-    // Must be tried in order; longest/most-specific patterns first.
-    { pattern: /^edit\s*:\s*(.+)/is,           action: 'edit',               hasArg: true  },
-    { pattern: /^remove\s+last\s+insertion/i,   action: 'remove_last',        hasArg: false },
-    { pattern: /^make\s+that\s+a\s+separate\s+note/i, action: 'separate_note', hasArg: false },
-    { pattern: /^keep\s+that/i,                 action: 'keep_that',          hasArg: false },
-    { pattern: /^preview/i,                     action: 'preview',            hasArg: false },
-    { pattern: /^apply/i,                       action: 'apply',              hasArg: false },
-    { pattern: /^discard/i,                     action: 'discard',            hasArg: false },
-    { pattern: /^undo/i,                        action: 'undo',               hasArg: false },
-    { pattern: /^redo/i,                        action: 'redo',               hasArg: false },
-    { pattern: /^read/i,                        action: 'read',               hasArg: false },
-    { pattern: /^pause/i,                       action: 'pause',              hasArg: false },
-    { pattern: /^resume/i,                      action: 'resume',             hasArg: false },
-    { pattern: /^finish/i,                      action: 'finish',             hasArg: false },
+    // Longest / most specific first:
+    // Support "edit: instruction" OR "edit instruction" (colon optional)
+    { pattern: /^edit(?:\s*:\s*|\s+)(.+)/is,             action: 'edit',               hasArg: true  },
+    { pattern: /^remove\s+last\s+(?:insertion|iteration|sentence|part)/i, action: 'remove_last', hasArg: false },
+    { pattern: /^make\s+that\s+a\s+separate\s+note/i,   action: 'separate_note',      hasArg: false },
+    { pattern: /^keep\s+that/i,                           action: 'keep_that',          hasArg: false },
+    { pattern: /^preview/i,                               action: 'preview',            hasArg: false },
+    { pattern: /^apply/i,                                 action: 'apply',              hasArg: false },
+    { pattern: /^discard/i,                               action: 'discard',            hasArg: false },
+    { pattern: /^undo/i,                                  action: 'undo',               hasArg: false },
+    { pattern: /^redo/i,                                  action: 'redo',               hasArg: false },
+    { pattern: /^read/i,                                  action: 'read',               hasArg: false },
   ];
 
   /**
@@ -921,13 +928,9 @@ const VPCommandParser = (() => {
   function buildCatchwordRegex(catchword) {
     if (!catchword || !catchword.trim()) return null;
     const escaped = catchword.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    // After the catchword: separator (comma, colon, or space followed by non-space)
-    // Requires at least one of: comma, colon, OR space before a non-space char.
-    // This prevents "shazam is" (bare word followed by space+word) from matching
-    // when the catchword is itself a common word used in context.
-    // For multi-word catchwords this is less of an issue.
+    // Tolerate optional punctuation & whitespace after catchword: e.g. "Shazam ,", "Shazam,", "Shazam:", "Shazam -", "Shazam "
     return new RegExp(
-      '^' + escaped + '(?:[,:]\\s*|\\s+)(.+)',
+      '^' + escaped + '\\s*[,.:;\\-]?\\s+(.+)',
       'is'
     );
   }
@@ -2344,20 +2347,61 @@ if (typeof module !== "undefined" && module.exports) {
     // user-readable message so the draft is preserved.
     // VOICEPILOT_BACKEND_URL can be set at build time (e.g. Vercel env var) or
     // left empty to use a relative /api/edit (local / same-origin backend).
-    const VP_BACKEND_URL = (window.VOICEPILOT_BACKEND_URL || '').replace(/\/$/, '');
+    // Backend URL or client-side key
+    let VP_BACKEND_URL = (localStorage.getItem('vp_backend_url') || window.VOICEPILOT_BACKEND_URL || '').replace(/\/$/, '');
+    let VP_OPENAI_KEY  = localStorage.getItem('vp_openai_key') || '';
+
     async function callLLMProvider(draft, instruction) {
-      const response = await fetch(`${VP_BACKEND_URL}/api/edit`, {
+      // 1. If user provided a direct OpenAI key in Settings, call OpenAI directly (no backend needed!)
+      if (VP_OPENAI_KEY) {
+        const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${VP_OPENAI_KEY}`,
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are an expert writing assistant. The user will provide a draft text and an editing instruction. Return ONLY the revised draft text - no commentary, no markdown quotes, no prefix. Preserve the user\'s tone and intent.'
+              },
+              {
+                role: 'user',
+                content: `Draft:\n${draft}\n\nInstruction: ${instruction}`
+              }
+            ],
+            temperature: 0.3,
+          })
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error?.message || `OpenAI returned status ${resp.status}`);
+        }
+        const data = await resp.json();
+        const text = data.choices?.[0]?.message?.content?.trim();
+        if (!text) throw new Error('OpenAI returned an empty response.');
+        return { text };
+      }
+
+      // 2. Otherwise try the configured backend URL
+      const targetUrl = VP_BACKEND_URL ? `${VP_BACKEND_URL}/api/edit` : '/api/edit';
+      const response = await fetch(targetUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ draft, instruction }),
       });
       if (!response.ok) {
+        if (response.status === 405) {
+          throw new Error('No backend connected. Open Settings (âš™ï¸) to enter an OpenAI API key or connect a backend.');
+        }
         const errText = await response.text().catch(() => '');
         throw new Error(`Provider returned ${response.status}: ${errText || 'No details.'}`);
       }
       const data = await response.json();
       if (typeof data.result !== 'string' || !data.result.trim()) {
-        throw new Error('Provider returned an empty or malformed response. Draft unchanged.');
+        throw new Error('Provider returned an empty response. Draft unchanged.');
       }
       return { text: data.result };
     }
@@ -2487,34 +2531,13 @@ if (typeof module !== "undefined" && module.exports) {
           break;
         }
 
-        case 'pause': {
-          state = VPEditorState.pause(state);
-          showToast('Command processing paused. Say "Shazam, resume" to continue.');
-          VPVoiceFeedback.speak('Paused.');
-          break;
-        }
-
-        case 'resume': {
-          state = VPEditorState.resume(state);
-          showToast('Command processing resumed.');
-          VPVoiceFeedback.speak('Resumed.');
-          break;
-        }
-
-        case 'finish': {
-          state = VPEditorState.finish(state);
-          showToast('Session finished. Your draft is preserved.');
-          VPVoiceFeedback.speak('Session finished. Your draft is saved.');
-          break;
-        }
-
         case 'unknown':
         default: {
-          showToast(`Unrecognised command: "${arg}". Say "Shazam, edit: …" for AI editing or check the command list.`);
-          // Restore text as plain draft content (not removed)
-          state = { ...state, acceptedDraft: beforeCmd + insertedText + afterCmd };
-          break;
-        }
+          // For maximum hands-free fluidity, command phrases starting with Shazam are kept OUT of your text.
+          showToast("Command not recognized: \"" + (arg || "") + "\". Kept your draft clean and safe.");
+ VPVoiceFeedback.speak('Command not recognized');
+ break;
+ }
       }
 
       renderState();
@@ -2668,6 +2691,27 @@ if (typeof module !== "undefined" && module.exports) {
     });
 
     // ── Settings handlers ──────────────────────────────────────────────
+    const openAiInput = document.getElementById('openai-key-input');
+    const backendInput = document.getElementById('backend-url-input');
+
+    if (openAiInput) {
+      openAiInput.value = VP_OPENAI_KEY;
+      openAiInput.addEventListener('change', function() {
+        VP_OPENAI_KEY = this.value.trim();
+        localStorage.setItem('vp_openai_key', VP_OPENAI_KEY);
+        showToast(VP_OPENAI_KEY ? 'OpenAI key saved locally for AI edits.' : 'OpenAI key cleared.');
+      });
+    }
+
+    if (backendInput) {
+      backendInput.value = VP_BACKEND_URL;
+      backendInput.addEventListener('change', function() {
+        VP_BACKEND_URL = this.value.trim().replace(/\/$/, '');
+        localStorage.setItem('vp_backend_url', VP_BACKEND_URL);
+        showToast(VP_BACKEND_URL ? 'Custom backend URL saved.' : 'Backend URL reset to default.');
+      });
+    }
+
     document.getElementById('catchword-input').addEventListener('change', function() {
       const val = this.value.trim();
       if (!val) { this.value = catchword; return; }
