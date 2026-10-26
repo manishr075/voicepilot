@@ -3,106 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VoicePilot — Professional Hands-Free Voice Text Editor</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z'/%3E%3Cpath d='M19 10v1a7 7 0 0 1-14 0v-1'/%3E%3Cline x1='12' y1='18' x2='12' y2='22'/%3E%3Cline x1='8' y1='22' x2='16' y2='22'/%3E%3C/svg%3E" />
+  <title>VoicePilot — Hands-Free Voice Text Editor</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230078d4' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='16' y1='13' x2='8' y2='13'/%3E%3Cline x1='16' y1='17' x2='8' y2='17'/%3E%3Cpolyline points='10 9 9 9 8 9'/%3E%3C/svg%3E" />
   <link rel="icon" type="image/jpeg" href="assets/app-icon.jpg" />
   <link rel="apple-touch-icon" href="assets/app-icon.jpg" />
 
-  <!-- Google Fonts: Plus Jakarta Sans (Modern UI/Doc), Merriweather (Editorial Serif), JetBrains Mono (Code) -->
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
     /* ══════════════════════════════════════════════════════════════
-       PRODUCTION DESIGN SYSTEM — RESTRAINED, INTENTIONAL & ACCESSIBLE
-       Merged: Professional SaaS Layout + Minimal Hands-Free Controls
+       WINDOWS 11 NATIVE DARK TEXT EDITOR DESIGN SYSTEM
+       Inspiration: Windows 11 Notepad / VS Code Full-Canvas
        ══════════════════════════════════════════════════════════════ */
     :root {
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --font-serif: "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
-      --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Text', 'Segoe UI', Roboto, sans-serif;
+      --font-serif: 'Merriweather', Georgia, serif;
+      --font-mono: 'JetBrains Mono', Consolas, 'Courier New', monospace;
 
-      --radius-sm: 6px;
-      --radius-md: 9px;
-      --radius-lg: 14px;
-      --radius-xl: 18px;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
 
-      --transition-fast: 0.12s ease;
-      --transition-base: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-fast: 0.1s ease;
     }
 
-    /* Modern Minimalist Dark Theme (Default) */
+    /* Windows 11 Dark Mode */
     html[data-theme="dark"] {
-      --bg-app: #0e1013;
-      --bg-paper: #16181d;
-      --bg-subtle: #1e2128;
-      --bg-surface: #262933;
-      --bg-elevated: #2e323e;
+      --win-bg: #202020;            /* Notepad background */
+      --win-titlebar: #181818;      /* Top bar */
+      --win-tab-active: #202020;    /* Active tab matches canvas */
+      --win-tab-hover: #2b2b2b;     /* Tab hover */
+      --win-toolbar: #202020;       /* Toolbar background */
+      --win-statusbar: #181818;     /* Status bar at bottom */
+      --win-subtle: #2d2d2d;        /* Hover buttons / cards */
+      --win-border: #333333;        /* Subtle hairline borders */
+      --win-border-subtle: #292929;
+      --win-accent: #0078d4;        /* Windows Blue */
+      --win-accent-hover: #1084d8;
 
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-default: rgba(255, 255, 255, 0.14);
-      --border-hover: rgba(255, 255, 255, 0.25);
-      --border-focus: #3b82f6;
+      --text-main: #f3f3f3;
+      --text-muted: #9d9d9d;
+      --text-dim: #6d6d6d;
 
-      --text-main: #f4f4f6;
-      --text-muted: #9ba1b0;
-      --text-dim: #646a78;
-
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --primary-subtle: rgba(59, 130, 246, 0.12);
-      --primary-border: rgba(59, 130, 246, 0.3);
-
-      /* In-Place Diff Colors: Clean, accessible, NO strikethrough */
-      --diff-curr-bg: rgba(244, 63, 94, 0.15);
-      --diff-curr-border: rgba(244, 63, 94, 0.35);
-      --diff-curr-text: #fda4af;
-
-      --diff-prop-bg: rgba(16, 185, 129, 0.15);
-      --diff-prop-border: rgba(16, 185, 129, 0.35);
+      --diff-curr-bg: rgba(239, 68, 68, 0.22);
+      --diff-curr-text: #fca5a5;
+      --diff-prop-bg: rgba(16, 185, 129, 0.22);
       --diff-prop-text: #6ee7b7;
 
-      --paper-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-subtle);
-      --modal-backdrop: rgba(6, 8, 12, 0.75);
+      --modal-backdrop: rgba(0, 0, 0, 0.65);
     }
 
-    /* Modern Minimalist Light Theme */
+    /* Windows 11 Light Mode */
     html[data-theme="light"] {
-      --bg-app: #f8f9fa;
-      --bg-paper: #ffffff;
-      --bg-subtle: #f1f3f5;
-      --bg-surface: #e9ecef;
-      --bg-elevated: #ffffff;
+      --win-bg: #f9f9f9;
+      --win-titlebar: #f0f0f0;
+      --win-tab-active: #f9f9f9;
+      --win-tab-hover: #e8e8e8;
+      --win-toolbar: #f9f9f9;
+      --win-statusbar: #f0f0f0;
+      --win-subtle: #eaeaea;
+      --win-border: #e0e0e0;
+      --win-border-subtle: #ebebeb;
+      --win-accent: #0078d4;
+      --win-accent-hover: #006cc1;
 
-      --border-subtle: #e5e7eb;
-      --border-default: #d1d5db;
-      --border-hover: #9ca3af;
-      --border-focus: #2563eb;
+      --text-main: #181818;
+      --text-muted: #5f5f5f;
+      --text-dim: #909090;
 
-      --text-main: #111827;
-      --text-muted: #4b5563;
-      --text-dim: #9ca3af;
+      --diff-curr-bg: #fee2e2;
+      --diff-curr-text: #991b1b;
+      --diff-prop-bg: #d1fae5;
+      --diff-prop-text: #065f46;
 
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --primary-subtle: rgba(37, 99, 235, 0.08);
-      --primary-border: rgba(37, 99, 235, 0.25);
-
-      /* In-Place Diff Colors: Soft, clear, NO strikethrough */
-      --diff-curr-bg: #ffe4e6;
-      --diff-curr-border: #fecdd3;
-      --diff-curr-text: #9f1239;
-
-      --diff-prop-bg: #dcfce7;
-      --diff-prop-border: #bbf7d0;
-      --diff-prop-text: #166534;
-
-      --paper-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 16px 36px -12px rgba(0, 0, 0, 0.06), 0 0 0 1px var(--border-subtle);
-      --modal-backdrop: rgba(15, 23, 42, 0.45);
+      --modal-backdrop: rgba(0, 0, 0, 0.35);
     }
 
-    /* Base Reset */
+    /* Reset */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -111,497 +91,432 @@
 
     html, body {
       height: 100%;
-      background: var(--bg-app);
+      background: var(--win-bg);
       color: var(--text-main);
       font-family: var(--font-sans);
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
-      transition: background-color var(--transition-base), color var(--transition-base);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       TOP APPLICATION HEADER (Minimalist Text Editor Top Bar, 48px)
-       ══════════════════════════════════════════════════════════════ */
-    #app-header {
-      height: 48px;
-      background: var(--bg-paper);
-      border-bottom: 1px solid var(--border-subtle);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    /* ════════════════════ ROW 1: WINDOW TITLE & TAB BAR (40px) ════════════════════ */
+    #titlebar {
+      height: 40px;
+      background: var(--win-titlebar);
+      border-bottom: 1px solid var(--win-border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 1.25rem;
-      gap: 1rem;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      display: flex;
-      align-items: center;
-      gap: 0.55rem;
-      text-decoration: none;
-      color: inherit;
+      padding: 0 10px 0 12px;
       user-select: none;
       flex-shrink: 0;
     }
 
-    .brand-icon-box {
-      width: 26px;
-      height: 26px;
-      border-radius: var(--radius-sm);
-      background: var(--primary);
-      color: #ffffff;
+    .titlebar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    /* Windows Notepad Tab */
+    .notepad-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .notepad-tab {
+      background: var(--win-tab-active);
+      border: 1px solid var(--win-border);
+      border-bottom: 1px solid var(--win-bg);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      padding: 4px 10px 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12.5px;
+      color: var(--text-main);
+      position: relative;
+      top: 1px;
+    }
+
+    .tab-icon {
+      color: var(--win-accent);
+      display: flex;
+      align-items: center;
+    }
+
+    #doc-title-input {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      outline: none;
+      width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #doc-title-input:focus {
+      background: var(--win-subtle);
+      border-radius: 2px;
+    }
+
+    .tab-close {
+      cursor: pointer;
+      color: var(--text-dim);
+      font-size: 13px;
+      line-height: 1;
+      padding: 2px 4px;
+      border-radius: 2px;
+    }
+    .tab-close:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .tab-new-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 3px 6px;
+      border-radius: 3px;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
     }
-
-    .brand-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+    .tab-new-btn:hover {
+      background: var(--win-subtle);
       color: var(--text-main);
     }
 
-    .editor-mode-badge {
-      font-size: 0.72rem;
-      font-weight: 500;
-      color: var(--text-dim);
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-subtle);
-      padding: 0.15rem 0.45rem;
-      border-radius: var(--radius-sm);
-      letter-spacing: 0.02em;
+    /* Window Controls (Min, Max, Close) */
+    .titlebar-right {
+      display: flex;
+      align-items: center;
+      gap: 2px;
     }
 
-    .btn-text-action {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-default);
-      color: var(--text-main);
-      height: 30px;
-      padding: 0 0.7rem;
-      border-radius: var(--radius-sm);
-      font-family: inherit;
-      font-size: 0.78rem;
-      font-weight: 600;
+    .win-control-btn {
+      width: 38px;
+      height: 28px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
+      justify-content: center;
+      font-size: 11px;
       cursor: pointer;
-      transition: var(--transition-fast);
+      border-radius: var(--radius-sm);
+    }
+    .win-control-btn:hover {
+      background: var(--win-subtle);
+      color: var(--text-main);
+    }
+    .win-control-btn.close:hover {
+      background: #c42b1c;
+      color: #ffffff;
+    }
+
+    /* ════════════════════ ROW 2: MENU & COMPACT TOOLBAR (40px) ════════════════════ */
+    #menubar {
+      height: 40px;
+      background: var(--win-toolbar);
+      border-bottom: 1px solid var(--win-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      gap: 12px;
+      flex-shrink: 0;
       user-select: none;
     }
 
-    .btn-text-action:hover {
-      background: var(--bg-surface);
-      border-color: var(--border-hover);
-    }
-
-    .doc-title-input {
-      width: 100%;
-      border: none;
-      background: transparent;
-      outline: none;
-      font-family: inherit;
-      font-size: 1.75rem;
-      font-weight: 750;
-      letter-spacing: -0.025em;
-      color: var(--text-main);
-      margin-bottom: 0.5rem;
-      padding: 0 0 0.5rem 0;
-      border-bottom: 1px solid var(--border-subtle);
-      transition: border-color var(--transition-fast);
-    }
-
-    .doc-title-input:focus {
-      border-bottom-color: var(--border-focus);
-    }
-
-    .doc-title-input::placeholder {
-      color: var(--text-dim);
-      font-weight: 500;
-    }
-
-    /* Header Right Actions */
-    .header-right {
+    .menubar-left {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 6px;
+    }
+
+    /* Native Menus: File, Edit, View */
+    .menu-item-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background var(--transition-fast), color var(--transition-fast);
+    }
+    .menu-item-btn:hover {
+      background: var(--win-subtle);
+      color: var(--text-main);
+    }
+
+    .v-sep {
+      width: 1px;
+      height: 18px;
+      background: var(--win-border);
+      margin: 0 4px;
       flex-shrink: 0;
     }
 
-    /* Status Pill: Interactive with Click-to-Stop */
+    /* Formatting Tools */
+    .tool-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .tool-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 3px 7px;
+      height: 28px;
+      min-width: 28px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: background var(--transition-fast), color var(--transition-fast);
+    }
+    .tool-btn:hover {
+      background: var(--win-subtle);
+      color: var(--text-main);
+    }
+    .tool-btn.active {
+      background: var(--win-subtle);
+      color: var(--win-accent);
+      border-color: var(--win-accent);
+    }
+
+    /* AI Polish Button */
+    .tool-btn-ai {
+      background: rgba(0, 120, 212, 0.15);
+      border: 1px solid rgba(0, 120, 212, 0.35);
+      color: #38bdf8;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: var(--radius-sm);
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .tool-btn-ai:hover {
+      background: var(--win-accent);
+      color: #ffffff;
+      border-color: var(--win-accent);
+    }
+
+    .menubar-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Hands-Free Voice Status Pill */
     #voice-status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
-      padding: 0.3rem 0.7rem;
+      gap: 6px;
+      padding: 3px 9px;
       border-radius: 99px;
-      font-size: 0.76rem;
+      font-size: 11.5px;
       font-weight: 600;
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-default);
+      background: var(--win-subtle);
+      border: 1px solid var(--win-border);
       color: var(--text-muted);
+      cursor: default;
       transition: all var(--transition-fast);
-      user-select: none;
     }
-
     #voice-status-pill .dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
       background: #10b981;
-      transition: background var(--transition-fast);
     }
-
     #voice-status-pill.ready .dot { background: #10b981; }
-    #voice-status-pill.listening .dot { background: var(--primary); }
+    #voice-status-pill.listening .dot { background: var(--win-accent); }
     #voice-status-pill.review .dot { background: #f59e0b; }
     #voice-status-pill.error .dot { background: #f43f5e; }
 
-    /* Interactive cancel state when AI is thinking */
     #voice-status-pill.review,
     #voice-status-pill.listening {
       cursor: pointer;
-      background: rgba(245, 158, 11, 0.14);
-      border-color: rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.4);
       color: #f59e0b;
     }
-    #voice-status-pill.review:hover,
-    #voice-status-pill.listening:hover {
-      background: rgba(239, 68, 68, 0.18);
-      border-color: rgba(239, 68, 68, 0.45);
+    #voice-status-pill.review:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.5);
       color: #f87171;
     }
-    #voice-status-pill.review:hover .dot,
-    #voice-status-pill.listening:hover .dot {
-      background: #f87171;
-    }
-
-    /* Button Icon (General) */
-    .btn-icon {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-default);
-      color: var(--text-muted);
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-sm);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--transition-fast);
-    }
-
-    .btn-icon:hover {
-      background: var(--bg-surface);
-      color: var(--text-main);
-      border-color: var(--border-hover);
-    }
-
-    .btn-icon:focus-visible {
-      outline: 2px solid var(--border-focus);
-      outline-offset: 1px;
-    }
+    #voice-status-pill.review:hover .dot { background: #f87171; }
 
     /* Dropdown Menus */
     .dropdown-container {
       position: relative;
     }
-
     .dropdown-menu {
       position: absolute;
-      top: calc(100% + 6px);
-      right: 0;
-      background: var(--bg-paper);
-      border: 1px solid var(--border-default);
+      top: calc(100% + 4px);
+      left: 0;
+      background: var(--win-titlebar);
+      border: 1px solid var(--win-border);
       border-radius: var(--radius-md);
-      box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.4);
-      min-width: 170px;
-      padding: 0.4rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+      min-width: 190px;
+      padding: 4px;
       display: none;
       flex-direction: column;
-      gap: 0.2rem;
-      z-index: 250;
-      animation: menuFadeIn 0.15s ease;
+      gap: 2px;
+      z-index: 200;
     }
-
+    .dropdown-menu.right-align {
+      left: auto;
+      right: 0;
+    }
     .dropdown-menu.show {
       display: flex;
     }
-
-    @keyframes menuFadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     .dropdown-item {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      padding: 0.45rem 0.75rem;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 10px;
       border-radius: var(--radius-sm);
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--text-muted);
+      font-size: 12.5px;
+      color: var(--text-main);
       background: none;
       border: none;
       cursor: pointer;
       text-align: left;
       width: 100%;
-      transition: var(--transition-fast);
       font-family: inherit;
     }
-
     .dropdown-item:hover {
-      background: var(--bg-subtle);
-      color: var(--text-main);
+      background: var(--win-subtle);
+    }
+    .dropdown-item .shortcut {
+      color: var(--text-dim);
+      font-size: 11px;
+    }
+    .menu-divider {
+      height: 1px;
+      background: var(--win-border-subtle);
+      margin: 3px 0;
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       STREAMLINED HANDS-FREE TOOLBAR (Minimal, 42px)
-       ══════════════════════════════════════════════════════════════ */
-    #formatting-toolbar {
-      background: var(--bg-paper);
-      border-bottom: 1px solid var(--border-subtle);
-      position: sticky;
-      top: 52px;
-      z-index: 90;
-      padding: 0.35rem 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.8rem;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    #formatting-toolbar::-webkit-scrollbar {
-      display: none;
-    }
-
-    .toolbar-group {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      flex-shrink: 0;
-    }
-
-    .toolbar-sep {
-      width: 1px;
-      height: 18px;
-      background: var(--border-default);
-      margin: 0 0.25rem;
-      flex-shrink: 0;
-    }
-
-    .t-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: var(--radius-sm);
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 0.32rem 0.55rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-      min-width: 28px;
-      height: 28px;
-      line-height: 1;
-      transition: var(--transition-fast);
-      user-select: none;
-    }
-
-    .t-btn:hover {
-      background: var(--bg-subtle);
-      color: var(--text-main);
-    }
-
-    .t-btn.active {
-      background: var(--primary-subtle);
-      color: var(--primary);
-      border-color: var(--primary-border);
-    }
-
-    .btn-ai-review {
-      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
-      color: #ffffff !important;
-      border: none;
-      padding: 0.35rem 0.85rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.82rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      cursor: pointer;
-      box-shadow: 0 2px 8px var(--primary-subtle);
-      transition: var(--transition-fast);
-    }
-
-    .btn-ai-review:hover {
-      filter: brightness(1.08);
-      transform: translateY(-1px);
-    }
-
-    /* ══════════════════════════════════════════════════════════════
-       DOCUMENT WORKSPACE & PAPER CANVAS
-       ══════════════════════════════════════════════════════════════ */
-    #document-viewport {
-      min-height: calc(100vh - 52px - 42px - 36px);
-      padding: 2.2rem 1.5rem 4rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: padding var(--transition-base);
-    }
-
-    /* The Centered Document Paper */
-    #doc-paper {
-      width: 100%;
-      max-width: 860px;
-      background: var(--bg-paper);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--paper-shadow);
-      min-height: 75vh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      transition: max-width var(--transition-base), border-color var(--transition-fast);
-    }
-
-    /* When Full-Width Mode is active */
-    #doc-paper.full-width {
-      max-width: 100%;
-    }
-
-    /* Document typography dynamic classes */
-    #doc-paper.font-sans { font-family: var(--font-sans); }
-    #doc-paper.font-serif { font-family: var(--font-serif); }
-    #doc-paper.font-mono { font-family: var(--font-mono); }
-
-    /* ── Proposal Review Reason Banner ── */
+    /* ════════════════════ ROW 3: AI REVIEW PROPOSAL BANNER ════════════════════ */
     #proposal-reason-banner {
       display: none;
-      background: var(--bg-subtle);
-      border-bottom: 1px solid var(--border-default);
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-      padding: 0.85rem 1.4rem;
+      background: var(--win-subtle);
+      border-bottom: 1px solid var(--win-border);
+      padding: 6px 16px;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      animation: menuFadeIn 0.2s ease;
+      gap: 12px;
+      flex-shrink: 0;
+      font-size: 12.5px;
     }
-
     #proposal-reason-banner.visible {
       display: flex;
     }
-
-    .proposal-reason-left {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      font-size: 0.85rem;
-      flex: 1;
-    }
-
     .proposal-tag {
-      font-size: 0.72rem;
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0.2rem 0.55rem;
-      border-radius: 99px;
-      background: var(--primary-subtle);
-      color: var(--primary);
-      border: 1px solid var(--primary-border);
-      white-space: nowrap;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: rgba(0, 120, 212, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(0, 120, 212, 0.4);
     }
-
-    .proposal-reason-text {
-      color: var(--text-main);
-      font-weight: 500;
-    }
-
-    .proposal-reason-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-action {
-      font-family: inherit;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.35rem 0.8rem;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      border: 1px solid transparent;
-      transition: var(--transition-fast);
-    }
-
     .btn-action-accept {
       background: #10b981;
       color: #ffffff;
+      border: none;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
     }
-    .btn-action-accept:hover { background: #059669; }
-
     .btn-action-decline {
       background: var(--diff-curr-bg);
       color: var(--diff-curr-text);
-      border-color: var(--diff-curr-border);
+      border: 1px solid var(--win-border);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
     }
-    .btn-action-decline:hover { background: rgba(239, 68, 68, 0.28); }
 
-    /* ── The Rich Editable Surface (#draft-editor) ── */
-    .editor-wrapper {
-      position: relative;
+    /* ════════════════════ ROW 4: FULL-CANVAS MAIN EDITOR ════════════════════ */
+    #editor-container {
       flex: 1;
-      padding: 3rem 3.5rem;
       display: flex;
       flex-direction: column;
+      position: relative;
+      overflow-y: auto;
+      background: var(--win-bg);
+    }
+
+    .editor-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding: 24px 48px 48px;
     }
 
     @media (max-width: 768px) {
       .editor-wrapper {
-        padding: 1.5rem 1.25rem;
+        padding: 16px 20px 32px;
       }
     }
 
     #draft-editor {
       flex: 1;
-      min-height: 550px;
       outline: none;
-      font-size: 1.05rem;
-      line-height: 1.8;
+      font-size: 15px;
+      line-height: 1.75;
       color: var(--text-main);
       word-break: break-word;
-      caret-color: var(--primary);
+      caret-color: var(--win-accent);
+      min-height: calc(100vh - 160px);
     }
 
-    /* Contenteditable Empty Placeholder */
+    /* Empty Placeholder */
     #draft-editor:empty::before {
       content: attr(data-placeholder);
       color: var(--text-dim);
@@ -610,104 +525,67 @@
       font-style: italic;
     }
 
-    /* High-Quality Typography for Rich Text Elements */
+    /* High Quality Typography for Rich Text */
     #draft-editor h1, .inline-diff-display h1 {
-      font-size: 2.1rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.25;
-      margin-top: 1.6rem;
-      margin-bottom: 0.6rem;
-      color: var(--text-main);
-    }
-
-    #draft-editor h2, .inline-diff-display h2 {
-      font-size: 1.5rem;
+      font-size: 1.85rem;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.35;
       margin-top: 1.4rem;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.5rem;
       color: var(--text-main);
     }
-
-    #draft-editor h3, .inline-diff-display h3 {
-      font-size: 1.2rem;
+    #draft-editor h2, .inline-diff-display h2 {
+      font-size: 1.4rem;
       font-weight: 650;
-      line-height: 1.4;
-      margin-top: 1.1rem;
-      margin-bottom: 0.35rem;
+      margin-top: 1.2rem;
+      margin-bottom: 0.4rem;
       color: var(--text-main);
     }
-
+    #draft-editor h3, .inline-diff-display h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      margin-bottom: 0.3rem;
+      color: var(--text-main);
+    }
     #draft-editor p, .inline-diff-display p {
-      margin-bottom: 0.95rem;
+      margin-bottom: 0.85rem;
     }
-
-    #draft-editor strong, .inline-diff-display strong,
-    #draft-editor b, .inline-diff-display b {
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    #draft-editor em, .inline-diff-display em,
-    #draft-editor i, .inline-diff-display i {
-      font-style: italic;
-    }
-
-    #draft-editor u, .inline-diff-display u {
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    #draft-editor strike, #draft-editor s, #draft-editor del {
-      text-decoration: line-through;
-      opacity: 0.7;
-    }
-
-    #draft-editor blockquote, .inline-diff-display blockquote {
-      border-left: 3px solid var(--primary);
-      background: var(--primary-subtle);
-      padding: 0.6rem 1.1rem;
-      margin: 1rem 0;
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      font-style: italic;
-      color: var(--text-muted);
-    }
-
     #draft-editor ul, .inline-diff-display ul,
     #draft-editor ol, .inline-diff-display ol {
-      margin: 0.85rem 0 0.85rem 1.6rem;
+      margin: 0.75rem 0 0.75rem 1.5rem;
     }
-
     #draft-editor li, .inline-diff-display li {
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.25rem;
     }
-
+    #draft-editor blockquote, .inline-diff-display blockquote {
+      border-left: 3px solid var(--win-accent);
+      background: var(--win-subtle);
+      padding: 0.5rem 1rem;
+      margin: 0.9rem 0;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      color: var(--text-muted);
+    }
     #draft-editor code, .inline-diff-display code {
       font-family: var(--font-mono);
       font-size: 0.88em;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-default);
+      background: var(--win-subtle);
+      border: 1px solid var(--win-border);
       padding: 0.15rem 0.4rem;
-      border-radius: var(--radius-sm);
-      color: var(--text-main);
+      border-radius: 3px;
     }
 
-    /* ── Proposal In-Place Diff View ── */
+    /* Diff View */
     #draft-diff-display {
       display: none;
-      font-size: 1.05rem;
-      line-height: 1.8;
+      font-size: 15px;
+      line-height: 1.75;
       color: var(--text-main);
       white-space: pre-wrap;
       word-break: break-word;
     }
-
     .editor-wrapper.has-proposal #draft-diff-display {
       display: block;
     }
-
     .editor-wrapper.has-proposal #draft-editor {
       position: absolute;
       top: 0;
@@ -718,552 +596,406 @@
       z-index: 10;
       background: transparent;
       color: transparent;
-      caret-color: var(--primary);
     }
-
     .diff-removed-highlight {
       background: var(--diff-curr-bg);
       color: var(--diff-curr-text);
-      border: 1px solid var(--diff-curr-border);
-      border-radius: 4px;
-      padding: 0.15rem 0.45rem;
-      margin: 0 0.15rem;
-      font-weight: 500;
+      border-radius: 3px;
+      padding: 0.1rem 0.35rem;
       text-decoration: none !important;
-      display: inline;
     }
-
     .diff-added-highlight {
       background: var(--diff-prop-bg);
       color: var(--diff-prop-text);
-      border: 1px solid var(--diff-prop-border);
-      border-radius: 4px;
-      padding: 0.15rem 0.45rem;
-      margin: 0 0.15rem;
-      font-weight: 500;
+      border-radius: 3px;
+      padding: 0.1rem 0.35rem;
       text-decoration: none !important;
-      display: inline;
     }
 
-    /* AI Thinking subtle border glow */
+    /* AI Thinking Subtle Border */
     .editor-wrapper.thinking {
-      position: relative;
-    }
-    .editor-wrapper.thinking::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border: 2px solid var(--primary);
-      border-radius: var(--radius-lg);
-      pointer-events: none;
-      animation: thinkingPulse 1.5s infinite ease-in-out;
-    }
-    @keyframes thinkingPulse {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 0.8; }
+      outline: 1.5px solid var(--win-accent);
+      outline-offset: -2px;
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       APPLICATION FOOTER / STATUS BAR (Minimalist, 36px)
-       ══════════════════════════════════════════════════════════════ */
-    #app-footer {
-      height: 36px;
-      background: var(--bg-paper);
-      border-top: 1px solid var(--border-subtle);
-      position: sticky;
-      bottom: 0;
-      z-index: 80;
+    /* ════════════════════ ROW 5: WINDOWS NOTEPAD STATUS BAR (26px) ════════════════════ */
+    #statusbar {
+      height: 26px;
+      background: var(--win-statusbar);
+      border-top: 1px solid var(--win-border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 1.25rem;
-      font-size: 0.78rem;
-      color: var(--text-dim);
-    }
-
-    .footer-left {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .footer-center {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .tip-pill {
-      font-size: 0.76rem;
+      padding: 0 16px;
+      font-size: 11.5px;
       color: var(--text-muted);
-    }
-    .tip-pill em {
-      color: var(--text-main);
-      font-style: normal;
-      font-weight: 600;
+      user-select: none;
+      flex-shrink: 0;
     }
 
-    .t-btn-quiet {
-      font-size: 0.76rem;
-      color: var(--text-dim);
-    }
-    .t-btn-quiet:hover {
-      color: var(--text-main);
-    }
-
-    .footer-right {
+    .statusbar-left {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 16px;
     }
 
-    .btn-link {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-family: inherit;
-      font-size: inherit;
-      display: inline-flex;
+    .statusbar-right {
+      display: flex;
       align-items: center;
-      gap: 0.35rem;
-      transition: color var(--transition-fast);
+      gap: 16px;
     }
-    .btn-link:hover { color: var(--primary); }
 
-    /* ══════════════════════════════════════════════════════════════
-       SLIDE-OVER MODALS (Settings & Voice Commands Guide)
-       ══════════════════════════════════════════════════════════════ */
+    .stat-sep {
+      width: 1px;
+      height: 12px;
+      background: var(--win-border);
+    }
+
+    /* Modals (Settings) */
     .modal-backdrop {
       position: fixed;
       inset: 0;
       background: var(--modal-backdrop);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(2px);
       z-index: 300;
       display: none;
-      align-items: flex-start;
-      justify-content: flex-end;
-      padding: 1.5rem;
-      animation: menuFadeIn 0.2s ease;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
+    .modal-backdrop.open { display: flex; }
     .modal-sheet {
-      background: var(--bg-paper);
-      border: 1px solid var(--border-default);
+      background: var(--win-titlebar);
+      border: 1px solid var(--win-border);
       border-radius: var(--radius-lg);
-      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
       width: 100%;
-      max-width: 520px;
-      max-height: calc(100vh - 3rem);
+      max-width: 480px;
+      max-height: 85vh;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
     }
-
     .modal-sheet-header {
-      padding: 1.1rem 1.4rem;
-      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--win-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-
     .modal-sheet-header h2 {
-      font-size: 0.96rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      font-size: 13.5px;
+      font-weight: 600;
       color: var(--text-main);
     }
-
     .modal-sheet-body {
-      padding: 1.4rem;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 14px;
     }
-
-    .service-card {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-md);
-      padding: 1rem 1.15rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .service-card-title {
-      font-size: 0.86rem;
-      font-weight: 700;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
+      gap: 5px;
     }
-
     .form-group label {
-      font-size: 0.78rem;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 500;
       color: var(--text-muted);
     }
-
     .form-input {
-      background: var(--bg-paper);
-      border: 1px solid var(--border-default);
+      background: var(--win-bg);
+      border: 1px solid var(--win-border);
       border-radius: var(--radius-sm);
-      padding: 0.45rem 0.75rem;
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
+      padding: 6px 10px;
+      font-family: var(--font-sans);
+      font-size: 12.5px;
       color: var(--text-main);
       outline: none;
-      width: 100%;
-      transition: border-color var(--transition-fast);
     }
+    .form-input:focus { border-color: var(--win-accent); }
 
-    .form-input:focus {
-      border-color: var(--border-focus);
-    }
-
-    .badge-status {
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.2rem 0.55rem;
-      border-radius: 99px;
-    }
-    .badge-status.connected {
-      background: rgba(16, 185, 129, 0.12);
-      color: #10b981;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-    .badge-status.disconnected {
-      background: var(--bg-surface);
-      color: var(--text-dim);
-      border: 1px solid var(--border-default);
-    }
-
-    /* Voice Commands Grid */
-    .cmd-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-    }
-
-    .cmd-card {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-md);
-      padding: 0.75rem 1rem;
-    }
-
-    .cmd-phrase {
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--primary);
-      display: block;
-      margin-bottom: 0.2rem;
-    }
-
-    .cmd-desc {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* ── Toast Notification ── */
+    /* Toast */
     #vp-toast {
       position: fixed;
-      bottom: 2.5rem;
-      right: 2rem;
+      bottom: 36px;
+      right: 20px;
       z-index: 400;
-      background: var(--bg-paper);
-      border: 1px solid var(--border-default);
+      background: var(--win-titlebar);
+      border: 1px solid var(--win-border);
       color: var(--text-main);
       border-radius: var(--radius-md);
-      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5);
-      padding: 0.75rem 1.15rem;
-      font-size: 0.84rem;
-      font-weight: 500;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      padding: 8px 14px;
+      font-size: 12.5px;
       display: none;
       align-items: center;
-      gap: 0.75rem;
-      animation: menuFadeIn 0.2s ease;
+      gap: 10px;
     }
-
-    #vp-toast.visible {
-      display: flex;
-    }
-
+    #vp-toast.visible { display: flex; }
     #vp-toast-close {
       background: none;
       border: none;
       color: var(--text-dim);
       cursor: pointer;
-      font-size: 1rem;
-      padding: 0;
-      line-height: 1;
+      font-size: 13px;
     }
-    #vp-toast-close:hover { color: var(--text-main); }
   </style>
 </head>
 <body>
 
-  <!-- ════════════════════ TOP APPLICATION HEADER ════════════════════ -->
-  <header id="app-header" role="banner">
-    <div class="header-left">
-      <a href="#" class="brand-mark" aria-label="VoicePilot Home">
-        <div class="brand-icon-box" aria-hidden="true">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
-            <path d="M19 10v1a7 7 0 0 1-14 0v-1"></path>
-            <line x1="12" y1="18" x2="12" y2="22"></line>
-            <line x1="8" y1="22" x2="16" y2="22"></line>
-          </svg>
+  <!-- ════════════════════ ROW 1: WINDOW TITLE & NOTEPAD TAB BAR ════════════════════ -->
+  <header id="titlebar" role="banner">
+    <div class="titlebar-left">
+      <div class="notepad-tabs">
+        <div class="notepad-tab">
+          <span class="tab-icon" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </span>
+          <input type="text" id="doc-title-input" value="Untitled Document" placeholder="Untitled Document" aria-label="Document Title" spellcheck="false" />
+          <span class="tab-close" id="btn-tab-close" title="Clear / New">×</span>
         </div>
-        <span class="brand-title">VoicePilot</span>
-      </a>
-      <span class="editor-mode-badge">Text Editor</span>
+        <button type="button" class="tab-new-btn" id="btn-new-tab" title="New Document">+</button>
+      </div>
     </div>
 
-    <div class="header-right">
-      <!-- Live Wispr Flow / Voice Status (Click to stop thinking) -->
-      <div id="voice-status-pill" class="ready" title="Wispr Flow listening status (Click to stop AI)" aria-live="polite">
-        <span class="dot" aria-hidden="true"></span>
-        <span id="voice-status-text">Wispr Flow Ready</span>
+    <div class="titlebar-right">
+      <button type="button" class="win-control-btn" title="Minimize">―</button>
+      <button type="button" class="win-control-btn" title="Maximize">□</button>
+      <button type="button" class="win-control-btn close" title="Close">✕</button>
+    </div>
+  </header>
+
+  <!-- ════════════════════ ROW 2: MENU & EDITING TOOLBAR ════════════════════ -->
+  <nav id="menubar" aria-label="Editor command bar">
+    <div class="menubar-left">
+      <!-- File Menu -->
+      <div class="dropdown-container">
+        <button type="button" class="menu-item-btn" id="btn-file-menu">File</button>
+        <div class="dropdown-menu" id="file-menu">
+          <button type="button" class="dropdown-item" id="menu-file-new"><span>New Document</span><span class="shortcut">Ctrl+N</span></button>
+          <button type="button" class="dropdown-item" id="menu-file-sample"><span>Open Sample Draft</span></button>
+          <div class="menu-divider"></div>
+          <button type="button" class="dropdown-item" id="menu-file-copy-rich"><span>Copy Rich Text</span><span class="shortcut">Ctrl+Shift+C</span></button>
+          <button type="button" class="dropdown-item" id="menu-file-copy-md"><span>Copy Markdown</span></button>
+          <button type="button" class="dropdown-item" id="menu-file-download-md"><span>Download .md</span><span class="shortcut">Ctrl+S</span></button>
+          <button type="button" class="dropdown-item" id="menu-file-download-txt"><span>Download .txt</span></button>
+          <button type="button" class="dropdown-item" id="menu-file-print"><span>Print / Save PDF</span><span class="shortcut">Ctrl+P</span></button>
+          <div class="menu-divider"></div>
+          <button type="button" class="dropdown-item" id="menu-file-clear"><span>Clear Document</span></button>
+        </div>
       </div>
 
-      <!-- 1-Click Copy Action -->
-      <button type="button" class="btn-text-action" id="btn-quick-copy" title="Copy entire document (or say 'Shazam, copy')">
+      <!-- Edit Menu -->
+      <div class="dropdown-container">
+        <button type="button" class="menu-item-btn" id="btn-edit-menu">Edit</button>
+        <div class="dropdown-menu" id="edit-menu">
+          <button type="button" class="dropdown-item" id="menu-edit-undo"><span>Undo</span><span class="shortcut">Ctrl+Z</span></button>
+          <button type="button" class="dropdown-item" id="menu-edit-redo"><span>Redo</span><span class="shortcut">Ctrl+Y</span></button>
+          <div class="menu-divider"></div>
+          <button type="button" class="dropdown-item" id="menu-edit-cut"><span>Cut</span><span class="shortcut">Ctrl+X</span></button>
+          <button type="button" class="dropdown-item" id="menu-edit-copy"><span>Copy</span><span class="shortcut">Ctrl+C</span></button>
+          <button type="button" class="dropdown-item" id="menu-edit-paste"><span>Paste</span><span class="shortcut">Ctrl+V</span></button>
+          <div class="menu-divider"></div>
+          <button type="button" class="dropdown-item" id="menu-edit-selectall"><span>Select All</span><span class="shortcut">Ctrl+A</span></button>
+        </div>
+      </div>
+
+      <!-- View Menu -->
+      <div class="dropdown-container">
+        <button type="button" class="menu-item-btn" id="btn-view-menu">View</button>
+        <div class="dropdown-menu" id="view-menu">
+          <button type="button" class="dropdown-item" id="menu-view-theme"><span>Toggle Dark / Light</span></button>
+          <div class="menu-divider"></div>
+          <button type="button" class="dropdown-item" data-font="sans"><span>Font: Modern Sans</span></button>
+          <button type="button" class="dropdown-item" data-font="serif"><span>Font: Editorial Serif</span></button>
+          <button type="button" class="dropdown-item" data-font="mono"><span>Font: JetBrains Mono</span></button>
+        </div>
+      </div>
+
+      <div class="v-sep"></div>
+
+      <!-- In-Line Rich Formatting Controls (Inspired by Notepad++) -->
+      <div class="tool-group">
+        <!-- Paragraph / Heading Picker -->
+        <div class="dropdown-container">
+          <button type="button" class="tool-btn" id="btn-heading-dropdown" title="Paragraph Style">
+            <span id="heading-label">H1</span> <span style="font-size:9px;">▼</span>
+          </button>
+          <div class="dropdown-menu" id="heading-menu">
+            <button type="button" class="dropdown-item" data-format="p">Paragraph</button>
+            <button type="button" class="dropdown-item" data-format="h1">Heading 1</button>
+            <button type="button" class="dropdown-item" data-format="h2">Heading 2</button>
+            <button type="button" class="dropdown-item" data-format="h3">Heading 3</button>
+          </div>
+        </div>
+
+        <!-- Bullet / Number List -->
+        <div class="dropdown-container">
+          <button type="button" class="tool-btn" id="btn-list-dropdown" title="List Style">
+            <span>• ▾</span>
+          </button>
+          <div class="dropdown-menu" id="list-menu">
+            <button type="button" class="dropdown-item" id="tool-bullet-list">Bullet List (•)</button>
+            <button type="button" class="dropdown-item" id="tool-ordered-list">Numbered List (1.)</button>
+          </div>
+        </div>
+
+        <button type="button" class="tool-btn" id="t-bold" title="Bold (Ctrl+B or 'Shazam, bold')"><strong>B</strong></button>
+        <button type="button" class="tool-btn" id="t-italic" title="Italic (Ctrl+I or 'Shazam, italic')"><em>I</em></button>
+        <button type="button" class="tool-btn" id="t-strike" title="Strikethrough"><s>S</s></button>
+        <button type="button" class="tool-btn" id="t-link" title="Insert Link (Ctrl+K)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+          </svg>
+        </button>
+        <button type="button" class="tool-btn" id="t-table" title="Insert Divider / Table">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="12" y1="3" x2="12" y2="21"></line>
+          </svg>
+        </button>
+        <button type="button" class="tool-btn" id="t-font-cycle" title="Change Typography (Sans / Consolas / Serif)">
+          <span style="font-weight:700;font-size:11px;">Aa</span>
+        </button>
+      </div>
+
+      <div class="v-sep"></div>
+
+      <!-- History -->
+      <div class="tool-group">
+        <button type="button" class="tool-btn" id="t-undo" title="Undo (Ctrl+Z or 'Shazam, undo')">↺</button>
+        <button type="button" class="tool-btn" id="t-redo" title="Redo (Ctrl+Y or 'Shazam, redo')">↻</button>
+      </div>
+    </div>
+
+    <div class="menubar-right">
+      <!-- AI Polish Action -->
+      <button type="button" class="tool-btn-ai" id="btn-trigger-review" title="Full Document Polish (or say 'Shazam, polish')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px;">
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+        </svg>
+        <span>Polish</span>
+      </button>
+
+      <!-- Speak / Read Aloud -->
+      <button type="button" class="tool-btn" id="btn-read-aloud" title="Read draft aloud (or say 'Shazam, read')">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-        </svg>
-        <span>Copy</span>
-      </button>
-
-      <!-- Theme Switcher (Dark / Light) -->
-      <button type="button" class="btn-icon" id="btn-theme-toggle" title="Toggle Light / Dark mode" aria-label="Toggle Theme">
-        <span id="theme-icon">☀️</span>
-      </button>
-
-      <!-- Voice Commands Guide Button -->
-      <button type="button" class="btn-icon" id="btn-open-guide" title="Voice Commands Guide" aria-label="Voice Commands Guide">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
         </svg>
       </button>
 
-      <!-- Preferences Icon (⚙️) -->
-      <button type="button" class="btn-icon" id="btn-open-settings" title="Preferences" aria-label="Open Preferences">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="v-sep"></div>
+
+      <!-- Live Voice Status Pill -->
+      <div id="voice-status-pill" class="ready" title="Wispr Flow listening status (Click to stop AI)" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="voice-status-text">Wispr Ready</span>
+      </div>
+
+      <!-- Settings Icon -->
+      <button type="button" class="tool-btn" id="btn-open-settings" title="Settings &amp; Speech Options" aria-label="Settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
       </button>
     </div>
-  </header>
-
-  <!-- ════════════════════ STREAMLINED TEXT EDITOR TOOLBAR ════════════════════ -->
-  <nav id="formatting-toolbar" aria-label="Text formatting toolbar">
-    <!-- Primary AI Polish Action -->
-    <div class="toolbar-group">
-      <button type="button" class="btn-ai-review" id="btn-trigger-review" title="Polish document with AI (or say 'Shazam, polish')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-        </svg>
-        <span>Polish</span>
-      </button>
-    </div>
-
-    <div class="toolbar-sep" aria-hidden="true"></div>
-
-    <!-- Essential Formatting (Text Editor Essentials) -->
-    <div class="toolbar-group">
-      <button type="button" class="t-btn" id="t-bold" title="Bold (Ctrl+B or 'Shazam, bold')" aria-label="Bold"><strong>B</strong></button>
-      <button type="button" class="t-btn" id="t-italic" title="Italic (Ctrl+I or 'Shazam, italic')" aria-label="Italic"><em>I</em></button>
-      <button type="button" class="t-btn" id="t-heading" title="Heading (or 'Shazam, heading')" aria-label="Heading">H</button>
-      <button type="button" class="t-btn" id="t-bullet-list" title="Bullet List (or 'Shazam, list')" aria-label="Bullet List">• List</button>
-    </div>
-
-    <div class="toolbar-sep" aria-hidden="true"></div>
-
-    <!-- Minimal History -->
-    <div class="toolbar-group">
-      <button type="button" class="t-btn" id="t-undo" title="Undo (Ctrl+Z or 'Shazam, undo')" aria-label="Undo">↺</button>
-      <button type="button" class="t-btn" id="t-redo" title="Redo (Ctrl+Y or 'Shazam, redo')" aria-label="Redo">↻</button>
-    </div>
-
-    <div class="toolbar-group" style="margin-left:auto;">
-      <button type="button" class="t-btn t-btn-quiet" id="btn-load-sample" title="Load sample document">Sample</button>
-      <button type="button" class="t-btn t-btn-quiet" id="btn-clear-doc" title="Clear canvas (or 'Shazam, clear')">Clear</button>
-    </div>
   </nav>
 
-  <!-- ════════════════════ DOCUMENT WORKSPACE ════════════════════ -->
-  <main id="document-viewport">
-    <div id="doc-paper" class="font-sans">
-
-      <!-- AI Polish Suggestion Banner (Only shown during proposals) -->
-      <div id="proposal-reason-banner">
-        <div class="proposal-reason-left">
-          <span class="proposal-tag">✨ Suggestion</span>
-          <span id="proposal-reason-text" class="proposal-reason-text">Improved grammar and phrasing.</span>
-        </div>
-        <div class="proposal-reason-actions">
-          <button type="button" class="btn-action btn-action-accept" id="btn-inline-accept" title="Say 'Shazam, keep'">✓ Keep</button>
-          <button type="button" class="btn-action btn-action-decline" id="btn-inline-decline" title="Say 'Shazam, discard'">✕ Discard</button>
-          <button type="button" class="btn-action btn-action-listen" id="btn-speak-proposal" title="Say 'Shazam, read'">🔊 Listen</button>
-        </div>
-      </div>
-
-      <!-- Editable Document Surface -->
-      <div class="editor-wrapper" id="editor-wrapper">
-        <!-- Optional Note Title (Notion/Bear style) -->
-        <input type="text" id="doc-title-input" class="doc-title-input" value="Untitled Note" placeholder="Untitled Note" spellcheck="false" />
-
-        <!-- Live Rich Text Contenteditable Editor -->
-        <div
-          id="draft-editor"
-          contenteditable="true"
-          role="textbox"
-          aria-multiline="true"
-          aria-label="Rich Voice Document Editor"
-          data-placeholder="Start typing or speak freely with Wispr Flow...&#10;&#10;• Format by voice: Say 'Shazam, bold', 'Shazam, heading', or 'Shazam, list'&#10;• Edit by voice: Say 'Shazam, put a comma next to hello'&#10;• Polish by voice: Say 'Shazam, polish'&#10;• Undo anytime: Say 'Shazam, undo'"
-          spellcheck="true"
-        ></div>
-
-        <!-- In-Place Diff View (Active during AI Review) -->
-        <div id="draft-diff-display" class="inline-diff-display" aria-live="polite"></div>
-      </div>
-
+  <!-- ════════════════════ ROW 3: AI REVIEW PROPOSAL BANNER ════════════════════ -->
+  <div id="proposal-reason-banner">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="proposal-tag">✨ AI Polish</span>
+      <span id="proposal-reason-text" style="color:var(--text-main);">Review ready</span>
     </div>
-  </main>
-
-  <!-- ════════════════════ FOOTER / STATUS BAR ════════════════════ -->
-  <footer id="app-footer">
-    <div class="footer-left">
-      <span id="doc-stats">0 words · 0 characters</span>
-      <span id="history-counter" style="color:var(--primary);font-weight:600;"></span>
-    </div>
-    <div class="footer-center">
-      <span class="tip-pill">Tip: Say <em>"Shazam, bold"</em> or <em>"Shazam, polish"</em></span>
-    </div>
-    <div class="footer-right">
-      <button type="button" class="btn-link" id="btn-open-guide-footer">
-        🎙️ Voice Commands
-      </button>
-    </div>
-  </footer>
-
-  <!-- ════════════════════ SLIDE-OVER MODALS ════════════════════ -->
-  <!-- Voice Commands Guide Modal -->
-  <div class="modal-backdrop" id="guide-backdrop">
-    <div class="modal-sheet">
-      <div class="modal-sheet-header">
-        <h2>🎙️ Voice Commands Guide</h2>
-        <button type="button" class="btn-icon" id="btn-close-guide" aria-label="Close Guide">✕</button>
-      </div>
-      <div class="modal-sheet-body">
-        <div class="cmd-grid">
-          <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, bold"</span>
-            <span class="cmd-desc">Toggles bold styling on selected text or current sentence.</span>
-          </div>
-          <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, italic"</span>
-            <span class="cmd-desc">Toggles italic styling on selected text or current sentence.</span>
-          </div>
-          <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, heading"</span>
-            <span class="cmd-desc">Toggles between Heading and regular text.</span>
-          </div>
-          <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, list"</span>
-            <span class="cmd-desc">Creates or toggles a bullet list item.</span>
-          </div>
-          <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, put a comma next to hello"</span>
-            <span class="cmd-desc">Instant targeted edit directly applied to your text.</span>
-          </div>
-          <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, polish"</span>
-            <span class="cmd-desc">Full polish for flow, tone, and grammar with clean preview.</span>
-          </div>
-          <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, keep" / "Shazam, discard"</span>
-            <span class="cmd-desc">Choose to keep or discard proposed polish edits.</span>
-          </div>
-          <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, undo" / "Shazam, redo"</span>
-            <span class="cmd-desc">Revert or reapply previous actions locally.</span>
-          </div>
-          <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, read" / "Shazam, stop"</span>
-            <span class="cmd-desc">Read draft aloud or stop playback anytime.</span>
-          </div>
-          <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, copy"</span>
-            <span class="cmd-desc">Copies your entire text to clipboard instantly.</span>
-          </div>
-          <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, clear"</span>
-            <span class="cmd-desc">Clears the document canvas (undoable via "Shazam, undo").</span>
-          </div>
-        </div>
-      </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <button type="button" class="btn-action-accept" id="btn-inline-accept" title="Say 'Shazam, accept'">✓ Keep (Shazam, keep)</button>
+      <button type="button" class="btn-action-decline" id="btn-inline-decline" title="Say 'Shazam, decline'">✕ Discard (Shazam, discard)</button>
+      <button type="button" class="tool-btn" id="btn-speak-proposal" style="height:24px;font-size:11px;">🔊 Hear</button>
     </div>
   </div>
 
-  <!-- Preferences Modal -->
+  <!-- ════════════════════ ROW 4: EDGE-TO-EDGE FULL-CANVAS EDITOR ════════════════════ -->
+  <main id="editor-container">
+    <div class="editor-wrapper" id="editor-wrapper">
+      <!-- Live Rich Text Contenteditable Surface -->
+      <div
+        id="draft-editor"
+        contenteditable="true"
+        role="textbox"
+        aria-multiline="true"
+        aria-label="Hands-free voice document editor"
+        data-placeholder="Start dictating with Wispr Flow or typing...&#10;&#10;• Dictate naturally: your words flow directly into the document.&#10;• Format hands-free: say 'Shazam, bold', 'Shazam, heading', or 'Shazam, list'.&#10;• Instant targeted edits: say 'Shazam, put a comma next to hello'.&#10;• Full document polish: say 'Shazam, review'."
+        spellcheck="true"
+      ></div>
+
+      <!-- In-Place Diff Display during AI Review -->
+      <div id="draft-diff-display" class="inline-diff-display" aria-live="polite"></div>
+    </div>
+  </main>
+
+  <!-- ════════════════════ ROW 5: NATIVE STATUS BAR ════════════════════ -->
+  <footer id="statusbar">
+    <div class="statusbar-left">
+      <span id="caret-pos">Ln 1, Col 1</span>
+      <div class="stat-sep"></div>
+      <span id="doc-stats">0 characters</span>
+      <div class="stat-sep"></div>
+      <span>Plain text</span>
+    </div>
+
+    <div class="statusbar-center" style="display:flex;align-items:center;justify-content:center;">
+      <div style="width:32px;height:5px;border:1px solid var(--win-border);border-radius:99px;background:var(--win-subtle);"></div>
+    </div>
+
+    <div class="statusbar-right">
+      <span id="save-status" style="color:#10b981;">✓ Saved</span>
+      <div class="stat-sep"></div>
+      <span>100%</span>
+      <div class="stat-sep"></div>
+      <span>Windows (CRLF)</span>
+      <div class="stat-sep"></div>
+      <span>UTF-8</span>
+    </div>
+  </footer>
+
+  <!-- ════════════════════ MODALS: SETTINGS ════════════════════ -->
   <div class="modal-backdrop" id="settings-backdrop">
     <div class="modal-sheet">
       <div class="modal-sheet-header">
-        <h2>⚙️ Editor Preferences</h2>
-        <button type="button" class="btn-icon" id="btn-close-settings" aria-label="Close Preferences">✕</button>
+        <h2>Settings &amp; Speech Control</h2>
+        <button type="button" class="tab-close" id="btn-close-settings">✕</button>
       </div>
       <div class="modal-sheet-body">
-        <div class="service-card">
-          <div class="service-card-title">
-            <span>Voice Wake Word</span>
-          </div>
-          <div class="form-group">
-            <label for="catchword-input">Wake Word</label>
-            <input type="text" id="catchword-input" class="form-input" value="Shazam" placeholder="Shazam" />
-          </div>
-          <span style="font-size:0.75rem;color:var(--text-dim);">Trigger word spoken before voice commands (e.g. "Shazam, bold", "Shazam, polish").</span>
+        <div class="form-group">
+          <label>Wake Word / Catchphrase</label>
+          <input type="text" id="catchword-input" class="form-input" value="Shazam" placeholder="Shazam" />
+          <span style="font-size:11px;color:var(--text-dim);">Trigger phrase before voice commands (e.g. "Shazam, bold", "Shazam, review").</span>
         </div>
 
-        <div class="service-card">
-          <div class="service-card-title">
-            <span>Voice Confirmation</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:0.75rem;">
-            <input type="checkbox" id="spoken-feedback-toggle" checked style="accent-color:var(--primary);width:16px;height:16px;" />
-            <span style="font-size:0.82rem;color:var(--text-main);">Speak audio confirmation after edits</span>
+        <div class="form-group">
+          <label>Spoken Audio Feedback</label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input type="checkbox" id="spoken-feedback-toggle" checked style="accent-color:var(--win-accent);" />
+            <span style="font-size:12px;color:var(--text-main);">Speak voice confirmation after edits</span>
           </div>
         </div>
 
-        <div class="service-card" style="background:var(--bg-paper);">
-          <div class="service-card-title">
-            <span>About VoicePilot</span>
-          </div>
-          <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">
-            VoicePilot is a minimalist text editor built for <strong>Wispr Flow</strong> voice dictation. All hands-free formatting (bold, italic, headings, bullet lists, undo, redo, read aloud, clear) works 100% locally with zero setup required.
+        <div class="form-group" style="padding-top:6px;">
+          <label>About VoicePilot</label>
+          <p style="font-size:11.5px;color:var(--text-dim);line-height:1.5;">
+            Hands-free voice text editor built for Wispr Flow dictation. All voice formatting (bold, italic, headings, lists, undo, redo, read, clear) works 100% locally with zero setup.
           </p>
         </div>
       </div>
@@ -1331,7 +1063,7 @@ const VPCommandParser = (() => {
       return { action: 'empty_prompt', arg: '', commandText: fullCommand };
     }
 
-    // Strip surrounding punctuation common in dictation (e.g. "undo.", "read.", "accept,")
+    // Strip surrounding punctuation common in dictation (e.g. "undo.", "read.", "copy.", "accept,")
     const cleanBody = rawBody.replace(/^[.,;:!?"'—\s]+|[.,;:!?"'—\s]+$/g, '').trim();
 
     // Check clean body first for local commands
@@ -1435,13 +1167,8 @@ const VPSegmentTracker = (() => {
 // === src/voice_feedback.js ===
 const VPVoiceFeedback = (() => {
   let _enabled = true;
-
-  function isAvailable() {
-    return typeof window !== 'undefined' && 'speechSynthesis' in window;
-  }
-
+  function isAvailable() { return typeof window !== 'undefined' && 'speechSynthesis' in window; }
   function setEnabled(val) { _enabled = !!val; }
-
   function speak(text, { rate = 1.05 } = {}) {
     if (!_enabled || !isAvailable() || !text) return;
     try {
@@ -1449,104 +1176,49 @@ const VPVoiceFeedback = (() => {
       const utt = new SpeechSynthesisUtterance(String(text).slice(0, 800));
       utt.rate = rate;
       window.speechSynthesis.speak(utt);
-    } catch (e) {
-      console.warn('Speech synthesis failed', e);
-    }
+    } catch (e) {}
   }
-
   return { isAvailable, setEnabled, speak };
 })();
 
 // === src/editor_state.js ===
 const VPEditorState = (() => {
   const MAX_HISTORY = 30;
-
   function createState() {
-    return {
-      acceptedDraft: '',
-      undoStack: [],
-      redoStack: [],
-      pendingProposal: null,
-      notes: [],
-    };
+    return { acceptedDraft: '', undoStack: [], redoStack: [], pendingProposal: null, notes: [] };
   }
-
   function acceptDraft(state, newText) {
     if (newText === state.acceptedDraft) return state;
     const undoStack = [...state.undoStack, state.acceptedDraft].slice(-MAX_HISTORY);
-    return {
-      ...state,
-      acceptedDraft: newText,
-      undoStack,
-      redoStack: [],
-      pendingProposal: null,
-    };
+    return { ...state, acceptedDraft: newText, undoStack, redoStack: [], pendingProposal: null };
   }
-
   function setProposal(state, proposalText, reasonType = 'General Polish', reason = '', isReview = false) {
-    return {
-      ...state,
-      pendingProposal: {
-        text: proposalText,
-        reasonType,
-        reason,
-        isReview,
-      },
-    };
+    return { ...state, pendingProposal: { text: proposalText, reasonType, reason, isReview } };
   }
-
   function applyProposal(state) {
     if (!state.pendingProposal) return state;
     return acceptDraft(state, state.pendingProposal.text);
   }
-
   function discardProposal(state) {
     if (!state.pendingProposal) return state;
     return { ...state, pendingProposal: null };
   }
-
   function undo(state) {
     if (state.pendingProposal) return discardProposal(state);
     if (state.undoStack.length === 0) return state;
-
     const previous = state.undoStack[state.undoStack.length - 1];
     const undoStack = state.undoStack.slice(0, -1);
     const redoStack = [...state.redoStack, state.acceptedDraft].slice(-MAX_HISTORY);
-
-    return {
-      ...state,
-      acceptedDraft: previous,
-      undoStack,
-      redoStack,
-      pendingProposal: null,
-    };
+    return { ...state, acceptedDraft: previous, undoStack, redoStack, pendingProposal: null };
   }
-
   function redo(state) {
     if (state.redoStack.length === 0) return state;
-
     const next = state.redoStack[state.redoStack.length - 1];
     const redoStack = state.redoStack.slice(0, -1);
     const undoStack = [...state.undoStack, state.acceptedDraft].slice(-MAX_HISTORY);
-
-    return {
-      ...state,
-      acceptedDraft: next,
-      undoStack,
-      redoStack,
-      pendingProposal: null,
-    };
+    return { ...state, acceptedDraft: next, undoStack, redoStack, pendingProposal: null };
   }
-
-  return {
-    createState,
-    acceptDraft,
-    setProposal,
-    applyProposal,
-    discardProposal,
-    undo,
-    redo,
-  };
+  return { createState, acceptDraft, setProposal, applyProposal, discardProposal, undo, redo };
 })();
   </script>
 
@@ -1561,16 +1233,10 @@ const VPEditorState = (() => {
     let _currentOpId = 0;
     let _activeAbortController = null;
 
-    // Permanent Built-in Key Slot
+    // Built-in Permanent Gemini API Key (Users directly work out of the box)
     const PERMANENT_GEMINI_KEY = '';
     let VP_GEMINI_KEY = PERMANENT_GEMINI_KEY || localStorage.getItem('vp_gemini_key') || '';
-    try {
-      const cached = localStorage.getItem('vp_gemini_model');
-      if (cached && (cached.includes('preview') || cached.includes('02-05') || cached.includes('undefined'))) {
-        localStorage.removeItem('vp_gemini_model');
-      }
-    } catch (e) {}
-    let _activeGeminiModel = localStorage.getItem('vp_gemini_model') || 'gemini-3.5-flash-lite';
+    let _activeGeminiModel = localStorage.getItem('vp_gemini_model') || 'gemini-2.0-flash';
 
     // DOM Elements
     const draftEditor          = document.getElementById('draft-editor');
@@ -1581,10 +1247,10 @@ const VPEditorState = (() => {
     const voiceStatusPill      = document.getElementById('voice-status-pill');
     const voiceStatusText      = document.getElementById('voice-status-text');
     const docStatsEl           = document.getElementById('doc-stats');
+    const caretPosEl           = document.getElementById('caret-pos');
     const historyCounterEl     = document.getElementById('history-counter');
     const docTitleInput        = document.getElementById('doc-title-input');
     const saveStatusEl         = document.getElementById('save-status');
-    const docPaper             = document.getElementById('doc-paper');
 
     const toastEl              = document.getElementById('vp-toast');
     const toastMsg             = document.getElementById('vp-toast-msg');
@@ -1604,15 +1270,13 @@ const VPEditorState = (() => {
 
     function setStatus(type, label) {
       voiceStatusPill.className = type;
-      voiceStatusText.textContent = label || (type === 'ready' ? 'Wispr Flow Ready' : type);
+      voiceStatusText.textContent = label || (type === 'ready' ? 'Wispr Ready' : type);
     }
 
-    // ── Markdown ⟷ Rich HTML Helpers ──
+    // ── Markdown ⟷ HTML Conversion ──
     function markdownToHtml(md) {
       if (!md) return '';
-      if (/<(p|h1|h2|h3|ul|ol|blockquote|div|strong|em)[\s>]/i.test(md)) {
-        return md;
-      }
+      if (/<(p|h1|h2|h3|ul|ol|blockquote|div|strong|em)[\s>]/i.test(md)) return md;
 
       const lines = md.replace(/\r\n/g, '\n').split('\n');
       let html = '';
@@ -1631,22 +1295,22 @@ const VPEditorState = (() => {
 
         if (line.startsWith('# ')) {
           if (inList) { html += '</ul>'; inList = false; }
-          html += `<h1>${line.slice(2)}</h1>`;
+          html += '<h1>' + line.slice(2) + '</h1>';
         } else if (line.startsWith('## ')) {
           if (inList) { html += '</ul>'; inList = false; }
-          html += `<h2>${line.slice(3)}</h2>`;
+          html += '<h2>' + line.slice(3) + '</h2>';
         } else if (line.startsWith('### ')) {
           if (inList) { html += '</ul>'; inList = false; }
-          html += `<h3>${line.slice(4)}</h3>`;
+          html += '<h3>' + line.slice(4) + '</h3>';
         } else if (line.startsWith('- ') || line.startsWith('* ')) {
           if (!inList) { html += '<ul>'; inList = true; }
-          html += `<li>${line.slice(2)}</li>`;
+          html += '<li>' + line.slice(2) + '</li>';
         } else if (line.startsWith('> ')) {
           if (inList) { html += '</ul>'; inList = false; }
-          html += `<blockquote>${line.slice(2)}</blockquote>`;
+          html += '<blockquote>' + line.slice(2) + '</blockquote>';
         } else {
           if (inList) { html += '</ul>'; inList = false; }
-          html += `<p>${line}</p>`;
+          html += '<p>' + line + '</p>';
         }
       }
       if (inList) html += '</ul>';
@@ -1664,23 +1328,19 @@ const VPEditorState = (() => {
 
         const tag = node.tagName.toLowerCase();
         let inner = '';
-        for (const child of node.childNodes) {
-          inner += walk(child);
-        }
+        for (const child of node.childNodes) inner += walk(child);
 
         switch (tag) {
-          case 'h1': return `\n# ${inner.trim()}\n\n`;
-          case 'h2': return `\n## ${inner.trim()}\n\n`;
-          case 'h3': return `\n### ${inner.trim()}\n\n`;
-          case 'strong': case 'b': return `**${inner}**`;
-          case 'em': case 'i': return `*${inner}*`;
-          case 'u': return inner;
-          case 'strike': case 's': case 'del': return `~~${inner}~~`;
-          case 'code': return `\`${inner}\``;
-          case 'blockquote': return `\n> ${inner.trim()}\n\n`;
-          case 'li': return `- ${inner.trim()}\n`;
-          case 'ul': case 'ol': return `\n${inner}\n`;
-          case 'p': return inner.trim() ? `${inner.trim()}\n\n` : '';
+          case 'h1': return '\n# ' + inner.trim() + '\n\n';
+          case 'h2': return '\n## ' + inner.trim() + '\n\n';
+          case 'h3': return '\n### ' + inner.trim() + '\n\n';
+          case 'strong': case 'b': return '**' + inner + '**';
+          case 'em': case 'i': return '*' + inner + '*';
+          case 'code': return '`' + inner + '`';
+          case 'blockquote': return '\n> ' + inner.trim() + '\n\n';
+          case 'li': return '- ' + inner.trim() + '\n';
+          case 'ul': case 'ol': return '\n' + inner + '\n';
+          case 'p': return inner.trim() ? inner.trim() + '\n\n' : '';
           case 'br': return '\n';
           default: return inner;
         }
@@ -1689,7 +1349,7 @@ const VPEditorState = (() => {
       return walk(div).replace(/\n{3,}/g, '\n\n').trim();
     }
 
-    // Caret placement: jump to end of text
+    // Caret placement: jump to end using requestAnimationFrame
     function moveCaretToEnd(el) {
       if (!el) return;
       requestAnimationFrame(() => {
@@ -1701,9 +1361,7 @@ const VPEditorState = (() => {
           const sel = window.getSelection();
           sel.removeAllRanges();
           sel.addRange(range);
-        } catch (e) {
-          console.warn('Could not move caret to end', e);
-        }
+        } catch (e) {}
       });
     }
 
@@ -1711,9 +1369,7 @@ const VPEditorState = (() => {
       _internalWrite = true;
       if (tracker) tracker.setGuard(true);
       draftEditor.innerHTML = htmlVal || '';
-      if (shouldMoveToEnd) {
-        moveCaretToEnd(draftEditor);
-      }
+      if (shouldMoveToEnd) moveCaretToEnd(draftEditor);
       if (tracker) {
         tracker.syncSnapshot();
         tracker.setGuard(false);
@@ -1723,38 +1379,33 @@ const VPEditorState = (() => {
       triggerAutoSave();
     }
 
-    // ── In-Place Diff Generation (Highlights in Red/Green, NO Strikethrough) ──
+    // In-Place Diff Generation (Highlights in Red/Green)
     function renderInPlaceDiff(oldHtml, newHtml) {
       const oldText = typeof oldHtml === 'string' ? oldHtml : '';
       const newText = typeof newHtml === 'string' ? newHtml : '';
 
       if (!oldText && !newText) return '';
-      if (!oldText) return `<span class="diff-added-highlight">${newText}</span>`;
-      if (!newText) return `<span class="diff-removed-highlight">${oldText}</span>`;
+      if (!oldText) return '<span class="diff-added-highlight">' + newText + '</span>';
+      if (!newText) return '<span class="diff-removed-highlight">' + oldText + '</span>';
 
       const oldWords = oldText.split(/(\s+)/);
       const newWords = newText.split(/(\s+)/);
 
       let prefixLen = 0;
-      while (prefixLen < oldWords.length && prefixLen < newWords.length && oldWords[prefixLen] === newWords[prefixLen]) {
-        prefixLen++;
-      }
+      while (prefixLen < oldWords.length && prefixLen < newWords.length && oldWords[prefixLen] === newWords[prefixLen]) prefixLen++;
 
       let suffixLen = 0;
       while (suffixLen < (oldWords.length - prefixLen) && suffixLen < (newWords.length - prefixLen) &&
-             oldWords[oldWords.length - 1 - suffixLen] === newWords[newWords.length - 1 - suffixLen]) {
-        suffixLen++;
-      }
+             oldWords[oldWords.length - 1 - suffixLen] === newWords[newWords.length - 1 - suffixLen]) suffixLen++;
 
       const removed = oldWords.slice(prefixLen, oldWords.length - suffixLen).join('');
       const added   = newWords.slice(prefixLen, newWords.length - suffixLen).join('');
 
       let out = '';
       for (let i = 0; i < prefixLen; i++) out += oldWords[i];
-      if (removed) out += `<span class="diff-removed-highlight">${removed}</span>`;
-      if (added) out += `<span class="diff-added-highlight">${added}</span>`;
+      if (removed) out += '<span class="diff-removed-highlight">' + removed + '</span>';
+      if (added) out += '<span class="diff-added-highlight">' + added + '</span>';
       for (let i = oldWords.length - suffixLen; i < oldWords.length; i++) out += oldWords[i];
-
       return out;
     }
 
@@ -1773,9 +1424,7 @@ const VPEditorState = (() => {
         }
 
         setStatus('review', 'Proposal Active (Say "Shazam, accept" or "Shazam, decline")');
-        setTimeout(() => {
-          try { draftEditor.focus(); } catch (e) {}
-        }, 50);
+        setTimeout(() => { try { draftEditor.focus(); } catch (e) {} }, 50);
       } else {
         editorWrapper.classList.remove('has-proposal');
         draftEditor.style.display = '';
@@ -1785,12 +1434,12 @@ const VPEditorState = (() => {
         if (draftEditor.innerHTML.replace(/\s+/g, ' ').trim() !== (state.acceptedDraft || '').replace(/\s+/g, ' ').trim()) {
           writeToEditor(state.acceptedDraft);
         }
-        setStatus('ready', 'Wispr Flow Ready');
+        setStatus('ready', 'Wispr Ready');
       }
 
       updateStats();
       historyCounterEl.textContent = state.undoStack.length > 0
-        ? `${state.undoStack.length} revision${state.undoStack.length > 1 ? 's' : ''}`
+        ? state.undoStack.length + ' revision' + (state.undoStack.length > 1 ? 's' : '')
         : '';
     }
 
@@ -1798,31 +1447,44 @@ const VPEditorState = (() => {
       const text = draftEditor.innerText || '';
       const words = (text.trim().match(/\S+/g) || []).length;
       const chars = text.length;
-      docStatsEl.textContent = `${words} word${words === 1 ? '' : 's'} · ${chars} char${chars === 1 ? '' : 's'}`;
+      docStatsEl.textContent = words + ' words · ' + chars + ' characters';
     }
 
     let _saveTimer = null;
     function triggerAutoSave() {
-      if (saveStatusEl) {
-        saveStatusEl.textContent = 'Saving...';
-        saveStatusEl.className = 'save-indicator';
-      }
+      saveStatusEl.textContent = 'Saving...';
+      saveStatusEl.style.color = '#f59e0b';
       clearTimeout(_saveTimer);
       _saveTimer = setTimeout(() => {
         try {
           localStorage.setItem('vp_doc_content', draftEditor.innerHTML);
-          if (docTitleInput) localStorage.setItem('vp_doc_title', docTitleInput.value);
-          if (saveStatusEl) {
-            saveStatusEl.textContent = '✓ Saved';
-            saveStatusEl.className = 'save-indicator saved';
-          }
-        } catch (e) {
-          console.warn('Auto-save failed', e);
-        }
+          localStorage.setItem('vp_doc_title', docTitleInput.value);
+          saveStatusEl.textContent = '✓ Saved';
+          saveStatusEl.style.color = '#10b981';
+        } catch (e) {}
       }, 500);
     }
 
-    // ── Rich Formatting Controls ──
+    // Caret Position Tracker for Status Bar (Ln X, Col Y)
+    function updateCaretPos() {
+      const sel = window.getSelection();
+      if (!sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(draftEditor);
+      preCaretRange.setEnd(range.endContainer, range.endOffset);
+      const text = preCaretRange.toString();
+      const lines = text.split('\n');
+      const ln = lines.length;
+      const col = lines[lines.length - 1].length + 1;
+      caretPosEl.textContent = 'Ln ' + ln + ', Col ' + col;
+    }
+
+    document.addEventListener('selectionchange', () => {
+      if (document.activeElement === draftEditor) updateCaretPos();
+    });
+
+    // Formatting Helper
     function formatDoc(cmd, val = null) {
       document.execCommand(cmd, false, val);
       state = VPEditorState.acceptDraft(state, draftEditor.innerHTML);
@@ -1830,38 +1492,13 @@ const VPEditorState = (() => {
       moveCaretToEnd(draftEditor);
     }
 
-    document.getElementById('t-bold').addEventListener('click', () => formatDoc('bold'));
-    document.getElementById('t-italic').addEventListener('click', () => formatDoc('italic'));
-    document.getElementById('t-heading').addEventListener('click', () => {
-      const current = (document.queryCommandValue('formatBlock') || 'p').toLowerCase();
-      formatDoc('formatBlock', current === 'h2' ? 'p' : 'h2');
-    });
-    document.getElementById('t-bullet-list').addEventListener('click', () => formatDoc('insertUnorderedList'));
-    document.getElementById('t-undo').addEventListener('click', () => executeCommand({ action: 'undo', arg: null }, ''));
-    document.getElementById('t-redo').addEventListener('click', () => executeCommand({ action: 'redo', arg: null }, ''));
-
     // ── High-Speed Google Gemini Integration ──
     async function callGemini(draftText, instruction, apiKey, isReview = false, signal) {
       let prompt = '';
       if (isReview) {
-        prompt = `Polish this document for grammar, flow, and clarity. Preserve markdown headings, lists, and bold words.
-Document:
-"""
-${draftText}
-"""
-
-Return ONLY a raw JSON object with this exact shape:
-{"revised": "the polished document text", "reason": "brief 1-sentence summary"}`;
+        prompt = 'Polish this document for grammar, flow, and clarity. Preserve markdown headings, lists, and bold words.\nDocument:\n"""\n' + draftText + '\n"""\n\nReturn ONLY a raw JSON object with this exact shape:\n{"revised": "the polished document text", "reason": "brief 1-sentence summary"}';
       } else {
-        prompt = `Apply this instruction to the document:
-Instruction: "${instruction}"
-
-Document:
-"""
-${draftText}
-"""
-
-Return ONLY the final revised document text. Preserve all formatting (bold, headings, lists). No preamble, no quotes, no markdown code fence blocks.`;
+        prompt = 'Apply this instruction to the document:\nInstruction: "' + instruction + '"\n\nDocument:\n"""\n' + draftText + '\n"""\n\nReturn ONLY the final revised document text. Preserve all formatting. No preamble, no markdown fences.';
       }
 
       let savedModel = localStorage.getItem('vp_gemini_model');
@@ -1884,30 +1521,26 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
 
       for (const modelName of uniqueModels) {
         try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+          const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent?key=' + apiKey;
           const resp = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             signal,
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: {
-                temperature: 0.1,
-                maxOutputTokens: 2048,
-                topP: 0.8
-              }
+              generationConfig: { temperature: 0.1, maxOutputTokens: 2048, topP: 0.8 }
             })
           });
 
           if (resp.status === 404) {
             const errJson = await resp.json().catch(() => ({}));
-            lastError = new Error(errJson.error?.message || `Model ${modelName} not found`);
+            lastError = new Error(errJson.error?.message || 'Model ' + modelName + ' not found');
             continue;
           }
 
           if (!resp.ok) {
             const errJson = await resp.json().catch(() => ({}));
-            throw new Error(errJson.error?.message || `Gemini API status ${resp.status}`);
+            throw new Error(errJson.error?.message || 'API status ' + resp.status);
           }
 
           const data = await resp.json();
@@ -1915,8 +1548,6 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           if (rawText) {
             _activeGeminiModel = modelName;
             localStorage.setItem('vp_gemini_model', modelName);
-            const badge = document.getElementById('gemini-status-badge');
-            if (badge) badge.textContent = `✓ ${modelName}`;
             if (isReview) {
               try {
                 const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
@@ -1925,7 +1556,7 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
                   return { revised: parsed.revised.trim(), reason: parsed.reason || 'Polished grammar and structure.' };
                 }
               } catch (e) {}
-              return { revised: rawText, reason: 'Polished grammar, flow, and elegance.' };
+              return { revised: rawText, reason: 'Polished grammar and clarity.' };
             }
             return { revised: rawText, reason: '' };
           }
@@ -1935,16 +1566,15 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
         }
       }
 
-      // If static candidate models returned 404, dynamically discover available models for this API key
+      // Dynamic fallback discovery if static models return 404
       try {
-        const listResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`, { signal });
+        const listResp = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + apiKey, { signal });
         if (listResp.ok) {
           const listData = await listResp.json();
           const available = (listData.models || [])
             .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
             .map(m => m.name.replace(/^models\//, ''));
 
-          // Sort prioritizing flash-lite, then flash, then others
           const sortedModels = available.sort((a, b) => {
             const score = name => (name.includes('flash-lite') ? 3 : name.includes('flash') ? 2 : 1);
             return score(b) - score(a);
@@ -1953,18 +1583,14 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           for (const fallbackModel of sortedModels) {
             if (uniqueModels.includes(fallbackModel)) continue;
             try {
-              const url = `https://generativelanguage.googleapis.com/v1beta/models/${fallbackModel}:generateContent?key=${apiKey}`;
+              const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + fallbackModel + ':generateContent?key=' + apiKey;
               const resp = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 signal,
                 body: JSON.stringify({
                   contents: [{ parts: [{ text: prompt }] }],
-                  generationConfig: {
-                    temperature: 0.1,
-                    maxOutputTokens: 2048,
-                    topP: 0.8
-                  }
+                  generationConfig: { temperature: 0.1, maxOutputTokens: 2048, topP: 0.8 }
                 })
               });
               if (!resp.ok) continue;
@@ -1973,17 +1599,15 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
               if (rawText) {
                 _activeGeminiModel = fallbackModel;
                 localStorage.setItem('vp_gemini_model', fallbackModel);
-                const badge = document.getElementById('gemini-status-badge');
-                if (badge) badge.textContent = `✓ ${fallbackModel}`;
                 if (isReview) {
                   try {
-                    const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
+                    const cleaned = rawText.replace(/^\`\`\`json\s*|\s*\`\`\`$/g, '').trim();
                     const parsed = JSON.parse(cleaned);
                     if (parsed.revised) {
                       return { revised: parsed.revised.trim(), reason: parsed.reason || 'Polished grammar and structure.' };
                     }
                   } catch (e) {}
-                  return { revised: rawText, reason: 'Polished grammar, flow, and elegance.' };
+                  return { revised: rawText, reason: 'Polished grammar and clarity.' };
                 }
                 return { revised: rawText, reason: '' };
               }
@@ -1996,19 +1620,18 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
         if (e.name === 'AbortError') throw e;
       }
 
-      throw lastError || new Error('Could not polish text right now. Please try again or continue writing!');
+      throw lastError || new Error('Could not polish draft right now.');
     }
 
-    // ── Unified AI Router ──
     async function callAI(content, instruction, isReview = false, signal) {
       const plain = (content || '').replace(/<[^>]+>/g, ' ').trim();
       if (!plain) {
-        throw new Error('Your document is empty. Dictate or write some content first.');
+        throw new Error('Your document is empty. Dictate or type some content first.');
       }
 
       const activeKey = PERMANENT_GEMINI_KEY || VP_GEMINI_KEY;
       if (!activeKey) {
-        throw new Error('Cloud AI polish is currently unavailable. All voice formatting (Bold, Italic, Headings, Lists, Undo, Redo, Read aloud, Clear) works 100% locally with zero setup!');
+        throw new Error('Cloud AI polish is currently offline. All hands-free voice formatting (bold, italic, headings, lists, undo, redo, read, clear) works 100% locally with zero setup!');
       }
 
       const markdown = htmlToMarkdown(content);
@@ -2028,12 +1651,12 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
       _activeAbortController = new AbortController();
       const signal = _activeAbortController.signal;
 
-      setStatus('listening', `Command: ${action}`);
+      setStatus('listening', 'Command: ' + action);
 
       switch (action) {
         case 'review': {
-          showToast('Consulting AI editor for review...');
-          setStatus('review', 'AI Reviewing... (Click to stop)');
+          showToast('Consulting AI editor for polish...');
+          setStatus('review', 'Polishing... (Click to stop)');
           if (editorWrapper) editorWrapper.classList.add('thinking');
           try {
             const res = await callAI(state.acceptedDraft, 'Comprehensive Review', true, signal);
@@ -2046,8 +1669,8 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
             VPVoiceFeedback.speak('Review ready. Say Shazam accept or decline.');
           } catch (e) {
             if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
-            showToast(`Review notice: ${e.message}`, 5000);
-            setStatus('error', 'AI Review Notice');
+            showToast('Review notice: ' + e.message, 5000);
+            setStatus('error', 'AI Review Failed');
           } finally {
             if (editorWrapper) editorWrapper.classList.remove('thinking');
           }
@@ -2059,8 +1682,8 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
             showToast('Please state what you want to edit.');
             break;
           }
-          showToast(`Applying: "${arg}"...`);
-          setStatus('review', 'Applying Edit... (Click to stop)');
+          showToast('Applying: "' + arg + '"...');
+          setStatus('review', 'Editing... (Click to stop)');
           if (editorWrapper) editorWrapper.classList.add('thinking');
           try {
             const res = await callAI(state.acceptedDraft, arg, false, signal);
@@ -2071,12 +1694,12 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
             writeToEditor(revisedHtml, true);
             renderState();
             moveCaretToEnd(draftEditor);
-            showToast(`✓ Applied: "${arg}"`);
+            showToast('✓ Applied: "' + arg + '"');
             VPVoiceFeedback.speak('Edit applied');
           } catch (e) {
             if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
-            showToast(`Edit notice: ${e.message}`, 5000);
-            setStatus('error', 'AI Edit Notice');
+            showToast('Edit notice: ' + e.message, 5000);
+            setStatus('error', 'AI Edit Failed');
           } finally {
             if (editorWrapper) editorWrapper.classList.remove('thinking');
           }
@@ -2121,7 +1744,7 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
             writeToEditor(state.acceptedDraft, true);
             renderState();
             moveCaretToEnd(draftEditor);
-            showToast('✓ Proposal accepted into document.');
+            showToast('✓ Proposal accepted.');
             VPVoiceFeedback.speak('Proposal accepted');
           }
           break;
@@ -2145,10 +1768,9 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           state = VPEditorState.undo(state);
           renderState();
           moveCaretToEnd(draftEditor);
-          if (state === prev) {
-            showToast('Nothing to undo.');
-          } else {
-            showToast('✓ Action undone.');
+          if (state === prev) showToast('Nothing to undo.');
+          else {
+            showToast('✓ Undone.');
             VPVoiceFeedback.speak('Undone');
           }
           break;
@@ -2159,10 +1781,9 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           state = VPEditorState.redo(state);
           renderState();
           moveCaretToEnd(draftEditor);
-          if (state === prev) {
-            showToast('Nothing to redo.');
-          } else {
-            showToast('✓ Action redone.');
+          if (state === prev) showToast('Nothing to redo.');
+          else {
+            showToast('✓ Redone.');
             VPVoiceFeedback.speak('Redone');
           }
           break;
@@ -2172,25 +1793,22 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           const textToRead = state.pendingProposal
             ? state.pendingProposal.text.replace(/<[^>]+>/g, ' ')
             : (draftEditor.innerText || '');
-          if (!textToRead.trim()) {
-            showToast('Nothing to read.');
-          } else {
-            showToast('🔊 Reading document aloud...');
+          if (!textToRead.trim()) showToast('Nothing to read.');
+          else {
+            showToast('🔊 Reading draft aloud...');
             VPVoiceFeedback.speak(textToRead);
           }
           break;
         }
 
         case 'stop': {
-          if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-          }
+          if ('speechSynthesis' in window) window.speechSynthesis.cancel();
           if (_activeAbortController) {
             _activeAbortController.abort();
             _activeAbortController = null;
             _currentOpId++;
             if (editorWrapper) editorWrapper.classList.remove('thinking');
-            setStatus('ready', 'Wispr Flow Ready');
+            setStatus('ready', 'Wispr Ready');
             moveCaretToEnd(draftEditor);
           }
           showToast('Stopped.');
@@ -2199,15 +1817,12 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
 
         case 'copy': {
           const cleanText = draftEditor.innerText || '';
-          if (!cleanText.trim()) {
-            showToast('Document is empty.');
-          } else {
+          if (!cleanText.trim()) showToast('Document is empty.');
+          else {
             navigator.clipboard.writeText(cleanText).then(() => {
               showToast('📋 Copied to clipboard!');
               VPVoiceFeedback.speak('Copied to clipboard');
-            }).catch(() => {
-              showToast('Could not copy to clipboard.');
-            });
+            }).catch(() => showToast('Could not copy.'));
           }
           break;
         }
@@ -2250,9 +1865,7 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
         const idx = node.nodeValue.lastIndexOf(clean);
         if (idx !== -1) {
           node.nodeValue = node.nodeValue.slice(0, idx) + node.nodeValue.slice(idx + clean.length);
-          if (node.nodeValue.endsWith(' ')) {
-            node.nodeValue = node.nodeValue.trimEnd() + ' ';
-          }
+          if (node.nodeValue.endsWith(' ')) node.nodeValue = node.nodeValue.trimEnd() + ' ';
           return;
         }
       }
@@ -2296,7 +1909,7 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
         _activeAbortController = null;
         _currentOpId++;
         if (editorWrapper) editorWrapper.classList.remove('thinking');
-        setStatus('ready', 'Wispr Flow Ready');
+        setStatus('ready', 'Wispr Ready');
         showToast('🛑 AI thinking stopped.');
         VPVoiceFeedback.speak('Stopped');
         moveCaretToEnd(draftEditor);
@@ -2308,9 +1921,38 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
       executeCommand({ action: 'review', arg: null }, '');
     });
 
-    document.getElementById('btn-clear-doc').addEventListener('click', () => {
-      executeCommand({ action: 'clear', arg: null }, '');
-    });
+    const btnReadAloud = document.getElementById('btn-read-aloud');
+    if (btnReadAloud) {
+      btnReadAloud.addEventListener('click', () => {
+        executeCommand({ action: 'read', arg: null }, '');
+      });
+    }
+
+    const tLink = document.getElementById('t-link');
+    if (tLink) {
+      tLink.addEventListener('click', () => {
+        const url = prompt('Enter link URL (e.g. https://example.com):');
+        if (url) formatDoc('createLink', url);
+      });
+    }
+
+    const tTable = document.getElementById('t-table');
+    if (tTable) {
+      tTable.addEventListener('click', () => {
+        formatDoc('insertHorizontalRule');
+      });
+    }
+
+    const tFontCycle = document.getElementById('t-font-cycle');
+    if (tFontCycle) {
+      const fonts = ['sans', 'mono', 'serif'];
+      let fontIdx = 0;
+      tFontCycle.addEventListener('click', () => {
+        fontIdx = (fontIdx + 1) % fonts.length;
+        document.body.style.fontFamily = 'var(--font-' + fonts[fontIdx] + ')';
+        showToast('Font: ' + fonts[fontIdx]);
+      });
+    }
 
     document.getElementById('btn-inline-accept').addEventListener('click', () => {
       executeCommand({ action: 'accept', arg: null }, '');
@@ -2326,178 +1968,240 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
       }
     });
 
-    // Clicking diff display passes focus to editor for Wispr Flow
-    draftDiffDisplay.addEventListener('click', () => {
-      try { draftEditor.focus(); } catch (e) {}
+    // Formatting Toolbar Buttons
+    document.getElementById('t-bold').addEventListener('click', () => formatDoc('bold'));
+    document.getElementById('t-italic').addEventListener('click', () => formatDoc('italic'));
+    document.getElementById('t-strike').addEventListener('click', () => formatDoc('strikeThrough'));
+    document.getElementById('t-undo').addEventListener('click', () => executeCommand({ action: 'undo', arg: null }, ''));
+    document.getElementById('t-redo').addEventListener('click', () => executeCommand({ action: 'redo', arg: null }, ''));
+
+    // Dropdown Menus Handling
+    function closeAllMenus() {
+      document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+    }
+
+    function toggleMenu(menuEl, e) {
+      e.stopPropagation();
+      const isOpen = menuEl.classList.contains('show');
+      closeAllMenus();
+      if (!isOpen) menuEl.classList.add('show');
+    }
+
+    document.getElementById('btn-file-menu').addEventListener('click', (e) => toggleMenu(document.getElementById('file-menu'), e));
+    document.getElementById('btn-edit-menu').addEventListener('click', (e) => toggleMenu(document.getElementById('edit-menu'), e));
+    document.getElementById('btn-view-menu').addEventListener('click', (e) => toggleMenu(document.getElementById('view-menu'), e));
+    document.getElementById('btn-heading-dropdown').addEventListener('click', (e) => toggleMenu(document.getElementById('heading-menu'), e));
+    document.getElementById('btn-list-dropdown').addEventListener('click', (e) => toggleMenu(document.getElementById('list-menu'), e));
+
+    window.addEventListener('click', () => closeAllMenus());
+
+    // Heading Options
+    document.querySelectorAll('#heading-menu [data-format]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fmt = btn.getAttribute('data-format');
+        formatDoc('formatBlock', fmt);
+        document.getElementById('heading-label').textContent = fmt.toUpperCase();
+        closeAllMenus();
+      });
     });
 
-    // Load Rich Sample Document
-    function loadSampleDocument() {
+    // List Options
+    document.getElementById('tool-bullet-list').addEventListener('click', () => {
+      formatDoc('insertUnorderedList');
+      closeAllMenus();
+    });
+    document.getElementById('tool-ordered-list').addEventListener('click', () => {
+      formatDoc('insertOrderedList');
+      closeAllMenus();
+    });
+
+    // File Menu Actions
+    function loadSampleDraft() {
       const sampleHtml = `
 <h1>Welcome to VoicePilot</h1>
 <p>VoicePilot is a <strong>hands-free voice text editor</strong> built specifically for dictating with <em>Wispr Flow</em>.</p>
 <h2>Key Capabilities</h2>
 <ul>
-  <li><strong>Voice Edits:</strong> Say <code>"Shazam, put a comma next to hello"</code> to make instant edits.</li>
-  <li><strong>Voice Polish:</strong> Say <code>"Shazam, polish"</code> to polish phrasing with clean in-place diffs.</li>
-  <li><strong>Voice Formatting:</strong> Say <code>"Shazam, bold"</code> or <code>"Shazam, list"</code> without touching your keyboard.</li>
+  <li><strong>Direct Voice Edits:</strong> Say <code>"Shazam, put a comma next to hello"</code> to make instant edits.</li>
+  <li><strong>Full AI Review:</strong> Say <code>"Shazam, review"</code> to polish phrasing with in-place diffs.</li>
+  <li><strong>Instant Formatting:</strong> Say <code>"Shazam, bold"</code> or <code>"Shazam, list"</code> without touching your keyboard.</li>
 </ul>
-<blockquote>"Speak freely at the speed of thought. Let voice handle the punctuation, formatting, and polish."</blockquote>
-<p>Try saying <em>"Shazam, polish"</em> or click the Polish button above!</p>
+<blockquote>"Speak freely at the speed of thought. Let AI handle the punctuation, formatting, and polish."</blockquote>
+<p>Try saying <em>"Shazam, review"</em> to see VoicePilot polish this document!</p>
       `.trim();
       state = VPEditorState.acceptDraft(state, sampleHtml);
       writeToEditor(sampleHtml);
       renderState();
-      showToast('🪄 Sample text loaded! Try saying "Shazam, polish".');
+      showToast('🪄 Sample document loaded!');
     }
 
-    document.getElementById('btn-load-sample').addEventListener('click', loadSampleDocument);
+    document.getElementById('menu-file-new').addEventListener('click', () => {
+      executeCommand({ action: 'clear', arg: null }, '');
+      docTitleInput.value = 'Untitled Document';
+      closeAllMenus();
+    });
+    document.getElementById('btn-new-tab').addEventListener('click', () => {
+      executeCommand({ action: 'clear', arg: null }, '');
+      docTitleInput.value = 'Untitled Document';
+    });
+    document.getElementById('btn-tab-close').addEventListener('click', () => {
+      executeCommand({ action: 'clear', arg: null }, '');
+    });
 
-    // Document Title Auto-Save
-    if (docTitleInput) {
-      docTitleInput.addEventListener('input', triggerAutoSave);
+    document.getElementById('menu-file-sample').addEventListener('click', () => {
+      loadSampleDraft();
+      closeAllMenus();
+    });
+
+    document.getElementById('menu-file-copy-rich').addEventListener('click', () => {
+      const html = draftEditor.innerHTML;
+      const blob = new Blob([html], { type: 'text/html' });
+      const textBlob = new Blob([draftEditor.innerText], { type: 'text/plain' });
+      navigator.clipboard.write([
+        new ClipboardItem({ 'text/html': blob, 'text/plain': textBlob })
+      ]).then(() => showToast('📋 Rich text copied!')).catch(() => showToast('📋 Text copied!'));
+      closeAllMenus();
+    });
+
+    document.getElementById('menu-file-copy-md').addEventListener('click', () => {
+      const md = htmlToMarkdown(draftEditor.innerHTML);
+      navigator.clipboard.writeText(md).then(() => showToast('📝 Markdown copied!'));
+      closeAllMenus();
+    });
+
+    document.getElementById('menu-file-download-md').addEventListener('click', () => {
+      const md = htmlToMarkdown(draftEditor.innerHTML);
+      const filename = (docTitleInput.value.trim() || 'document').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.md';
+      downloadFile(filename, md, 'text/markdown');
+      closeAllMenus();
+    });
+
+    document.getElementById('menu-file-download-txt').addEventListener('click', () => {
+      const txt = draftEditor.innerText || '';
+      const filename = (docTitleInput.value.trim() || 'document').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.txt';
+      downloadFile(filename, txt, 'text/plain');
+      closeAllMenus();
+    });
+
+    document.getElementById('menu-file-print').addEventListener('click', () => {
+      window.print();
+      closeAllMenus();
+    });
+
+    document.getElementById('menu-file-clear').addEventListener('click', () => {
+      executeCommand({ action: 'clear', arg: null }, '');
+      closeAllMenus();
+    });
+
+    function downloadFile(filename, content, type) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([content], { type }));
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
     }
 
-    // 1-Click Quick Copy Action
-    const btnQuickCopy = document.getElementById('btn-quick-copy');
-    if (btnQuickCopy) {
-      btnQuickCopy.addEventListener('click', () => {
-        const plain = (draftEditor.innerText || '').trim();
-        if (!plain) {
-          showToast('Text is empty.');
-          return;
-        }
-        navigator.clipboard.writeText(plain).then(() => {
-          showToast('📋 Copied to clipboard!');
-          const orig = btnQuickCopy.innerHTML;
-          btnQuickCopy.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Copied!</span>';
-          setTimeout(() => { btnQuickCopy.innerHTML = orig; }, 1800);
-        }).catch(() => {
-          showToast('Could not copy to clipboard.');
-        });
-      });
-    }
+    // Edit Menu Actions
+    document.getElementById('menu-edit-undo').addEventListener('click', () => { executeCommand({ action: 'undo', arg: null }, ''); closeAllMenus(); });
+    document.getElementById('menu-edit-redo').addEventListener('click', () => { executeCommand({ action: 'redo', arg: null }, ''); closeAllMenus(); });
+    document.getElementById('menu-edit-cut').addEventListener('click', () => { document.execCommand('cut'); closeAllMenus(); });
+    document.getElementById('menu-edit-copy').addEventListener('click', () => { document.execCommand('copy'); closeAllMenus(); });
+    document.getElementById('menu-edit-paste').addEventListener('click', () => { navigator.clipboard.readText().then(t => document.execCommand('insertText', false, t)); closeAllMenus(); });
+    document.getElementById('menu-edit-selectall').addEventListener('click', () => { document.execCommand('selectAll'); closeAllMenus(); });
 
-    // Theme Switcher (Dark / Light)
-    const btnThemeToggle = document.getElementById('btn-theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-
+    // View Menu: Theme & Fonts
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('vp_theme', theme);
-      if (themeIcon) themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
     }
 
-    if (btnThemeToggle) {
-      btnThemeToggle.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme') || 'dark';
-        applyTheme(current === 'dark' ? 'light' : 'dark');
+    document.getElementById('menu-view-theme').addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+      closeAllMenus();
+    });
+
+    document.querySelectorAll('#view-menu [data-font]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const font = btn.getAttribute('data-font');
+        if (font === 'sans') draftEditor.style.fontFamily = 'var(--font-sans)';
+        if (font === 'serif') draftEditor.style.fontFamily = 'var(--font-serif)';
+        if (font === 'mono') draftEditor.style.fontFamily = 'var(--font-mono)';
+        localStorage.setItem('vp_doc_font', font);
+        closeAllMenus();
       });
-    }
+    });
 
-    // ── Voice Commands Guide Modal ──
-    const guideBackdrop = document.getElementById('guide-backdrop');
-    const btnOpenGuide = document.getElementById('btn-open-guide');
-    const btnOpenGuideFooter = document.getElementById('btn-open-guide-footer');
-    const btnCloseGuide = document.getElementById('btn-close-guide');
-
-    if (btnOpenGuide && guideBackdrop) {
-      btnOpenGuide.addEventListener('click', () => guideBackdrop.classList.add('open'));
-    }
-    if (btnOpenGuideFooter && guideBackdrop) {
-      btnOpenGuideFooter.addEventListener('click', () => guideBackdrop.classList.add('open'));
-    }
-    if (btnCloseGuide && guideBackdrop) {
-      btnCloseGuide.addEventListener('click', () => guideBackdrop.classList.remove('open'));
-    }
-    if (guideBackdrop) {
-      guideBackdrop.addEventListener('click', (e) => {
-        if (e.target === guideBackdrop) guideBackdrop.classList.remove('open');
-      });
-    }
-
-    // ── Settings / Preferences Modal ──
+    // Settings Modal
     const settingsBackdrop = document.getElementById('settings-backdrop');
-    const catchwordInput = document.getElementById('catchword-input');
+    const catchwordInput   = document.getElementById('catchword-input');
 
-    const btnOpenSettings = document.getElementById('btn-open-settings');
-    if (btnOpenSettings && settingsBackdrop) {
-      btnOpenSettings.addEventListener('click', () => {
-        if (catchwordInput) catchwordInput.value = catchword;
-        settingsBackdrop.classList.add('open');
-      });
-    }
+    document.getElementById('btn-open-settings').addEventListener('click', () => {
+      if (catchwordInput) catchwordInput.value = catchword;
+      settingsBackdrop.classList.add('open');
+    });
 
-    const btnCloseSettings = document.getElementById('btn-close-settings');
-    if (btnCloseSettings && settingsBackdrop) {
-      btnCloseSettings.addEventListener('click', () => settingsBackdrop.classList.remove('open'));
-    }
-    if (settingsBackdrop) {
-      settingsBackdrop.addEventListener('click', (e) => {
-        if (e.target === settingsBackdrop) settingsBackdrop.classList.remove('open');
-      });
-    }
+    document.getElementById('btn-close-settings').addEventListener('click', () => settingsBackdrop.classList.remove('open'));
+    settingsBackdrop.addEventListener('click', (e) => {
+      if (e.target === settingsBackdrop) settingsBackdrop.classList.remove('open');
+    });
 
-    if (catchwordInput) {
-      catchwordInput.addEventListener('change', () => {
-        const val = catchwordInput.value.trim();
-        if (val) {
-          catchword = val;
-          showToast(`Wake word set to "${catchword}"`);
-        }
-      });
-    }
+    // Gemini API key settings removed - runs under the hood
 
-    const spokenToggle = document.getElementById('spoken-feedback-toggle');
-    if (spokenToggle) {
-      spokenToggle.addEventListener('change', (e) => {
-        VPVoiceFeedback.setEnabled(e.target.checked);
-        showToast(e.target.checked ? 'Spoken feedback enabled' : 'Spoken feedback muted');
-      });
-    }
+    catchwordInput.addEventListener('change', () => {
+      const val = catchwordInput.value.trim();
+      if (val) {
+        catchword = val;
+        showToast('Wake word set to "' + catchword + '"');
+      }
+    });
+
+    document.getElementById('spoken-feedback-toggle').addEventListener('change', (e) => {
+      VPVoiceFeedback.setEnabled(e.target.checked);
+      showToast(e.target.checked ? 'Spoken feedback enabled' : 'Spoken feedback muted');
+    });
 
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        if (settingsBackdrop) settingsBackdrop.classList.remove('open');
-        if (guideBackdrop) guideBackdrop.classList.remove('open');
+        settingsBackdrop.classList.remove('open');
         if (_activeAbortController) {
           _activeAbortController.abort();
           _activeAbortController = null;
           _currentOpId++;
           if (editorWrapper) editorWrapper.classList.remove('thinking');
-          setStatus('ready', 'Wispr Flow Ready');
+          setStatus('ready', 'Wispr Ready');
           showToast('🛑 AI thinking stopped.');
           moveCaretToEnd(draftEditor);
         }
       }
     });
 
+    // Auto-save title on edit
+    docTitleInput.addEventListener('input', triggerAutoSave);
+
     // ── Initialization ──
     function init() {
-      // 1. Theme
       const savedTheme = localStorage.getItem('vp_theme') || 'dark';
       applyTheme(savedTheme);
 
-      // 2. Document Title & Content Restore
+      const savedFont = localStorage.getItem('vp_doc_font') || 'sans';
+      if (savedFont === 'sans') draftEditor.style.fontFamily = 'var(--font-sans)';
+      if (savedFont === 'serif') draftEditor.style.fontFamily = 'var(--font-serif)';
+      if (savedFont === 'mono') draftEditor.style.fontFamily = 'var(--font-mono)';
+
       const savedTitle = localStorage.getItem('vp_doc_title');
-      if (savedTitle && docTitleInput) docTitleInput.value = savedTitle;
+      if (savedTitle) docTitleInput.value = savedTitle;
 
       const savedContent = localStorage.getItem('vp_doc_content');
       if (savedContent && savedContent.trim()) {
         state = VPEditorState.acceptDraft(state, savedContent);
         writeToEditor(savedContent);
       } else {
-        loadSampleDocument();
+        loadSampleDraft();
       }
 
-      // 4. Attach Tracker
       attachTracker();
       renderState();
-
-      // Auto-focus editor so dictation starts immediately
-      setTimeout(() => {
-        moveCaretToEnd(draftEditor);
-      }, 120);
     }
 
     window.addEventListener('DOMContentLoaded', init);
