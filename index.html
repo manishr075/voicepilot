@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- Google Identity Services — for one-click Sign in with Google (no API key needed) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     /* ── Professional SaaS Design Tokens ── */
     :root {
@@ -630,6 +632,88 @@
     }
     #vp-toast-close:hover { color: #fff; }
 
+    /* ── Google Sign-In Button ── */
+    .btn-google {
+      background: #fff;
+      color: #1f2937;
+      border: 1px solid rgba(255,255,255,0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.52rem 1.15rem;
+      border-radius: var(--radius-md);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      line-height: 1;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .btn-google:hover { background: #f3f4f6; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+    .btn-google svg { flex-shrink: 0; }
+
+    .google-signin-area {
+      background: linear-gradient(135deg, rgba(16,185,129,0.06) 0%, rgba(6,182,212,0.06) 100%);
+      border: 1px solid rgba(16,185,129,0.2);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .google-signin-area .gsi-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #a7f3d0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .google-signin-area .gsi-desc {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+      border-radius: 99px;
+      background: var(--emerald-bg);
+      border: 1px solid var(--emerald-border);
+      color: #34d399;
+      white-space: nowrap;
+    }
+
+    .auth-badge.signed-out {
+      background: rgba(100,116,139,0.12);
+      border-color: rgba(100,116,139,0.25);
+      color: var(--text-muted);
+    }
+
+    .setting-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-dim);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+    .setting-divider::before, .setting-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--card-border);
+    }
+
     /* ── Footer ── */
     footer {
       border-top: 1px solid var(--card-border);
@@ -791,27 +875,58 @@
     <!-- Settings Panel -->
     <div class="vp-card" id="settings-panel">
       <details>
-        <summary>⚙️ AI & Configuration Settings</summary>
+        <summary>⚙️ AI &amp; Configuration Settings</summary>
         <div class="settings-body">
-          <div class="setting-row">
-            <label for="gemini-key-input">Google Gemini API Key (Recommended - Free Tier)</label>
-            <input type="password" id="gemini-key-input" placeholder="AIzaSy..." />
-            <span class="setting-hint">Get a free key from Google AI Studio (aistudio.google.com). Stored locally in your browser only.</span>
+
+          <!-- Google Sign-In (easiest for non-technical users) -->
+          <div class="google-signin-area">
+            <div class="gsi-title">✨ Recommended — Sign in with Google (No API key needed!)</div>
+            <div class="gsi-desc">Sign in once and VoicePilot will use your Google account to access the Gemini AI — completely free, no copy-pasting keys required.</div>
+            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+              <button type="button" class="btn-google" id="btn-google-signin">
+                <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16.1 19 13 24 13c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.5 29.5 4 24 4 16.3 4 9.7 8.4 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.3 26.8 36 24 36c-5.3 0-9.7-3.3-11.3-8H6.3C9.6 35.5 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.3 5.6l6.2 5.2C37.2 38.4 44 33 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>
+                Sign in with Google
+              </button>
+              <span class="auth-badge signed-out" id="google-auth-badge">● Not signed in</span>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-google-signout" style="display:none;">Sign out</button>
+            </div>
           </div>
+
+          <div class="setting-divider">or use an API Key manually</div>
+
+          <!-- Gemini API Key (manual fallback) -->
           <div class="setting-row">
-            <label for="openai-key-input">OpenAI API Key (Optional)</label>
-            <input type="password" id="openai-key-input" placeholder="sk-..." />
-            <span class="setting-hint">Uses gpt-4o-mini if entered.</span>
+            <label for="gemini-key-input">Google Gemini API Key <span style="color:var(--text-dim);font-weight:400;">(Free Tier)</span></label>
+            <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
+              <input type="password" id="gemini-key-input" placeholder="AIzaSy..." style="flex:1;min-width:200px;" />
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="text-decoration:none;">Get free key →</a>
+            </div>
+            <span class="setting-hint">100% free · No credit card · Takes 30 seconds. Stored locally in your browser only.</span>
           </div>
+
+          <!-- OpenAI API Key -->
+          <div class="setting-row">
+            <label for="openai-key-input">OpenAI API Key <span style="color:var(--text-dim);font-weight:400;">(Optional, paid)</span></label>
+            <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
+              <input type="password" id="openai-key-input" placeholder="sk-..." style="flex:1;min-width:200px;" />
+              <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="text-decoration:none;">Get key →</a>
+            </div>
+            <span class="setting-hint">Uses gpt-4o-mini. Note: OpenAI doesn't support "Sign in with Google" — an API key is required.</span>
+          </div>
+
+          <!-- Wake Word -->
           <div class="setting-row">
             <label for="catchword-input">Voice Catchword</label>
             <input type="text" id="catchword-input" value="Shazam" />
             <span class="setting-hint">The wake word triggering commands (default: "Shazam").</span>
           </div>
+
+          <!-- Spoken Feedback -->
           <div class="setting-row" style="flex-direction:row;align-items:center;gap:.6rem;margin-top:.4rem;">
             <input type="checkbox" id="spoken-feedback-toggle" checked style="width:16px;height:16px;accent-color:var(--primary);" />
             <label for="spoken-feedback-toggle" style="cursor:pointer;margin:0;">Voice audio feedback (read confirmations aloud)</label>
           </div>
+
         </div>
       </details>
     </div>
@@ -1059,6 +1174,9 @@ const VPEditorState = (() => {
     // Keys stored locally
     let VP_GEMINI_KEY = localStorage.getItem('vp_gemini_key') || '';
     let VP_OPENAI_KEY = localStorage.getItem('vp_openai_key') || '';
+    // Google OAuth access token (from GIS sign-in)
+    let VP_GOOGLE_TOKEN = '';
+    let _googleTokenClient = null;
 
     // DOM Elements
     const draftEditor       = document.getElementById('draft-editor');
@@ -1167,10 +1285,7 @@ const VPEditorState = (() => {
         throw new Error('Your draft is empty. Dictate some content first before requesting AI review.');
       }
 
-      // Priority 1: Google Gemini (Free & High Quota)
-      if (VP_GEMINI_KEY) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${VP_GEMINI_KEY}`;
-        const prompt = `You are a world-class professional editor. 
+      const systemPrompt = `You are a world-class professional editor. 
 User's draft document:
 """
 ${draft}
@@ -1181,11 +1296,47 @@ Editing instruction:
 
 Return ONLY the final revised draft. Do not add markdown code blocks, quotes, commentary, or pleasantries.`;
 
+      // Priority 1: Google Sign-In OAuth token (no API key needed)
+      if (VP_GOOGLE_TOKEN) {
+        const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${VP_GOOGLE_TOKEN}`,
+          },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: systemPrompt }] }],
+            generationConfig: { temperature: 0.3 }
+          })
+        });
+
+        if (resp.status === 401) {
+          // Token expired — clear it and prompt re-sign
+          VP_GOOGLE_TOKEN = '';
+          updateGoogleAuthUI(false);
+          throw new Error('Google session expired. Please sign in again via Settings ⚙️.');
+        }
+
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error?.message || `Gemini API returned status ${resp.status}`);
+        }
+
+        const data = await resp.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+        if (!text) throw new Error('Gemini returned an empty response.');
+        return text;
+      }
+
+      // Priority 2: Google Gemini API Key (Free & High Quota)
+      if (VP_GEMINI_KEY) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${VP_GEMINI_KEY}`;
         const resp = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
+            contents: [{ parts: [{ text: systemPrompt }] }],
             generationConfig: { temperature: 0.3 }
           })
         });
@@ -1201,7 +1352,7 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
         return text;
       }
 
-      // Priority 2: OpenAI (gpt-4o-mini)
+      // Priority 3: OpenAI (gpt-4o-mini)
       if (VP_OPENAI_KEY) {
         const resp = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
@@ -1236,7 +1387,7 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
         return text;
       }
 
-      throw new Error('No AI Key configured. Click Settings (⚙️) below and add your free Google Gemini API key or OpenAI key.');
+      throw new Error('No AI connected. Open Settings (⚙️) and Sign in with Google — it\'s free and instant!');
     }
 
     // ── Command Routing ──
@@ -1435,6 +1586,90 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
       renderState();
     });
 
+    // ── Google Sign-In (GIS Token Model) ──
+    function updateGoogleAuthUI(isSignedIn, userEmail) {
+      const badge = document.getElementById('google-auth-badge');
+      const signInBtn = document.getElementById('btn-google-signin');
+      const signOutBtn = document.getElementById('btn-google-signout');
+      if (!badge || !signInBtn) return;
+
+      if (isSignedIn) {
+        badge.textContent = `✓ Signed in${userEmail ? ' as ' + userEmail : ' with Google'}`;
+        badge.classList.remove('signed-out');
+        signInBtn.style.display = 'none';
+        signOutBtn.style.display = '';
+        // Grey out manual Gemini key if we have a token
+        if (geminiInput) geminiInput.style.opacity = '0.5';
+      } else {
+        badge.textContent = '● Not signed in';
+        badge.classList.add('signed-out');
+        signInBtn.style.display = '';
+        signOutBtn.style.display = 'none';
+        if (geminiInput) geminiInput.style.opacity = '';
+      }
+    }
+
+    function initGoogleSignIn() {
+      if (typeof google === 'undefined' || !google.accounts) {
+        // GIS not loaded yet — retry after load
+        window.addEventListener('load', initGoogleSignIn, { once: true });
+        return;
+      }
+      try {
+        _googleTokenClient = google.accounts.oauth2.initTokenClient({
+          // This client ID is registered for https://manishr075.github.io
+          // Replace with your own at console.cloud.google.com if forking
+          client_id: '637291689888-o2bm6c7eqpcg64bbjbml3oiu1fhgahvn.apps.googleusercontent.com',
+          scope: 'https://www.googleapis.com/auth/generative-language',
+          callback: (response) => {
+            if (response.error) {
+              showToast(`Google sign-in failed: ${response.error}`, 6000);
+              return;
+            }
+            VP_GOOGLE_TOKEN = response.access_token;
+            // Try to get the user's email from a userinfo call
+            fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+              headers: { 'Authorization': `Bearer ${VP_GOOGLE_TOKEN}` }
+            }).then(r => r.json()).then(info => {
+              updateGoogleAuthUI(true, info.email || '');
+              showToast(`🎉 Signed in as ${info.email || 'Google User'}! AI Review is ready.`);
+              VPVoiceFeedback.speak('Signed in with Google. AI Review is ready.');
+            }).catch(() => {
+              updateGoogleAuthUI(true, '');
+              showToast('🎉 Signed in with Google! AI Review is ready.');
+            });
+          },
+        });
+      } catch (e) {
+        console.warn('GIS initTokenClient failed:', e);
+      }
+    }
+
+    document.getElementById('btn-google-signin').addEventListener('click', () => {
+      if (!_googleTokenClient) {
+        showToast('Google Sign-In is loading... Please try again in a moment.', 4000);
+        initGoogleSignIn();
+        return;
+      }
+      _googleTokenClient.requestAccessToken({ prompt: 'consent' });
+    });
+
+    document.getElementById('btn-google-signout').addEventListener('click', () => {
+      if (VP_GOOGLE_TOKEN && typeof google !== 'undefined') {
+        google.accounts.oauth2.revoke(VP_GOOGLE_TOKEN, () => {});
+      }
+      VP_GOOGLE_TOKEN = '';
+      updateGoogleAuthUI(false);
+      showToast('Signed out from Google.');
+    });
+
+    // Init GIS when library has loaded
+    if (typeof google !== 'undefined' && google.accounts) {
+      initGoogleSignIn();
+    } else {
+      document.querySelector('script[src*="accounts.google.com"]')?.addEventListener('load', initGoogleSignIn);
+    }
+
     // ── Settings Listeners ──
     const geminiInput = document.getElementById('gemini-key-input');
     if (geminiInput) {
@@ -1442,7 +1677,7 @@ Return ONLY the final revised draft. Do not add markdown code blocks, quotes, co
       geminiInput.addEventListener('change', function() {
         VP_GEMINI_KEY = this.value.trim();
         localStorage.setItem('vp_gemini_key', VP_GEMINI_KEY);
-        showToast(VP_GEMINI_KEY ? 'Gemini API Key saved!' : 'Gemini Key cleared.');
+        showToast(VP_GEMINI_KEY ? '🎉 Gemini API Key saved! AI Review is ready.' : 'Gemini Key cleared.');
       });
     }
 
