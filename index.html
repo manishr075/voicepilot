@@ -1247,7 +1247,7 @@
         <div class="service-card">
           <div class="service-card-title">
             <span>Google Gemini AI (Optional Key Override)</span>
-            <span id="gemini-status-badge" class="badge-status connected">✓ Fast Gemini 2.0 Flash</span>
+            <span id="gemini-status-badge" class="badge-status connected">✓ Gemini 3.5 Flash-Lite</span>
           </div>
           <div class="form-group">
             <label for="input-gemini-key">API Key</label>
@@ -1556,7 +1556,13 @@ const VPEditorState = (() => {
     // Permanent Built-in Key Slot
     const PERMANENT_GEMINI_KEY = '';
     let VP_GEMINI_KEY = PERMANENT_GEMINI_KEY || localStorage.getItem('vp_gemini_key') || '';
-    let _activeGeminiModel = localStorage.getItem('vp_gemini_model') || 'gemini-2.0-flash';
+    try {
+      const cached = localStorage.getItem('vp_gemini_model');
+      if (cached && (cached.includes('preview') || cached.includes('02-05') || cached.includes('undefined'))) {
+        localStorage.removeItem('vp_gemini_model');
+      }
+    } catch (e) {}
+    let _activeGeminiModel = localStorage.getItem('vp_gemini_model') || 'gemini-3.5-flash-lite';
 
     // DOM Elements
     const draftEditor          = document.getElementById('draft-editor');
@@ -1848,12 +1854,20 @@ ${draftText}
 Return ONLY the final revised document text. Preserve all formatting (bold, headings, lists). No preamble, no quotes, no markdown code fence blocks.`;
       }
 
-      const savedModel = localStorage.getItem('vp_gemini_model');
+      let savedModel = localStorage.getItem('vp_gemini_model');
+      if (savedModel && (savedModel.includes('preview') || savedModel.includes('02-05') || savedModel.includes('undefined'))) {
+        try { localStorage.removeItem('vp_gemini_model'); } catch (e) {}
+        savedModel = null;
+      }
       const candidateModels = [
         savedModel,
+        'gemini-3.5-flash-lite',
+        'gemini-2.5-flash-lite',
+        'gemini-2.0-flash-lite',
+        'gemini-2.5-flash',
         'gemini-2.0-flash',
         'gemini-1.5-flash',
-        'gemini-2.0-flash-lite-preview-02-05'
+        'gemini-1.5-flash-latest'
       ].filter(Boolean);
       const uniqueModels = [...new Set(candidateModels)];
       let lastError = null;
@@ -1891,6 +1905,8 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           if (rawText) {
             _activeGeminiModel = modelName;
             localStorage.setItem('vp_gemini_model', modelName);
+            const badge = document.getElementById('gemini-status-badge');
+            if (badge) badge.textContent = `✓ ${modelName}`;
             if (isReview) {
               try {
                 const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
@@ -1907,6 +1923,67 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
           if (e.name === 'AbortError') throw e;
           lastError = e;
         }
+      }
+
+      // If static candidate models returned 404, dynamically discover available models for this API key
+      try {
+        const listResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`, { signal });
+        if (listResp.ok) {
+          const listData = await listResp.json();
+          const available = (listData.models || [])
+            .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+            .map(m => m.name.replace(/^models\//, ''));
+
+          // Sort prioritizing flash-lite, then flash, then others
+          const sortedModels = available.sort((a, b) => {
+            const score = name => (name.includes('flash-lite') ? 3 : name.includes('flash') ? 2 : 1);
+            return score(b) - score(a);
+          });
+
+          for (const fallbackModel of sortedModels) {
+            if (uniqueModels.includes(fallbackModel)) continue;
+            try {
+              const url = `https://generativelanguage.googleapis.com/v1beta/models/${fallbackModel}:generateContent?key=${apiKey}`;
+              const resp = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                signal,
+                body: JSON.stringify({
+                  contents: [{ parts: [{ text: prompt }] }],
+                  generationConfig: {
+                    temperature: 0.1,
+                    maxOutputTokens: 2048,
+                    topP: 0.8
+                  }
+                })
+              });
+              if (!resp.ok) continue;
+              const data = await resp.json();
+              const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+              if (rawText) {
+                _activeGeminiModel = fallbackModel;
+                localStorage.setItem('vp_gemini_model', fallbackModel);
+                const badge = document.getElementById('gemini-status-badge');
+                if (badge) badge.textContent = `✓ ${fallbackModel}`;
+                if (isReview) {
+                  try {
+                    const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
+                    const parsed = JSON.parse(cleaned);
+                    if (parsed.revised) {
+                      return { revised: parsed.revised.trim(), reason: parsed.reason || 'Polished grammar and structure.' };
+                    }
+                  } catch (e) {}
+                  return { revised: rawText, reason: 'Polished grammar, flow, and elegance.' };
+                }
+                return { revised: rawText, reason: '' };
+              }
+            } catch (e) {
+              if (e.name === 'AbortError') throw e;
+            }
+          }
+        }
+      } catch (e) {
+        if (e.name === 'AbortError') throw e;
       }
 
       throw lastError || new Error('Could not connect to Gemini. Please check your API key in Settings.');
@@ -2402,6 +2479,8 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
     document.getElementById('btn-open-settings').addEventListener('click', () => {
       inputGeminiKey.value = VP_GEMINI_KEY;
       catchwordInput.value = catchword;
+      const geminiBadge = document.getElementById('gemini-status-badge');
+      if (geminiBadge) geminiBadge.textContent = `✓ ${_activeGeminiModel}`;
       settingsBackdrop.classList.add('open');
     });
 
