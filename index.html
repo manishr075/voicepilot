@@ -1612,7 +1612,7 @@ const VPEditorState = (() => {
     // Keys stored in local storage
     let VP_GEMINI_KEY = localStorage.getItem('vp_gemini_key') || '';
     let VP_OPENAI_KEY = localStorage.getItem('vp_openai_key') || '';
-    let _activeGeminiModel = 'gemini-3.5-flash-lite';
+    let _activeGeminiModel = localStorage.getItem('vp_gemini_model') || 'gemini-2.0-flash';
 
     // DOM Elements
     const draftEditor          = document.getElementById('draft-editor');
@@ -1746,17 +1746,20 @@ const VPEditorState = (() => {
 
     function moveCaretToEnd(el) {
       if (!el) return;
-      try {
-        el.focus();
-        const range = document.createRange();
-        range.selectNodeContents(el);
-        range.collapse(false); // false collapses to end of text
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-      } catch (e) {
-        console.warn('Could not move caret to end', e);
-      }
+      // Use requestAnimationFrame to ensure DOM paint is done before placing caret
+      requestAnimationFrame(() => {
+        try {
+          el.focus();
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          range.collapse(false); // collapse to end
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch (e) {
+          console.warn('Could not move caret to end', e);
+        }
+      });
     }
 
     function writeToEditor(htmlVal, shouldMoveToEnd = true) {
@@ -1838,7 +1841,7 @@ const VPEditorState = (() => {
         draftDiffDisplay.style.display = '';
         proposalReasonBanner.classList.remove('visible');
 
-        if (draftEditor.innerHTML !== state.acceptedDraft) {
+        if (draftEditor.innerHTML.replace(/\s+/g, ' ').trim() !== (state.acceptedDraft || '').replace(/\s+/g, ' ').trim()) {
           writeToEditor(state.acceptedDraft);
         }
         setStatus('ready', 'Wispr Flow Ready');
@@ -1883,7 +1886,7 @@ const VPEditorState = (() => {
       if (geminiBadge) {
         if (VP_GEMINI_KEY) {
           geminiBadge.className = 'badge-status connected';
-          geminiBadge.textContent = '✓ Active (3.5 Flash-Lite)';
+          geminiBadge.textContent = `✓ Active (${_activeGeminiModel || 'gemini-2.0-flash'})`;
         } else {
           geminiBadge.className = 'badge-status disconnected';
           geminiBadge.textContent = '● Not Connected';
