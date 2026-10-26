@@ -1,6 +1,6 @@
-# VoicePilot — Write by voice. Edit by voice. Stay hands-free.
+# FlowPad — Write by voice. Edit by voice. Stay hands-free.
 
-VoicePilot is a **local-first, voice-controlled text-editing workspace** that works with [Wispr Flow](https://wisprflow.ai). Wispr Flow transcribes your speech; VoicePilot receives the resulting text, recognises "Shazam" commands, lets you revise drafts by voice, preview proposals before accepting, and undo/redo through a full revision history.
+FlowPad is a **local-first, voice-controlled text editor** built for [Wispr Flow](https://wisprflow.ai). Wispr Flow transcribes your speech; FlowPad receives the resulting text, recognises "Shazam" voice commands, formats with bold/italic/headings/lists hands-free, lets you revise drafts by voice, preview in-place diffs before accepting, and undo/redo through a full revision history.
 
 **Target users:** students, professionals, content creators, and anyone who prefers hands-free text editing for emails, assignments, reports, notes, social posts, and documents.
 
