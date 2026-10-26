@@ -1,68 +1,37 @@
 /**
  * VoicePilot – Segment Tracker
- * Watches a <textarea> for new text inserted by Wispr Flow and emits the
- * newly inserted segment while ignoring programmatic edits made by VoicePilot
- * itself.
+ * Watches editable surfaces (contenteditable or textarea) for text inserted
+ * by Wispr Flow and emits newly inserted segments while ignoring programmatic
+ * edits made by VoicePilot itself.
  *
- * Design notes:
- *  - Listens to `beforeinput`, `input`, and `paste` events.
- *  - Stores a pre-edit snapshot (value + selectionStart/End) in beforeinput.
- *  - On input fires, computes the inserted diff against the snapshot.
- *  - Debounces rapid successive events (configurable idle window) so that
- *    multi-event Wispr insertions are treated as one segment.
- *  - Uses an internal _guard flag to ignore programmatic edits.
- *  - Deduplicates: will not re-emit a segment whose content was already
- *    processed in the same insertion sequence.
- *
- * Exported (browser global): VPSegmentTracker
+ * Exported (browser global & CommonJS): VPSegmentTracker
  */
 
 const VPSegmentTracker = (() => {
 
   /**
-   * Compute the text that was inserted between oldValue and newValue
-   * given the old selection range and the new caret position.
-   *
-   * Returns { insertedText: string, insertStart: number, insertEnd: number }
-   * or null if the change was a pure deletion or is ambiguous.
+   * Compute the text that was inserted between oldValue and newValue.
+   * Returns { insertedText: string, insertStart: number, insertEnd: number } or null.
    */
   function computeInsertion(oldVal, newVal, oldSelStart, oldSelEnd, newSelStart) {
     if (typeof oldVal !== 'string' || typeof newVal !== 'string') return null;
 
-    // Length change
     const lenDelta = newVal.length - oldVal.length;
+    if (lenDelta < 0) return null; // Net deletion
 
-    if (lenDelta < 0) {
-      // Net deletion – no new insertion to track.
-      return null;
-    }
-
-    // lenDelta === 0 means a pure same-length replacement (selection replaced with
-    // text of equal length). We still want to track this as an insertion.
-    // Check whether the selected range was actually replaced with different content.
     if (lenDelta === 0) {
-      // Verify it's a replacement, not just a no-op
       const selectedOld = oldVal.slice(oldSelStart, oldSelEnd);
       const newContent  = newVal.slice(oldSelStart, oldSelEnd);
-      if (selectedOld === newContent) return null; // no actual change
-      // It's a same-length replacement
-      const insertedText = newContent;
-      if (!insertedText) return null;
-      return { insertedText, insertStart: oldSelStart, insertEnd: oldSelEnd };
+      if (selectedOld === newContent) return null;
+      return { insertedText: newContent, insertStart: oldSelStart, insertEnd: oldSelEnd };
     }
 
-    // The inserted region in newVal runs from oldSelStart to oldSelStart + lenDelta
-    // (for a simple insertion at caret) OR from oldSelStart to oldSelStart + lenDelta
-    // (for a selection replacement that grew).
-    const insertStart = oldSelStart;
-    const replacedLen = oldSelEnd - oldSelStart;           // chars that were selected
-    const insertEnd   = insertStart + replacedLen + lenDelta; // end of new region
+    const insertStart = typeof oldSelStart === 'number' ? oldSelStart : 0;
+    const replacedLen = typeof oldSelEnd === 'number' && typeof oldSelStart === 'number' ? oldSelEnd - oldSelStart : 0;
+    const pre  = oldVal.slice(0, insertStart);
+    const post = oldVal.slice(insertStart + replacedLen);
 
-    // Guard: check that the surrounding context matches
-    const pre  = oldVal.slice(0, oldSelStart);
-    const post = oldVal.slice(oldSelEnd);
     if (!newVal.startsWith(pre) || !newVal.endsWith(post)) {
-      // Multi-point change – ambiguous; return null to be safe.
       return null;
     }
 
@@ -73,39 +42,87 @@ const VPSegmentTracker = (() => {
   }
 
   /**
-   * Attach a segment tracker to a given <textarea> element.
-   *
-   * @param {HTMLTextAreaElement} textarea
-   * @param {object} options
-   *   debounceMs   {number}  – idle window before emitting a segment (default 600 ms)
-   *   onSegment    {function} – callback({insertedText, insertStart, insertEnd, textarea})
-   *   onStatus     {function} – callback(statusString) for status display
-   * @returns {{ detach: function, setGuard: function }}
+   * Attach segment tracker to a contenteditable DOM element.
+   * Emits onSegment(insertedText, fullText) after debounce settles.
    */
-  function attach(textarea, { debounceMs = 600, onSegment, onStatus } = {}) {
-    let _guard = false;                // true while VoicePilot writes programmatically
-    let _snapshot = null;              // { value, selStart, selEnd } captured in beforeinput
-    let _pendingSegment = null;        // accumulated inserted text across rapid events
+  function attachContentEditable(element, { debounceMs = 350, onSegment } = {}) {
+    let _guard = false;
+    let _snapshot = element ? (element.innerText || element.textContent || '') : '';
+    let _timer = null;
+
+    function getText() {
+      return element ? (element.innerText || element.textContent || '') : '';
+    }
+
+    function onInput() {
+      if (_guard) return;
+      clearTimeout(_timer);
+      _timer = setTimeout(() => {
+        const current = getText();
+        const prev = _snapshot;
+        if (current === prev) return;
+
+        let prefixLen = 0;
+        while (prefixLen < prev.length && prefixLen < current.length && prev[prefixLen] === current[prefixLen]) {
+          prefixLen++;
+        }
+
+        let prevSuffix = prev.length;
+        let currSuffix = current.length;
+        while (prevSuffix > prefixLen && currSuffix > prefixLen && prev[prevSuffix - 1] === current[currSuffix - 1]) {
+          prevSuffix--;
+          currSuffix--;
+        }
+
+        const inserted = current.slice(prefixLen, currSuffix);
+        _snapshot = current;
+
+        if (inserted && inserted.trim().length > 0 && typeof onSegment === 'function') {
+          onSegment(inserted, current);
+        }
+      }, debounceMs);
+    }
+
+    if (element) {
+      element.addEventListener('input', onInput);
+    }
+
+    function detach() {
+      clearTimeout(_timer);
+      if (element) {
+        element.removeEventListener('input', onInput);
+      }
+    }
+
+    function setGuard(val) {
+      _guard = !!val;
+    }
+
+    function syncSnapshot() {
+      _snapshot = getText();
+    }
+
+    return { detach, setGuard, syncSnapshot };
+  }
+
+  /**
+   * Attach segment tracker to a textarea element.
+   */
+  function attachTextarea(textarea, { debounceMs = 500, onSegment } = {}) {
+    let _guard = false;
+    let _snapshot = null;
+    let _pendingSegment = null;
     let _debounceTimer = null;
-    let _lastEmittedText = null;       // deduplication: last emitted segment text
 
     function setGuard(val) { _guard = !!val; }
-
-    function emitStatus(msg) {
-      if (typeof onStatus === 'function') onStatus(msg);
-    }
 
     function flushSegment() {
       if (!_pendingSegment) return;
       const seg = _pendingSegment;
       _pendingSegment = null;
-
-      // Deduplication: skip if this exact text was already emitted
-      if (seg.insertedText === _lastEmittedText) return;
-      _lastEmittedText = seg.insertedText;
-
-      emitStatus('Segment detected — checking for command…');
-      if (typeof onSegment === 'function') onSegment(seg);
+      if (typeof onSegment === 'function') {
+        onSegment(seg.insertedText, seg.textarea.value);
+      }
     }
 
     function scheduleFlush() {
@@ -113,74 +130,27 @@ const VPSegmentTracker = (() => {
       _debounceTimer = setTimeout(flushSegment, debounceMs);
     }
 
-    // --- Event handlers ---
-
-    function onBeforeInput(evt) {
+    function onBeforeInput() {
       if (_guard) return;
-      // Snapshot current state before edit
       _snapshot = {
-        value:    textarea.value,
+        value: textarea.value,
         selStart: textarea.selectionStart,
-        selEnd:   textarea.selectionEnd,
+        selEnd: textarea.selectionEnd,
       };
-    }
-
-    function onPaste(evt) {
-      if (_guard) return;
-      // Paste gives us the full pasted text directly – more reliable than diffing
-      const pasted = evt.clipboardData && evt.clipboardData.getData('text/plain');
-      if (!pasted) return;
-
-      // We'll still let `input` fire, but store the pasted text for cross-reference
-      // so we can use it if the diff is ambiguous.
-      textarea._vpPastedText = pasted;
     }
 
     function onInput() {
       if (_guard) return;
-
       const newVal = textarea.value;
-
-      // Check if we have a reliable pasted text to use
-      const pastedText = textarea._vpPastedText;
-      if (pastedText) {
-        textarea._vpPastedText = null;
-        // The pasted text IS the insertion; verify it appears in the new value
-        if (newVal.includes(pastedText) || newVal.endsWith(pastedText)) {
-          const seg = {
-            insertedText: pastedText,
-            insertStart: newVal.indexOf(pastedText),
-            insertEnd: newVal.indexOf(pastedText) + pastedText.length,
-            textarea,
-          };
-          _pendingSegment = seg;
-          scheduleFlush();
-          emitStatus('Input received — waiting for Wispr burst to settle…');
-          return;
-        }
-      }
-
       if (!_snapshot) {
-        // No beforeinput snapshot – store current as snapshot and wait
         _snapshot = { value: newVal, selStart: textarea.selectionStart, selEnd: textarea.selectionEnd };
         return;
       }
-
-      const result = computeInsertion(
-        _snapshot.value,
-        newVal,
-        _snapshot.selStart,
-        _snapshot.selEnd,
-        textarea.selectionStart,
-      );
-
+      const result = computeInsertion(_snapshot.value, newVal, _snapshot.selStart, _snapshot.selEnd, textarea.selectionStart);
       _snapshot = null;
+      if (!result) return;
 
-      if (!result) return; // pure deletion or ambiguous
-
-      // Accumulate into pending segment (same position range preferred)
       if (_pendingSegment) {
-        // Extend if the new insertion is contiguous
         _pendingSegment = {
           insertedText: _pendingSegment.insertedText + result.insertedText,
           insertStart:  _pendingSegment.insertStart,
@@ -190,26 +160,27 @@ const VPSegmentTracker = (() => {
       } else {
         _pendingSegment = { ...result, textarea };
       }
-
       scheduleFlush();
-      emitStatus('Input received — waiting for Wispr burst to settle…');
     }
 
     textarea.addEventListener('beforeinput', onBeforeInput);
-    textarea.addEventListener('paste',       onPaste);
-    textarea.addEventListener('input',       onInput);
+    textarea.addEventListener('input', onInput);
 
     function detach() {
       clearTimeout(_debounceTimer);
       textarea.removeEventListener('beforeinput', onBeforeInput);
-      textarea.removeEventListener('paste',       onPaste);
-      textarea.removeEventListener('input',       onInput);
+      textarea.removeEventListener('input', onInput);
     }
 
     return { detach, setGuard };
   }
 
-  return { attach, computeInsertion };
+  return {
+    computeInsertion,
+    attach: attachTextarea,
+    attachTextarea,
+    attachContentEditable,
+  };
 })();
 
 if (typeof module !== 'undefined' && module.exports) {

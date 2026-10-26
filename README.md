@@ -1,211 +1,167 @@
-# FlowPad — Write by voice. Edit by voice. Stay hands-free.
+# VoicePilot — Write by voice. Edit by voice. Stay hands-free.
 
-FlowPad is a **local-first, voice-controlled text editor** built for [Wispr Flow](https://wisprflow.ai). Wispr Flow transcribes your speech; FlowPad receives the resulting text, recognises "Shazam" voice commands, formats with bold/italic/headings/lists hands-free, lets you revise drafts by voice, preview in-place diffs before accepting, and undo/redo through a full revision history.
+VoicePilot is a **local-first, voice-controlled rich text editor** designed specifically for [Wispr Flow](https://wisprflow.ai). Wispr Flow provides real-time speech transcription; VoicePilot interprets "Shazam" voice commands, applies rich-text formatting (bold, italics, headings, bullet lists), manages revision proposals with in-place diffs, captures spoken interruptions into separate voice notes, and enables hands-free undo, redo, audio playback, and clipboard actions.
 
-**Target users:** students, professionals, content creators, and anyone who prefers hands-free text editing for emails, assignments, reports, notes, social posts, and documents.
-
----
-
-## How it works with Wispr Flow
-
-1. Open `index.html` in your browser and **focus the draft editor**.
-2. Activate Wispr Flow using its supported desktop shortcut: **Ctrl+Win** (Windows) or **Fn** (Mac).
-3. Wispr Flow transcribes your speech and inserts the text into the focused editor.
-4. VoicePilot watches for new insertions using browser input events (`beforeinput`, `input`, `paste`).
-5. Text without a "Shazam" prefix is kept as draft content. A valid command is extracted, processed, and its text is removed from the draft automatically.
-
-> **Note:** VoicePilot does not start or stop Wispr Flow. A web page cannot reliably activate another desktop application. Use Wispr's own shortcut for dictation. A future optional desktop companion could listen for a custom wake phrase and trigger the shortcut — but this is not yet implemented and is not claimed.
+**Target users:** Students, professionals, writers, and accessibility-first users dictating emails, essays, meeting notes, reports, articles, and personal documents hands-free.
 
 ---
 
-## Command Reference
+## How It Works with Wispr Flow
 
-Say **"Shazam, &lt;command&gt;"** (also works with a colon, different case, or space-only separator):
+1. Open `index.html` in your browser (or host it locally) and **focus the draft editor**.
+2. Activate Wispr Flow using your native desktop shortcut: **Ctrl+Win** (Windows) or **Fn** (Mac).
+3. Wispr Flow transcribes your voice directly into the editor.
+4. VoicePilot continuously watches for completed speech bursts.
+5. Ordinary speech flows directly into your draft. Sentences mentioning the catchword declaratively (e.g. *"Shazam is a music app"*) remain untouched as ordinary text.
+6. Spoken commands (e.g. *"Shazam, bold"*, *"Shazam, polish"*, *"Shazam, make that a separate note"*) are detected, isolated, and safely removed using **text-aware DOM Range operations** before executing the corresponding action.
 
-| Command | What it does |
-|---|---|
-| `Shazam, edit: [instruction]` | Create an AI-powered revision proposal from the current draft |
-| `Shazam, preview` | Show (and optionally speak) the pending revision |
-| `Shazam, apply` | Accept the pending proposal and save it to history |
-| `Shazam, discard` | Reject the proposal; keep the current draft |
-| `Shazam, undo` | Undo the last accepted change |
-| `Shazam, redo` | Redo a previously undone change |
-| `Shazam, read` | Read the accepted draft aloud (browser speech synthesis) |
-| `Shazam, remove last insertion` | Remove the most recent Wispr-inserted segment |
-| `Shazam, keep that` | Dismiss the off-topic flag and keep the segment |
-| `Shazam, make that a separate note` | Move a flagged segment to the Notes area |
-| `Shazam, pause` | Suspend command processing (text still enters as draft) |
-| `Shazam, resume` | Resume command processing |
-| `Shazam, finish` | End the session; draft is preserved |
-
-The catchword is configurable in Settings (default: "Shazam"). The app name remains VoicePilot.
+> **Honest Wispr Flow Note:** VoicePilot runs as a web application and does not start or stop the Wispr Flow desktop process. Web applications cannot globally synthesize keyboard events to launch external desktop software. Use Wispr Flow's native shortcut to toggle dictation.
 
 ---
 
-## Setup and Run
+## Master Voice Command Reference
 
-### 1. Static mode (no backend — all deterministic commands work)
+Trigger phrase is configurable in Settings (default: **"Shazam"**):
 
-Simply open `index.html` in any modern browser:
+| Command | Action Category | What It Does |
+|---|---|---|
+| `Shazam, bold` | Rich Formatting | Bolds current selection or preceding word |
+| `Shazam, italic` | Rich Formatting | Italicizes current selection or preceding word |
+| `Shazam, heading` | Rich Formatting | Formats current block as a Heading (H2) |
+| `Shazam, bullet point` / `list` | Rich Formatting | Formats current block as an unordered bullet list |
+| `Shazam, review` / `polish` | AI Proposal | Proposes a full-document polish for grammar, clarity, and tone |
+| `Shazam, edit: [instruction]` | AI Proposal | Proposes targeted revision based on your natural-language instruction |
+| `Shazam, put a comma next to [word]` | Instant Edit | Adds comma after target word without waiting for cloud roundtrips |
+| `Shazam, accept` / `keep` | Revision Review | Commits the pending proposed revision into the accepted draft |
+| `Shazam, decline` / `discard` | Revision Review | Rejects the proposed revision; keeps the accepted draft intact |
+| `Shazam, make that a separate note` | Voice Clipping | Extracts last speech burst or selected text into the Voice Notes drawer |
+| `Shazam, remove last insertion` | Error Recovery | Removes the most recently dictated speech burst from the document |
+| `Shazam, undo` / `undo that` | Revision History | Reverses the last accepted change |
+| `Shazam, redo` / `redo that` | Revision History | Re-applies a previously undone revision |
+| `Shazam, read` / `read aloud` | Audio Feedback | Reads the accepted document (or pending proposal) via SpeechSynthesis |
+| `Shazam, stop` / `silence` | Audio Feedback | Immediately stops speech synthesis and halts any pending AI request |
+| `Shazam, copy` | Clipboard | Copies full document text to clipboard |
+| `Shazam, clear` | Document Safety | Clears document draft while saving a recoverable snapshot to undo history |
 
-```
-file:///path/to/flowguard/index.html
-```
+---
 
-Or serve it locally:
+## Key Architecture & Safety Upgrades
 
+### 1. Safe Command Removal (No innerHTML String Replacement)
+Older implementations stripped commands via naive regex replacements on `innerHTML`, which mangled nested HTML tags, broke paragraphs, and left trailing leftovers like *"Shaz"*.
+VoicePilot uses `VPDomRangeRemover`:
+- Maps character positions directly to DOM text nodes.
+- Uses native browser DOM `Range.deleteContents()`.
+- Preserves all valid tags (`<p>`, `<strong>`, `<em>`, `<h2>`, `<ul>`, `<li>`, `<a>`).
+- Handles repeated occurrences correctly (targets the command at utterance end, preserving earlier text mentions).
+- Leaves text completely untouched if boundaries are ambiguous.
+
+### 2. Disambiguating Ordinary Speech from Commands
+Ordinary sentences containing the wake word (e.g. *"Shazam is a music application"*, *"I heard someone mention Shazam yesterday"*, *"The word Shazam appears in this article"*) are recognized as non-commands and preserved as regular text. Commands are executed only when followed by recognized verbs or imperative instructions.
+
+### 3. Server-Side AI API Key Security
+- **Zero API keys in client storage:** Permanent provider API keys are never stored in browser `localStorage`.
+- Credentials live exclusively on your backend server (`voicepilot_server.py`) as environment variables:
+  - `GEMINI_API_KEY` (Google Gemini 1.5 Flash / 2.0 Flash)
+  - `OPENAI_API_KEY` (OpenAI GPT-4o-mini)
+  - `ANTHROPIC_API_KEY` (Anthropic Claude Haiku)
+- Plaintext AI output is sanitized and treated as untrusted text.
+- If the backend server is offline, VoicePilot provides a truthful disclosure while all local commands (formatting, undo/redo, notes, read aloud, copy, clear) remain 100% operational.
+
+### 4. Non-Destructive Proposal Workflow
+- `Shazam, review` and `Shazam, edit: ...` never overwrite the document silently.
+- A `pendingProposal` is created with an in-place visual diff:
+  - **Soft green** background for additions.
+  - **Soft red** background for removals (**no strikethrough** for visual cleanliness).
+  - All diff tokens are HTML-escaped through `VPSanitizer` to prevent XSS.
+- Subsequent voice instructions refine the pending proposal against the accepted draft.
+- The user retains final authority: `Shazam, accept` commits to draft; `Shazam, decline` drops it.
+
+### 5. Separate Voice Notes Drawer
+- Spoken side-thoughts and tangents can be clipped using `Shazam, make that a separate note`.
+- Extracted notes are stored in a dedicated sidebar drawer with individual copy and delete controls.
+
+---
+
+## Setup and Quickstart
+
+### 1. Client-Side (All Local Voice Commands)
+Simply open `index.html` in your browser:
 ```bash
-# Python
-python -m http.server 5000
-
-# Node.js
+# Serve locally with any static server or open file directly:
 npx serve .
-```
-
-No build step, no npm install, no framework required.
-
-### 2. With AI editing backend (optional — for "Shazam, edit: …")
-
-Install dependencies:
-
-```bash
-pip install flask flask-cors openai   # or: pip install flask flask-cors anthropic
-```
-
-Set your API key (never committed, never sent to the browser):
-
-```bash
-# Windows
-set OPENAI_API_KEY=sk-...
 # or
-set ANTHROPIC_API_KEY=sk-ant-...
-
-# macOS/Linux
-export OPENAI_API_KEY=sk-...
+python -m http.server 5000
 ```
+Open `http://localhost:5000/` or `index.html`. All deterministic commands (formatting, notes, undo/redo, TTS reading, copy, clear) work locally with zero configuration.
 
-Start the backend:
+### 2. AI Editing Backend (Optional for "Shazam, edit:" and "Shazam, polish")
+Install backend requirements:
+```bash
+pip install flask flask-cors
+```
+Set your preferred provider API key:
+```bash
+# Google Gemini (Default recommended: zero extra pip dependencies)
+export GEMINI_API_KEY="your-gemini-key"
 
+# Or OpenAI
+pip install openai
+export OPENAI_API_KEY="sk-..."
+
+# Or Anthropic
+pip install anthropic
+export ANTHROPIC_API_KEY="sk-ant-..."
+```
+Start the server:
 ```bash
 python backend/voicepilot_server.py
 ```
-
-Then open `http://localhost:5000` (or keep using the file URL — the backend only handles AI edit requests).
-
----
-
-## Privacy
-
-- **All deterministic commands** (undo, redo, apply, discard, read, pause, etc.) run 100% locally. No data leaves the browser.
-- **"Shazam, edit: …"** sends the current draft and instruction to your configured AI provider (OpenAI or Anthropic) only when you explicitly trigger it. This is clearly disclosed in the UI.
-- API keys are set as environment variables on the server; they are **never** sent to the browser.
-- The app does not record ambient audio. Wispr Flow is the sole transcription source.
-- Draft text is stored only in memory during the session. Use the browser's local storage only for the settings (catchword preference). No automatic cloud sync.
-- All dynamic content is rendered using `textContent` and safe DOM APIs — never `innerHTML` with untrusted content.
+The server runs on `http://localhost:5000`. In VoicePilot's Settings modal, verify connectivity via the **Check** button.
 
 ---
 
-## Tests and Test Commands
+## Test Suite
 
-### JavaScript tests (requires Node.js)
+Run the Node.js test suite covering parser rules, DOM range boundaries, XSS sanitization, proposal state transitions, and segment tracker diffing:
 
 ```bash
 node tests/test_voicepilot.js
 ```
 
-Covers 110 cases across: command parser, segment tracker, editor state, and browser surface contracts.
-
-**Result (as of this release):** 110 passed, 0 failed.
-
-### Python tests (requires Python 3.11+)
-
-```bash
-# VoicePilot-specific tests
-python -m pytest tests/test_voicepilot.py tests/test_browser_surface.py -v
-
-# Legacy FlowGuard engine tests (still valid; engine preserved)
-python -m unittest tests/test_engine.py -v
+**Results:**
 ```
-
-> **Note:** Python is not available on the current Windows machine. Tests are written and ready; results shown after installing Python.
-
-### Full test suite
-
-```bash
-# All JS tests
-node tests/test_voicepilot.js
-
-# All Python tests (when Python available)
-python -m pytest tests/ -v
+════════════════════ Results: 77 passed, 0 failed. ════════════════════
 ```
 
 ---
 
 ## Repository Structure
 
-| Path | Purpose |
-|---|---|
-| `index.html` | VoicePilot single-page editing workspace |
-| `src/command_parser.js` | Parses "Shazam" commands from inserted segments |
-| `src/segment_tracker.js` | Tracks newly inserted text in a `<textarea>` |
-| `src/editor_state.js` | Manages draft, proposals, undo/redo, flags, notes |
-| `src/voice_feedback.js` | Browser speech synthesis wrapper |
-| `src/engine.js` | Legacy FlowGuard engine — preserved for reusable utilities |
-| `backend/voicepilot_server.py` | Optional Flask backend for AI editing commands |
-| `backend/flowguard_engine.py` | Legacy Python engine — preserved |
-| `tests/test_voicepilot.js` | Node.js test runner — 110 cases |
-| `tests/test_voicepilot.py` | Python port of core logic tests |
-| `tests/test_browser_surface.py` | Browser surface contract tests |
-| `tests/test_engine.py` | Legacy FlowGuard engine tests (preserved) |
-| `.vscode/mcp.json` | Wispr Notetaker MCP configuration (read-only, unrelated to dictation control) |
-| `benchmarks/` | Legacy FlowGuard benchmark artifacts — historical only, not VoicePilot claims |
+```
+flowguard/
+├── index.html                   # VoicePilot application surface
+├── src/
+│   ├── command_parser.js        # Catchword & grammar parser with ordinary speech safety
+│   ├── dom_range_remover.js     # Text-aware DOM Range command remover
+│   ├── editor_state.js          # Immutable editor state manager (draft, proposals, undo, notes)
+│   ├── sanitizer.js             # HTML allowlist sanitizer & XSS-safe diff renderer
+│   ├── segment_tracker.js       # Wispr Flow contenteditable & textarea input burst tracker
+│   ├── voice_feedback.js        # SpeechSynthesis TTS feedback wrapper
+│   └── app_controller.js        # UI controller wiring DOM, voice events, and backend
+├── backend/
+│   └── voicepilot_server.py     # Secure Flask backend with Gemini, OpenAI, & Anthropic support
+├── assets/
+│   ├── logo.png                 # VoicePilot brand soundwave logo
+│   └── app-icon.png             # Application icon
+└── tests/
+    └── test_voicepilot.js       # 77 automated test assertions verifying all critical requirements
+```
 
 ---
 
-## `.vscode/mcp.json` — Accurate Scope
+## License & Credits
 
-The `.vscode/mcp.json` file points to `https://api.wisprflow.ai/connect/mcp`, which is the **read-only** Wispr Notetaker MCP endpoint. It exposes meeting transcripts and scratchpad notes. It does **not** control desktop dictation, does not write to the Wispr dictionary, and is not used by VoicePilot for any feature. It is retained for users who also use the Wispr Notetaker MCP in their IDE.
-
----
-
-## Known Limitations
-
-1. **Wispr activation** — VoicePilot cannot start Wispr Flow from a web page. Use Wispr's keyboard shortcut.
-2. **Wake-phrase detection** — Detecting "Shazam" while Wispr is off requires a separate desktop companion app, which is not yet implemented.
-3. **AI editing without a provider** — "Shazam, edit: …" requires a configured OpenAI or Anthropic key on the backend. All other commands work fully offline.
-4. **speechSynthesis** — Browser speech synthesis availability varies. VoicePilot gracefully disables spoken feedback if unavailable.
-5. **Segment boundaries** — Wispr may occasionally produce multi-event insertions. VoicePilot uses a 650 ms debounce window and falls back to a safe review state if boundaries are ambiguous.
-6. **Cross-application editing** — VoicePilot edits text in its own editor only; it cannot edit text in other apps.
-
----
-
-## What's Actually Implemented
-
-✅ Light, focused VoicePilot editor UI (warm off-white, single workspace)  
-✅ Wispr Flow text insertion workflow (focused textarea receives Wispr dictation)  
-✅ "Shazam" command detection from newly inserted segments only  
-✅ Safe command extraction (command text removed; surrounding content preserved)  
-✅ All 13 commands: edit, undo, redo, preview, apply, discard, read, remove last, keep that, separate note, pause, resume, finish  
-✅ Revision proposal flow — preview before apply; never silently overwrites draft  
-✅ Full undo/redo history (up to 100 revisions)  
-✅ Interruption/off-topic flagging (user-controlled, never auto-deletes)  
-✅ Separate notes area for moved segments  
-✅ Browser speech synthesis for "read" and command confirmations  
-✅ Configurable catchword  
-✅ Optional AI backend (OpenAI or Anthropic) for natural-language edits  
-✅ Honest status indicators (no fake "Wispr connected" state)  
-✅ Privacy-first: no ambient audio capture, no auto-upload, textContent rendering  
-✅ Accessible focus states, keyboard fallback, prefers-reduced-motion  
-✅ 110 automated tests passing  
-
-❌ Desktop companion for wake-phrase detection (not yet implemented)  
-❌ Global hands-free Wispr startup (not possible from browser alone)  
-❌ Cross-application voice editing  
-
----
-
-## Authors and Credits
-
-- **Manish Reddy** (RV University)
-- Dictation powered by [Wispr Flow](https://wisprflow.ai)
-- Predecessor project: FlowGuard (legacy code preserved in `src/engine.js`, `backend/flowguard_engine.py`, `tests/test_engine.py`)
+- **VoicePilot** developed by **Manish Reddy**.
+- Designed for use with [Wispr Flow](https://wisprflow.ai).
+- MIT License.

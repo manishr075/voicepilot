@@ -1,180 +1,205 @@
 /**
  * VoicePilot – Editor State Manager
  * Maintains:
- *   - accepted draft (the "real" document)
- *   - pending proposed revision (before apply/discard)
- *   - undo/redo history of accepted drafts
- *   - most recently identified insertion segment
- *   - flagged potentially-unrelated segment
- *   - pause/resume state
- *   - current operation status
+ *   - acceptedDraft:      The verified, accepted document content
+ *   - pendingProposal:    The proposed revision awaiting user review { text, reason, isReview }
+ *   - undoStack / redoStack: Full undo/redo history of accepted drafts
+ *   - notes:              Array of separate captured notes
+ *   - lastSegment:        The most recently inserted speech segment { text, start, end }
+ *   - status:             'ready' | 'thinking' | 'review' | 'paused' | 'finished'
  *
- * All mutations are explicit; no implicit side-effects.
- * Exported (browser global): VPEditorState
+ * All state mutations are pure functions returning a new immutable state object.
+ * Exported for browser global and CommonJS.
  */
 
 const VPEditorState = (() => {
   const MAX_HISTORY = 100;
 
-  function createState() {
+  function createState(initialText = '') {
     return {
-      acceptedDraft:      '',
-      pendingProposal:    null,   // { text: string, instruction: string } | null
-      undoStack:          [],     // array of accepted draft strings (past states)
-      redoStack:          [],     // array of accepted draft strings (future states)
-      lastSegment:        null,   // { insertedText, insertStart, insertEnd } | null
-      flaggedSegment:     null,   // { text, start, end } | null – interruption candidate
-      paused:             false,
-      status:             'ready',  // 'ready' | 'command_detected' | 'preparing' | 'review' | 'paused' | 'finished'
-      notes:              [],     // separate note entries (strings)
+      acceptedDraft:   typeof initialText === 'string' ? initialText : '',
+      pendingProposal: null,   // null | { text: string, reason: string, isReview: boolean }
+      undoStack:       [],     // string[]
+      redoStack:       [],     // string[]
+      notes:           [],     // string[]
+      lastSegment:     null,   // null | { text: string, timestamp: number }
+      status:          'ready',
     };
   }
 
-  // ---- Pure state-transition helpers ----
-
-  /** Push current draft onto undo stack, clear redo. */
+  /** Push current draft to undo stack; resets redo stack. */
   function pushUndo(state) {
-    const next = { ...state };
-    next.undoStack = [...state.undoStack, state.acceptedDraft].slice(-MAX_HISTORY);
-    next.redoStack = [];
-    return next;
-  }
-
-  /** Accept the given text as the new draft (creates undo entry). */
-  function acceptDraft(state, newText) {
-    const next = pushUndo(state);
-    next.acceptedDraft = typeof newText === 'string' ? newText : state.acceptedDraft;
-    next.pendingProposal = null;
-    next.status = 'ready';
-    return next;
-  }
-
-  /** Set a pending proposal without touching the accepted draft. */
-  function setProposal(state, proposalText, instruction) {
-    if (state.pendingProposal !== null && !proposalText) {
-      // No change
-      return state;
-    }
+    const nextUndo = [...state.undoStack, state.acceptedDraft].slice(-MAX_HISTORY);
     return {
       ...state,
-      pendingProposal: { text: proposalText, instruction: instruction || '' },
+      undoStack: nextUndo,
+      redoStack: [],
+    };
+  }
+
+  /** Commit a new accepted draft (records undo history, clears proposal). */
+  function acceptDraft(state, newText) {
+    if (typeof newText !== 'string') return state;
+    if (newText === state.acceptedDraft && !state.pendingProposal) return state;
+
+    const withUndo = pushUndo(state);
+    return {
+      ...withUndo,
+      acceptedDraft:   newText,
+      pendingProposal: null,
+      status:          'ready',
+    };
+  }
+
+  /**
+   * Propose a revision for user review.
+   * If a proposal is already pending, refines it against the accepted draft.
+   */
+  function proposeEdit(state, proposalText, reason = '', isReview = false) {
+    if (typeof proposalText !== 'string') return state;
+    return {
+      ...state,
+      pendingProposal: {
+        text: proposalText,
+        reason: reason || (isReview ? 'AI grammar and clarity polish' : 'AI voice edit proposal'),
+        isReview: !!isReview,
+      },
       status: 'review',
     };
   }
 
-  /** Apply the pending proposal → becomes new accepted draft. */
+  /** Accept and apply the pending proposal into the accepted draft. */
   function applyProposal(state) {
-    if (!state.pendingProposal) return state; // nothing to apply
-    const next = pushUndo(state);
-    next.acceptedDraft = state.pendingProposal.text;
-    next.pendingProposal = null;
-    next.status = 'ready';
-    return next;
+    if (!state.pendingProposal) return state;
+    const withUndo = pushUndo(state);
+    return {
+      ...withUndo,
+      acceptedDraft:   state.pendingProposal.text,
+      pendingProposal: null,
+      status:          'ready',
+    };
   }
 
-  /** Discard the pending proposal; accepted draft is unchanged. */
+  /** Discard pending proposal; accepted draft remains completely untouched. */
   function discardProposal(state) {
-    return { ...state, pendingProposal: null, status: 'ready' };
+    if (!state.pendingProposal) return state;
+    return {
+      ...state,
+      pendingProposal: null,
+      status:          'ready',
+    };
   }
 
-  /** Undo last accepted change. Returns new state or same state if nothing to undo. */
+  /** Undo last accepted change. */
   function undo(state) {
     if (state.undoStack.length === 0) return state;
-    const undoStack = [...state.undoStack];
-    const prev = undoStack.pop();
-    const redoStack = [state.acceptedDraft, ...state.redoStack];
+    const nextUndo = [...state.undoStack];
+    const prevDraft = nextUndo.pop();
+    const nextRedo = [state.acceptedDraft, ...state.redoStack].slice(0, MAX_HISTORY);
+
     return {
       ...state,
-      acceptedDraft: prev,
-      undoStack,
-      redoStack: redoStack.slice(0, MAX_HISTORY),
+      acceptedDraft:   prevDraft,
+      undoStack:       nextUndo,
+      redoStack:       nextRedo,
       pendingProposal: null,
-      status: 'ready',
+      status:          'ready',
     };
   }
 
-  /** Redo a previously undone change. */
+  /** Redo previously undone change. */
   function redo(state) {
     if (state.redoStack.length === 0) return state;
-    const redoStack = [...state.redoStack];
-    const next = redoStack.shift();
-    const undoStack = [...state.undoStack, state.acceptedDraft].slice(-MAX_HISTORY);
+    const nextRedo = [...state.redoStack];
+    const nextDraft = nextRedo.shift();
+    const nextUndo = [...state.undoStack, state.acceptedDraft].slice(-MAX_HISTORY);
+
     return {
       ...state,
-      acceptedDraft: next,
-      undoStack,
-      redoStack,
+      acceptedDraft:   nextDraft,
+      undoStack:       nextUndo,
+      redoStack:       nextRedo,
       pendingProposal: null,
-      status: 'ready',
+      status:          'ready',
     };
   }
 
-  /** Remove the most recent identified insertion from the accepted draft. */
-  function removeLastInsertion(state) {
-    if (!state.lastSegment) return state; // nothing to remove – do not guess
-    const { insertStart, insertEnd } = state.lastSegment;
-    const draft = state.acceptedDraft;
-    if (insertStart < 0 || insertEnd > draft.length || insertStart >= insertEnd) {
-      return state; // bounds invalid – safe no-op
+  /** Record a segment of newly inserted speech. */
+  function recordSegment(state, text) {
+    if (!text || typeof text !== 'string') return state;
+    return {
+      ...state,
+      lastSegment: { text: text.trim(), timestamp: Date.now() },
+    };
+  }
+
+  /** Add an entry directly to the separate notes collection. */
+  function addNote(state, noteText) {
+    const trimmed = typeof noteText === 'string' ? noteText.trim() : '';
+    if (!trimmed) return state;
+    return {
+      ...state,
+      notes: [...state.notes, trimmed],
+    };
+  }
+
+  /** Move a segment from the draft to separate notes. */
+  function moveSegmentToNotes(state, segmentText, newDraftText) {
+    const note = typeof segmentText === 'string' ? segmentText.trim() : '';
+    if (!note) return state;
+
+    const nextNotes = [...state.notes, note];
+    if (typeof newDraftText === 'string' && newDraftText !== state.acceptedDraft) {
+      const withUndo = pushUndo(state);
+      return {
+        ...withUndo,
+        acceptedDraft: newDraftText,
+        notes:         nextNotes,
+        lastSegment:   null,
+        status:        'ready',
+      };
     }
-    const newDraft = draft.slice(0, insertStart) + draft.slice(insertEnd);
-    const next = pushUndo(state);
-    next.acceptedDraft = newDraft;
-    next.lastSegment   = null;
-    next.flaggedSegment = null;
-    next.status = 'ready';
-    return next;
+
+    return {
+      ...state,
+      notes:       nextNotes,
+      lastSegment: null,
+      status:      'ready',
+    };
   }
 
-  /** Dismiss the flagged segment (keep it, clear the flag). */
-  function keepFlaggedSegment(state) {
-    return { ...state, flaggedSegment: null };
+  /** Remove a specific note by index. */
+  function removeNote(state, index) {
+    if (index < 0 || index >= state.notes.length) return state;
+    const nextNotes = state.notes.filter((_, i) => i !== index);
+    return {
+      ...state,
+      notes: nextNotes,
+    };
   }
 
-  /** Move flagged segment to the notes area and remove from draft. */
-  function moveFlaggedToNotes(state) {
-    if (!state.flaggedSegment) return state;
-    const { text, start, end } = state.flaggedSegment;
-    const draft = state.acceptedDraft;
-    if (start < 0 || end > draft.length) return state;
-    const newDraft = draft.slice(0, start) + draft.slice(end);
-    const next = pushUndo(state);
-    next.acceptedDraft  = newDraft;
-    next.flaggedSegment = null;
-    next.notes          = [...state.notes, text];
-    next.status         = 'ready';
-    return next;
-  }
-
-  /** Pause command processing. */
-  function pause(state) {
-    return { ...state, paused: true, status: 'paused' };
-  }
-
-  /** Resume command processing. */
-  function resume(state) {
-    return { ...state, paused: false, status: 'ready' };
-  }
-
-  /** Mark session as finished (draft preserved). */
-  function finish(state) {
-    return { ...state, status: 'finished' };
+  /** Clear all notes. */
+  function clearNotes(state) {
+    if (state.notes.length === 0) return state;
+    return {
+      ...state,
+      notes: [],
+    };
   }
 
   return {
     createState,
     acceptDraft,
-    setProposal,
+    proposeEdit,
     applyProposal,
     discardProposal,
     undo,
     redo,
-    removeLastInsertion,
-    keepFlaggedSegment,
-    moveFlaggedToNotes,
-    pause,
-    resume,
-    finish,
+    recordSegment,
+    addNote,
+    moveSegmentToNotes,
+    removeNote,
+    clearNotes,
   };
 })();
 

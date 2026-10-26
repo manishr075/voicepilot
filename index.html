@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FlowPad — Hands-Free Voice Text Editor</title>
+  <title>VoicePilot — Hands-Free Voice Text Editor</title>
   <link rel="icon" type="image/png" href="assets/logo.png" />
   <link rel="apple-touch-icon" href="assets/app-icon.png" />
 
@@ -840,6 +840,85 @@
       0% { transform: translateY(16px) scale(0.92); opacity: 0; }
       100% { transform: translateY(0) scale(1); opacity: 1; }
     }
+
+    /* ════════════════════ NOTES DRAWER ════════════════════ */
+    #notes-drawer {
+      position: fixed;
+      top: 48px;
+      right: 0;
+      bottom: 30px;
+      width: 320px;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-default);
+      box-shadow: -8px 0 24px rgba(0, 0, 0, 0.4);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #notes-drawer.open {
+      transform: translateX(0);
+    }
+    .notes-drawer-header {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .notes-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .note-card {
+      background: var(--bg-app);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      word-break: break-word;
+    }
+    .note-card-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+    .note-card-btn {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 10.5px;
+      padding: 2px 6px;
+      cursor: pointer;
+    }
+    .note-card-btn:hover {
+      color: var(--text-main);
+      border-color: var(--border-default);
+      background: var(--bg-subtle);
+    }
+    .badge-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-pill-bg);
+      color: var(--accent-pill-text);
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: var(--radius-pill);
+      padding: 1px 5px;
+      margin-left: 3px;
+    }
   </style>
 </head>
 <body>
@@ -848,9 +927,9 @@
   <header id="main-header" role="banner">
     <div class="header-left">
       <!-- Clean, Simple, Highly Visible Logo from user image with animated sound waves -->
-      <div class="brand-group" id="btn-brand-home" title="FlowPad Voice Editor">
-        <img src="assets/logo.png" alt="FlowPad Logo" class="brand-logo-img" />
-        <span class="brand-title">FlowPad</span>
+      <div class="brand-group" id="btn-brand-home" title="VoicePilot Voice Editor">
+        <img src="assets/logo.png" alt="VoicePilot Logo" class="brand-logo-img" />
+        <span class="brand-title">VoicePilot</span>
         <span class="brand-badge-pill">Voice Editor</span>
         <div class="wave-bars" aria-hidden="true" title="Listening equalizer">
           <span class="w-bar bar-1"></span>
@@ -899,6 +978,11 @@
       <!-- Read Aloud -->
       <button type="button" class="tool-btn" id="btn-read-aloud" title="Read draft aloud (or 'Shazam, read')">
         🔊 Read
+      </button>
+
+      <!-- Separate Voice Notes Drawer Toggle -->
+      <button type="button" class="tool-btn" id="btn-toggle-notes" title="View voice notes ('Shazam, make that a separate note')">
+        📝 Notes <span id="notes-badge" class="badge-count" style="display:none;">0</span>
       </button>
 
       <!-- Theme Switcher -->
@@ -953,6 +1037,28 @@
     </div>
   </main>
 
+  <!-- ════════════════════ SEPARATE VOICE NOTES DRAWER ════════════════════ -->
+  <aside id="notes-drawer" role="complementary" aria-label="Voice Notes Drawer">
+    <div class="notes-drawer-header">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:14px;">📝</span>
+        <h3 style="margin:0;font-size:13.5px;font-weight:700;">Voice Notes</h3>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button type="button" class="tool-btn" id="btn-clear-notes" style="height:22px;font-size:11px;padding:0 6px;" title="Clear all notes">Clear</button>
+        <button type="button" class="btn-close-modal" id="btn-close-notes" aria-label="Close notes drawer">✕</button>
+      </div>
+    </div>
+    <div style="padding:10px 14px;border-bottom:1px solid var(--border-subtle);background:var(--bg-app);">
+      <p style="font-size:11px;color:var(--text-dim);margin:0;line-height:1.4;">
+        Say <code>"Shazam, make that a separate note"</code> to extract spoken ideas from your main draft into this sidebar.
+      </p>
+    </div>
+    <div class="notes-list" id="notes-list">
+      <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:20px;">No notes captured yet.</p>
+    </div>
+  </aside>
+
   <!-- ════════════════════ STATUS BAR ════════════════════ -->
   <footer id="statusbar">
     <div class="statusbar-left">
@@ -976,13 +1082,13 @@
     </div>
   </footer>
 
-  <!-- ════════════════════ MODALS: SETTINGS (NO API KEY FIELD) ════════════════════ -->
+  <!-- ════════════════════ MODALS: SETTINGS (SECURE BACKEND ARCHITECTURE) ════════════════════ -->
   <div class="modal-backdrop" id="settings-backdrop">
     <div class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
       <div class="settings-header">
         <div style="display:flex;align-items:center;gap:8px;">
-          <img src="assets/logo.png" alt="FlowPad Logo" style="width:20px;height:20px;border-radius:4px;object-fit:contain;" />
-          <h3 id="settings-title" style="margin:0;font-size:14px;font-weight:700;">FlowPad Preferences</h3>
+          <img src="assets/logo.png" alt="VoicePilot Logo" style="width:20px;height:20px;border-radius:4px;object-fit:contain;" />
+          <h3 id="settings-title" style="margin:0;font-size:14px;font-weight:700;">VoicePilot Preferences</h3>
         </div>
         <button type="button" class="btn-close-modal" id="btn-close-settings" aria-label="Close">✕</button>
       </div>
@@ -998,13 +1104,32 @@
             <input type="checkbox" id="spoken-feedback-toggle" checked style="accent-color:var(--accent-primary);width:16px;height:16px;" />
             <span>Spoken Audio Feedback</span>
           </label>
-          <p class="form-help">Audio confirmation after edits (e.g. "Bold", "Proposal kept", "Stopped").</p>
+          <p class="form-help">Spoken voice confirmation after edits (e.g. "Bold", "Proposal kept", "Stopped").</p>
+        </div>
+
+        <div class="form-group">
+          <label for="backend-url-input">AI Backend Server URL</label>
+          <p class="form-help">Secure VoicePilot Python backend endpoint (default: <code>http://localhost:5000</code>). API keys are maintained strictly in server-side environment variables.</p>
+          <div style="display:flex;gap:6px;">
+            <input type="text" id="backend-url-input" class="form-input" value="http://localhost:5000" placeholder="http://localhost:5000" />
+            <button type="button" class="tool-btn" id="btn-check-backend" style="white-space:nowrap;padding:0 10px;font-size:11.5px;">Check</button>
+          </div>
+          <div id="backend-status-indicator" style="margin-top:6px;font-size:11.5px;color:var(--text-dim);">
+            Backend: Checking connectivity...
+          </div>
         </div>
 
         <div class="form-group" style="padding-top:6px;border-top:1px solid var(--border-subtle);">
-          <label>About FlowPad</label>
+          <label>Privacy & Key Security</label>
           <p class="form-help" style="margin-bottom:0;">
-            A distraction-free, hands-free voice text editor built for Wispr Flow. Bold, italic, headings, lists, undo, redo, read, and full polish run seamlessly with zero configuration.
+            VoicePilot stores <strong>zero</strong> permanent API keys in your browser or localStorage. Permanent keys (<code>GEMINI_API_KEY</code>, <code>OPENAI_API_KEY</code>, or <code>ANTHROPIC_API_KEY</code>) belong exclusively in your local backend environment. Document text is transmitted only when you speak an AI revision command. Formatting, undo/redo, read aloud, notes, and local edits operate 100% locally.
+          </p>
+        </div>
+
+        <div class="form-group" style="padding-top:6px;border-top:1px solid var(--border-subtle);">
+          <label>About VoicePilot</label>
+          <p class="form-help" style="margin-bottom:0;">
+            A hands-free, distraction-free voice text editor built for Wispr Flow. Bold, italic, headings, lists, undo, redo, read, notes, and proposal-based AI polish run with fluid, hands-free voice controls.
           </p>
         </div>
       </div>
@@ -1018,1100 +1143,12 @@
   </div>
 
   <!-- ════════════════════ APPLICATION SCRIPTS ════════════════════ -->
-  <script>
-// === src/command_parser.js ===
-const VPCommandParser = (() => {
-  const COMMAND_MAP = [
-    // 1. Review / Polish
-    { pattern: /^(?:review|polish|ai\s+review|check|proofread)$/i,                                             action: 'review',        hasArg: false },
-    // 2. Accept / Keep (Option 2)
-    { pattern: /^(?:accept(?:\s+(?:this|that|it|proposal|changes?|edit))?|apply(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep(?:\s+(?:this|that|it|new|corrected|changes?))?|choose\s+(?:corrected|new|option\s+(?:two|2))|option\s+(?:two|2)|yes|confirm|looks\s+good)$/i, action: 'accept', hasArg: false },
-    // 3. Decline / Discard (Option 1)
-    { pattern: /^(?:decline(?:\s+(?:this|that|it|proposal|changes?|edit))?|discard(?:\s+(?:this|that|it|proposal|changes?|edit))?|reject(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep\s+(?:previous|old|original)|choose\s+(?:previous|old|original|option\s+(?:one|1))|option\s+(?:one|1)|no|cancel)$/i, action: 'decline', hasArg: false },
-    // 4. Undo
-    { pattern: /^(?:undo|undo\s+that|revert|revert\s+that|go\s+back)$/i,                                       action: 'undo',          hasArg: false },
-    // 5. Redo
-    { pattern: /^(?:redo|redo\s+that)$/i,                                                                      action: 'redo',          hasArg: false },
-    // 6. Read
-    { pattern: /^(?:read|read\s+aloud|read\s+draft|read\s+text|speak)$/i,                                      action: 'read',          hasArg: false },
-    // 7. Stop / Silence Playback
-    { pattern: /^(?:stop|silence|be\s+quiet|shut\s+up|stop\s+reading|pause\s+reading)$/i,                       action: 'stop',          hasArg: false },
-    // 8. Copy to Clipboard
-    { pattern: /^(?:copy|copy\s+all|copy\s+draft|copy\s+to\s+clipboard|clipboard)$/i,                         action: 'copy',          hasArg: false },
-    // 9. Clear Draft
-    { pattern: /^(?:clear|clear\s+(?:draft|all|text|document)|delete\s+all)$/i,                               action: 'clear',         hasArg: false },
-    // 10. Separate Note
-    { pattern: /^(?:make\s+that\s+a\s+separate\s+note|separate\s+note|move\s+to\s+notes?)$/i,                 action: 'separate_note', hasArg: false },
-    // 11. Rich Text Formatting Commands (Local, instant)
-    { pattern: /^(?:bold|make\s+(?:this|that)\s+bold|bold\s+(?:this|that))$/i,                                action: 'format_bold',   hasArg: false },
-    { pattern: /^(?:italic|italicize(?:\s+(?:this|that))?|make\s+(?:this|that)\s+italic)$/i,                  action: 'format_italic', hasArg: false },
-    { pattern: /^(?:heading|make\s+(?:this|that)\s+a?\s*heading|h1|h2)$/i,                                     action: 'format_heading',hasArg: false },
-    { pattern: /^(?:bullet\s+point|bullet\s+list|make\s+(?:this|that)\s+a?\s*list|list)$/i,                    action: 'format_list',   hasArg: false },
-    // 12. Explicit "edit" instruction
-    { pattern: /^edit(?:\s*:\s*|\s+)(.+)/is,                                                                   action: 'ai_instruction',hasArg: true  },
-  ];
-
-  function buildCatchwordRegex(catchword) {
-    if (!catchword || !catchword.trim()) return null;
-    const escaped = catchword.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp('(?:^|[\\s.,;:!?"\'—])(' + escaped + '(?:\\b|\\s*[,.:;\\-])\\s*([\\s\\S]*))$', 'i');
-  }
-
-  function parse(segment, catchword = 'Shazam') {
-    if (!segment || !segment.trim()) return null;
-    const catchRe = buildCatchwordRegex(catchword);
-    if (!catchRe) return null;
-
-    const m = catchRe.exec(segment.trim());
-    if (!m) return null;
-
-    const fullCommand = m[1];
-    const rawBody = m[2].trim();
-    if (!rawBody) {
-      return { action: 'empty_prompt', arg: '', commandText: fullCommand };
-    }
-
-    const cleanBody = rawBody.replace(/^[.,;:!?"'—\s]+|[.,;:!?"'—\s]+$/g, '').trim();
-
-    for (const { pattern, action, hasArg } of COMMAND_MAP) {
-      const match = pattern.exec(cleanBody) || pattern.exec(rawBody);
-      if (match) {
-        return {
-          action,
-          arg: hasArg ? (match[1] || '').trim() : null,
-          commandText: fullCommand,
-        };
-      }
-    }
-
-    return {
-      action: 'ai_instruction',
-      arg: cleanBody || rawBody,
-      commandText: fullCommand,
-    };
-  }
-
-  return { parse };
-})();
-
-// === src/segment_tracker.js (Robust Contenteditable Segment Tracker) ===
-class VPWisprTracker {
-  constructor(element, options = {}) {
-    this.el = element;
-    this.onSegment = options.onSegment || null;
-    this.debounceMs = options.debounceMs || 400;
-    this._snapshot = this._getText();
-    this._timer = null;
-    this._guard = false;
-    this._handler = () => this._onInput();
-    this.el.addEventListener('input', this._handler);
-  }
-
-  _getText() {
-    return this.el.innerText || this.el.textContent || '';
-  }
-
-  _onInput() {
-    if (this._guard) return;
-    clearTimeout(this._timer);
-    this._timer = setTimeout(() => {
-      const current = this._getText();
-      const prev = this._snapshot;
-      if (current === prev) return;
-
-      let prefixLen = 0;
-      while (prefixLen < prev.length && prefixLen < current.length && prev[prefixLen] === current[prefixLen]) {
-        prefixLen++;
-      }
-
-      let prevSuffix = prev.length;
-      let currSuffix = current.length;
-      while (prevSuffix > prefixLen && currSuffix > prefixLen && prev[prevSuffix - 1] === current[currSuffix - 1]) {
-        prevSuffix--;
-        currSuffix--;
-      }
-
-      const inserted = current.slice(prefixLen, currSuffix);
-      this._snapshot = current;
-
-      if (inserted && inserted.trim().length > 0 && typeof this.onSegment === 'function') {
-        this.onSegment(inserted, current);
-      }
-    }, this.debounceMs);
-  }
-
-  setGuard(val) { this._guard = val; }
-  syncSnapshot() { this._snapshot = this._getText(); }
-  destroy() {
-    clearTimeout(this._timer);
-    this.el.removeEventListener('input', this._handler);
-  }
-}
-
-// === src/voice_feedback.js ===
-const VPVoiceFeedback = (() => {
-  let enabled = true;
-  function speak(text) {
-    if (!enabled || !window.speechSynthesis || !text) return;
-    window.speechSynthesis.cancel();
-    const cleanText = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-    const utt = new SpeechSynthesisUtterance(cleanText);
-    utt.rate = 1.05;
-    utt.pitch = 1.0;
-    window.speechSynthesis.speak(utt);
-  }
-  function stop() {
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-  }
-  function setEnabled(val) { enabled = Boolean(val); }
-  return { speak, stop, setEnabled };
-})();
-
-// === src/editor_state.js ===
-const VPEditorState = (() => {
-  function createState(initial = '') {
-    return {
-      acceptedDraft: initial,
-      pendingProposal: null,
-      history: [initial],
-      historyIdx: 0,
-      notes: []
-    };
-  }
-
-  function acceptDraft(state, text) {
-    const history = state.history.slice(0, state.historyIdx + 1);
-    history.push(text);
-    return {
-      ...state,
-      acceptedDraft: text,
-      pendingProposal: null,
-      history,
-      historyIdx: history.length - 1
-    };
-  }
-
-  function proposeEdit(state, text, reason = '', isReview = false) {
-    return {
-      ...state,
-      pendingProposal: { text, reason, isReview }
-    };
-  }
-
-  function applyProposal(state) {
-    if (!state.pendingProposal) return state;
-    return acceptDraft(state, state.pendingProposal.text);
-  }
-
-  function discardProposal(state) {
-    return { ...state, pendingProposal: null };
-  }
-
-  function undo(state) {
-    if (state.historyIdx <= 0) return state;
-    const newIdx = state.historyIdx - 1;
-    return {
-      ...state,
-      acceptedDraft: state.history[newIdx],
-      pendingProposal: null,
-      historyIdx: newIdx
-    };
-  }
-
-  function redo(state) {
-    if (state.historyIdx >= state.history.length - 1) return state;
-    const newIdx = state.historyIdx + 1;
-    return {
-      ...state,
-      acceptedDraft: state.history[newIdx],
-      pendingProposal: null,
-      historyIdx: newIdx
-    };
-  }
-
-  return {
-    createState,
-    acceptDraft,
-    proposeEdit,
-    applyProposal,
-    discardProposal,
-    undo,
-    redo
-  };
-})();
-
-// ════════════════════ APPLICATION CONTROLLER ════════════════════
-let state = VPEditorState.createState();
-let tracker = null;
-let catchword = 'Shazam';
-let _internalWrite = false;
-
-// Interruption handling
-let _currentOpId = 0;
-let _activeAbortController = null;
-
-// Built-in Silent Gemini Config (Zero Key Required for Non-Technical Users)
-const PERMANENT_GEMINI_KEY = '';
-let VP_GEMINI_KEY = PERMANENT_GEMINI_KEY || localStorage.getItem('vp_gemini_key') || '';
-let _activeGeminiModel = localStorage.getItem('vp_gemini_model') || 'gemini-3.5-flash-lite';
-
-// DOM Elements
-const draftEditor          = document.getElementById('draft-editor');
-const editorWrapper        = document.getElementById('editor-wrapper');
-const draftDiffDisplay     = document.getElementById('draft-diff-display');
-const proposalReasonBanner = document.getElementById('proposal-reason-banner');
-const proposalReasonText   = document.getElementById('proposal-reason-text');
-const voiceStatusPill      = document.getElementById('voice-status-pill');
-const voiceStatusText      = document.getElementById('voice-status-text');
-const docStatsEl           = document.getElementById('doc-stats');
-const caretPosEl           = document.getElementById('caret-pos');
-const readingTimeEl        = document.getElementById('reading-time');
-const docTitleInput        = document.getElementById('doc-title-input');
-const saveStatusEl         = document.getElementById('save-status');
-const toastEl              = document.getElementById('vp-toast');
-const toastMsg             = document.getElementById('vp-toast-msg');
-let toastTimer             = null;
-
-function showToast(msg, duration = 3000) {
-  if (!toastEl) return;
-  toastMsg.textContent = msg;
-  toastEl.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toastEl.classList.remove('show'), duration);
-}
-document.getElementById('vp-toast-close').addEventListener('click', () => toastEl.classList.remove('show'));
-
-function setStatus(statusClass, label) {
-  voiceStatusPill.className = statusClass;
-  voiceStatusText.textContent = label;
-}
-
-// Word & Character Counter
-function updateStats() {
-  const text = draftEditor.innerText || '';
-  const chars = text.length;
-  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-  docStatsEl.textContent = words + ' words · ' + chars + ' chars';
-  if (readingTimeEl) {
-    const mins = Math.max(1, Math.ceil(words / 200));
-    readingTimeEl.textContent = mins + ' min read';
-  }
-}
-
-// Caret Position Tracking
-function updateCaretPos() {
-  const sel = window.getSelection();
-  if (!sel || !sel.rangeCount) return;
-  const range = sel.getRangeAt(0);
-  const preCaret = range.cloneRange();
-  preCaret.selectNodeContents(draftEditor);
-  preCaret.setEnd(range.endContainer, range.endOffset);
-  const text = preCaret.toString();
-  const lines = text.split('\n');
-  const line = lines.length;
-  const col = lines[lines.length - 1].length + 1;
-  caretPosEl.textContent = 'Ln ' + line + ', Col ' + col;
-}
-
-['keyup', 'mouseup', 'click'].forEach(evt => {
-  draftEditor.addEventListener(evt, () => {
-    updateCaretPos();
-    updateStats();
-  });
-});
-
-// Auto-save debounced
-let autoSaveTimer = null;
-function triggerAutoSave() {
-  saveStatusEl.textContent = '● Saving...';
-  saveStatusEl.style.color = 'var(--text-dim)';
-  clearTimeout(autoSaveTimer);
-  autoSaveTimer = setTimeout(() => {
-    try {
-      localStorage.setItem('vp_doc_content', draftEditor.innerHTML);
-      localStorage.setItem('vp_doc_title', docTitleInput.value);
-      saveStatusEl.textContent = '✓ Auto-saved';
-      saveStatusEl.style.color = '#10b981';
-    } catch (e) {
-      saveStatusEl.textContent = 'Save error';
-    }
-  }, 500);
-}
-
-// Markdown Export Helper
-function editorToMarkdown() {
-  const div = document.createElement('div');
-  div.innerHTML = draftEditor.innerHTML;
-
-  function walk(node) {
-    if (node.nodeType === 3) return node.nodeValue;
-    if (node.nodeType !== 1) return '';
-
-    const tag = node.tagName.toLowerCase();
-    let inner = '';
-    for (const child of node.childNodes) inner += walk(child);
-
-    switch (tag) {
-      case 'h1': return '\n# ' + inner.trim() + '\n\n';
-      case 'h2': return '\n## ' + inner.trim() + '\n\n';
-      case 'h3': return '\n### ' + inner.trim() + '\n\n';
-      case 'strong': case 'b': return '**' + inner + '**';
-      case 'em': case 'i': return '*' + inner + '*';
-      case 'code': return '`' + inner + '`';
-      case 'blockquote': return '\n> ' + inner.trim() + '\n\n';
-      case 'li': return '- ' + inner.trim() + '\n';
-      case 'ul': case 'ol': return '\n' + inner + '\n';
-      case 'p': return inner.trim() ? inner.trim() + '\n\n' : '';
-      case 'br': return '\n';
-      default: return inner;
-    }
-  }
-
-  return walk(div).replace(/\n{3,}/g, '\n\n').trim();
-}
-
-// Robust Caret placement: Always jumps to the END of text after edits
-function moveCaretToEnd(el) {
-  if (!el) return;
-  requestAnimationFrame(() => {
-    try {
-      el.focus();
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      range.collapse(false);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-    } catch (e) {}
-  });
-}
-
-function writeToEditor(htmlVal, shouldMoveToEnd = true) {
-  _internalWrite = true;
-  if (tracker) tracker.setGuard(true);
-  draftEditor.innerHTML = htmlVal || '';
-  if (shouldMoveToEnd) moveCaretToEnd(draftEditor);
-  if (tracker) {
-    tracker.syncSnapshot();
-    tracker.setGuard(false);
-  }
-  _internalWrite = false;
-  updateStats();
-  triggerAutoSave();
-}
-
-// In-Place Diff Generation (Highlights in Soft Red without strikethrough, Soft Green for additions)
-function renderInPlaceDiff(oldHtml, newHtml) {
-  const oldText = typeof oldHtml === 'string' ? oldHtml : '';
-  const newText = typeof newHtml === 'string' ? newHtml : '';
-
-  if (!oldText && !newText) return '';
-  if (!oldText) return '<span class="diff-added-highlight">' + newText + '</span>';
-  if (!newText) return '<span class="diff-removed-highlight">' + oldText + '</span>';
-
-  const oldWords = oldText.split(/(\s+)/);
-  const newWords = newText.split(/(\s+)/);
-
-  let prefixLen = 0;
-  while (prefixLen < oldWords.length && prefixLen < newWords.length && oldWords[prefixLen] === newWords[prefixLen]) prefixLen++;
-
-  let suffixLen = 0;
-  while (suffixLen < (oldWords.length - prefixLen) && suffixLen < (newWords.length - prefixLen) &&
-         oldWords[oldWords.length - 1 - suffixLen] === newWords[newWords.length - 1 - suffixLen]) suffixLen++;
-
-  const removed = oldWords.slice(prefixLen, oldWords.length - suffixLen).join('');
-  const added   = newWords.slice(prefixLen, newWords.length - suffixLen).join('');
-
-  let out = '';
-  for (let i = 0; i < prefixLen; i++) out += oldWords[i];
-  if (removed) out += '<span class="diff-removed-highlight">' + removed + '</span>';
-  if (added) out += '<span class="diff-added-highlight">' + added + '</span>';
-  for (let i = oldWords.length - suffixLen; i < oldWords.length; i++) out += oldWords[i];
-  return out;
-}
-
-function renderState() {
-  if (state.pendingProposal) {
-    editorWrapper.classList.add('has-proposal');
-    draftEditor.style.display = '';
-    draftDiffDisplay.style.display = '';
-    draftDiffDisplay.innerHTML = renderInPlaceDiff(state.acceptedDraft, state.pendingProposal.text);
-
-    if (state.pendingProposal.isReview) {
-      proposalReasonBanner.classList.add('visible');
-      proposalReasonText.textContent = state.pendingProposal.reason || 'AI grammar & clarity polish proposal';
-    } else {
-      proposalReasonBanner.classList.remove('visible');
-    }
-  } else {
-    editorWrapper.classList.remove('has-proposal');
-    draftDiffDisplay.style.display = 'none';
-    draftEditor.style.display = '';
-    proposalReasonBanner.classList.remove('visible');
-  }
-  updateStats();
-}
-
-// Formatting Helper (Applies to selection or current word, updates state and keeps caret at end)
-function formatDoc(cmd, val = null) {
-  draftEditor.focus();
-  const sel = window.getSelection();
-  if (sel && sel.rangeCount > 0) {
-    const range = sel.getRangeAt(0);
-    if (range.collapsed) {
-      if (cmd === 'bold' || cmd === 'italic' || cmd === 'underline') {
-        sel.modify('move', 'backward', 'word');
-        sel.modify('extend', 'forward', 'word');
-        document.execCommand(cmd, false, val);
-        sel.collapseToEnd();
-      } else {
-        document.execCommand(cmd, false, val);
-      }
-    } else {
-      document.execCommand(cmd, false, val);
-    }
-  } else {
-    document.execCommand(cmd, false, val);
-  }
-  state = VPEditorState.acceptDraft(state, draftEditor.innerHTML);
-  renderState();
-  moveCaretToEnd(draftEditor);
-}
-
-// ── Ultra-Fast Local Heuristics for Common Targeted Commands (Latency < 5ms) ──
-function tryLocalFastEdit(draftText, instruction) {
-  if (!draftText || !instruction) return null;
-  const cleanDraft = draftText.replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '').trim();
-  const lowerInst = instruction.toLowerCase().trim();
-
-  // "put a comma next to / after hello"
-  const commaMatch = lowerInst.match(/put\s+a\s+comma\s+(?:next\s+to|after)\s+([a-zA-Z0-9_-]+)/);
-  if (commaMatch) {
-    const targetWord = commaMatch[1];
-    const re = new RegExp('(\\b' + targetWord + ')(?!,)', 'i');
-    if (re.test(cleanDraft)) {
-      return cleanDraft.replace(re, '$1,');
-    }
-  }
-
-  // "capitalize X"
-  const capMatch = lowerInst.match(/capitalize\s+([a-zA-Z0-9_-]+)/);
-  if (capMatch) {
-    const targetWord = capMatch[1];
-    const re = new RegExp('\\b' + targetWord + '\\b', 'gi');
-    if (re.test(cleanDraft)) {
-      return cleanDraft.replace(re, w => w.toUpperCase());
-    }
-  }
-
-  // "remove / delete X"
-  const delMatch = lowerInst.match(/(?:remove|delete)\s+["']?([^"']+)["']?$/);
-  if (delMatch) {
-    const targetPhrase = delMatch[1].trim();
-    if (cleanDraft.toLowerCase().includes(targetPhrase.toLowerCase())) {
-      const re = new RegExp(targetPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-      return cleanDraft.replace(re, '').replace(/\s{2,}/g, ' ');
-    }
-  }
-
-  return null;
-}
-
-// ── High-Speed Google Gemini Integration ──
-async function callGemini(draftText, instruction, apiKey, isReview = false, signal) {
-  // Check local fast edit first for sub-millisecond response!
-  if (!isReview) {
-    const localFastResult = tryLocalFastEdit(draftText, instruction);
-    if (localFastResult) {
-      return { revised: localFastResult, reason: 'Instant targeted edit applied.' };
-    }
-  }
-
-  let prompt = '';
-  if (isReview) {
-    prompt = 'Polish this document for grammar, flow, and clarity. Preserve markdown headings, lists, and bold words.\nDocument:\n"""\n' + draftText + '\n"""\n\nReturn ONLY a raw JSON object with this exact shape:\n{"revised": "the polished document text", "reason": "brief 1-sentence summary"}';
-  } else {
-    prompt = 'Apply this instruction to the document:\nInstruction: "' + instruction + '"\n\nDocument:\n"""\n' + draftText + '\n"""\n\nReturn ONLY the final revised document text. Preserve all formatting. No preamble, no markdown fences.';
-  }
-
-  let savedModel = localStorage.getItem('vp_gemini_model');
-  if (savedModel && (savedModel.includes('preview') || savedModel.includes('02-05') || savedModel.includes('undefined'))) {
-    try { localStorage.removeItem('vp_gemini_model'); } catch (e) {}
-    savedModel = null;
-  }
-  const candidateModels = [
-    savedModel,
-    'gemini-3.5-flash-lite',
-    'gemini-2.0-flash',
-    'gemini-1.5-flash',
-    'gemini-2.5-flash-lite'
-  ].filter(Boolean);
-  const uniqueModels = [...new Set(candidateModels)];
-  let lastError = null;
-
-  for (const modelName of uniqueModels) {
-    try {
-      const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent?key=' + apiKey;
-      const resp = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal,
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.1, maxOutputTokens: 1024, topP: 0.8 }
-        })
-      });
-
-      if (resp.status === 404) {
-        lastError = new Error('Model ' + modelName + ' not found');
-        continue;
-      }
-
-      if (!resp.ok) {
-        const errJson = await resp.json().catch(() => ({}));
-        throw new Error(errJson.error?.message || 'Gemini error (' + resp.status + ')');
-      }
-
-      const data = await resp.json();
-      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-      if (!rawText) throw new Error('Empty response received from Gemini.');
-
-      _activeGeminiModel = modelName;
-      localStorage.setItem('vp_gemini_model', modelName);
-
-      if (isReview) {
-        try {
-          const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
-          const parsed = JSON.parse(cleaned);
-          if (parsed.revised) {
-            return { revised: parsed.revised.trim(), reason: parsed.reason || 'Polished grammar and structure.' };
-          }
-        } catch (e) {}
-        return { revised: rawText, reason: 'Polished grammar and clarity.' };
-      }
-
-      return { revised: rawText, reason: '' };
-    } catch (e) {
-      if (e.name === 'AbortError') throw e;
-      lastError = e;
-    }
-  }
-
-  // Dynamic fallback discovery if static models return 404
-  try {
-    const listResp = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + apiKey, { signal });
-    if (listResp.ok) {
-      const listData = await listResp.json();
-      const available = (listData.models || [])
-        .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
-        .map(m => m.name.replace(/^models\//, ''));
-
-      for (const fallbackModel of available) {
-        if (uniqueModels.includes(fallbackModel)) continue;
-        try {
-          const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + fallbackModel + ':generateContent?key=' + apiKey;
-          const resp = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            signal,
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.1, maxOutputTokens: 1024 }
-            })
-          });
-          if (!resp.ok) continue;
-          const data = await resp.json();
-          const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-          if (rawText) {
-            _activeGeminiModel = fallbackModel;
-            localStorage.setItem('vp_gemini_model', fallbackModel);
-            return { revised: rawText, reason: 'Polished phrasing.' };
-          }
-        } catch (e) {
-          if (e.name === 'AbortError') throw e;
-        }
-      }
-    }
-  } catch (e) {
-    if (e.name === 'AbortError') throw e;
-  }
-
-  throw lastError || new Error('Could not polish draft right now.');
-}
-
-async function callAI(draftText, instruction, isReview = false, signal) {
-  const activeKey = PERMANENT_GEMINI_KEY || VP_GEMINI_KEY;
-  if (!activeKey) {
-    const localResult = tryLocalFastEdit(draftText, instruction);
-    if (localResult) return { revised: localResult, reason: 'Instant targeted edit applied.' };
-    throw new Error('Cloud AI polish is currently offline. All hands-free voice formatting (bold, italic, headings, lists, undo, redo, read, clear) works 100% locally with zero setup!');
-  }
-  return callGemini(draftText, instruction, activeKey, isReview, signal);
-}
-
-// ── Command Executor ──
-async function executeCommand(cmd, originalSegment) {
-  if (!cmd) return;
-
-  switch (cmd.action) {
-    case 'empty_prompt':
-      showToast('Wake word heard — speak a command (e.g. "Shazam, bold" or "Shazam, polish")');
-      break;
-
-    case 'review': {
-      let currentDraft = (draftEditor.innerText || '').replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '').trim();
-      if (!currentDraft.trim()) {
-        showToast('Draft is empty — nothing to polish.');
-        return;
-      }
-
-      if (_activeAbortController) {
-        _activeAbortController.abort();
-        _activeAbortController = null;
-      }
-
-      const thisOpId = ++_currentOpId;
-      _activeAbortController = new AbortController();
-      const signal = _activeAbortController.signal;
-
-      setStatus('thinking', 'Thinking... (Click to stop)');
-      editorWrapper.classList.add('thinking');
-      showToast('✨ Polishing document...');
-
-      try {
-        const result = await callAI(currentDraft, '', true, signal);
-        if (thisOpId !== _currentOpId) return;
-
-        let cleanRevised = (result.revised || '').replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '').trim();
-        state = VPEditorState.proposeEdit(state, cleanRevised, result.reason || 'Polished grammar and structure.', true);
-        renderState();
-        setStatus('ready', 'Wispr Ready');
-        showToast('✨ Polish ready: Review in-place diff');
-        VPVoiceFeedback.speak('Polish ready. Say Shazam, keep, or Shazam, discard.');
-      } catch (e) {
-        if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
-        showToast('Polish notice: ' + e.message, 5000);
-        setStatus('error', 'Polish Stopped');
-      } finally {
-        if (editorWrapper) editorWrapper.classList.remove('thinking');
-      }
-      break;
-    }
-
-    case 'ai_instruction': {
-      let currentDraft = (draftEditor.innerText || '').replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '').trim();
-      if (!currentDraft.trim()) {
-        showToast('Draft is empty — dictate some text first.');
-        return;
-      }
-
-      if (_activeAbortController) {
-        _activeAbortController.abort();
-        _activeAbortController = null;
-      }
-
-      const thisOpId = ++_currentOpId;
-      _activeAbortController = new AbortController();
-      const signal = _activeAbortController.signal;
-
-      setStatus('thinking', 'Thinking... (Click to stop)');
-      editorWrapper.classList.add('thinking');
-      showToast('Applying: ' + cmd.arg);
-
-      try {
-        const result = await callAI(currentDraft, cmd.arg, false, signal);
-        if (thisOpId !== _currentOpId) return;
-
-        let cleanRevised = (result.revised || '').replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '').trim();
-        state = VPEditorState.acceptDraft(state, cleanRevised);
-        writeToEditor(cleanRevised, true);
-        renderState();
-        moveCaretToEnd(draftEditor);
-        setStatus('ready', 'Wispr Ready');
-        showToast('✓ Edit applied.');
-        VPVoiceFeedback.speak('Edit applied');
-      } catch (e) {
-        if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
-        showToast('Edit notice: ' + e.message, 5000);
-        setStatus('error', 'Edit Failed');
-      } finally {
-        if (editorWrapper) editorWrapper.classList.remove('thinking');
-      }
-      break;
-    }
-
-    case 'format_bold': {
-      formatDoc('bold');
-      showToast('Toggled Bold');
-      VPVoiceFeedback.speak('Bold');
-      break;
-    }
-
-    case 'format_italic': {
-      formatDoc('italic');
-      showToast('Toggled Italic');
-      VPVoiceFeedback.speak('Italic');
-      break;
-    }
-
-    case 'format_heading': {
-      const current = (document.queryCommandValue('formatBlock') || 'p').toLowerCase();
-      const target = current === 'h2' ? 'p' : 'h2';
-      formatDoc('formatBlock', target);
-      showToast(target === 'h2' ? 'Formatted as Heading' : 'Formatted as Paragraph');
-      VPVoiceFeedback.speak(target === 'h2' ? 'Heading' : 'Paragraph');
-      break;
-    }
-
-    case 'format_list': {
-      formatDoc('insertUnorderedList');
-      showToast('Toggled Bullet List');
-      VPVoiceFeedback.speak('List');
-      break;
-    }
-
-    case 'accept': {
-      if (!state.pendingProposal) {
-        showToast('No pending proposal to keep.');
-      } else {
-        state = VPEditorState.applyProposal(state);
-        writeToEditor(state.acceptedDraft, true);
-        renderState();
-        moveCaretToEnd(draftEditor);
-        showToast('✓ Proposal kept.');
-        VPVoiceFeedback.speak('Proposal kept');
-      }
-      break;
-    }
-
-    case 'decline': {
-      if (!state.pendingProposal) {
-        showToast('No pending proposal to discard.');
-      } else {
-        state = VPEditorState.discardProposal(state);
-        renderState();
-        moveCaretToEnd(draftEditor);
-        showToast('✕ Proposal discarded. Original text kept.');
-        VPVoiceFeedback.speak('Proposal discarded');
-      }
-      break;
-    }
-
-    case 'undo': {
-      state = VPEditorState.undo(state);
-      writeToEditor(state.acceptedDraft, true);
-      renderState();
-      moveCaretToEnd(draftEditor);
-      showToast('↶ Undone');
-      VPVoiceFeedback.speak('Undone');
-      break;
-    }
-
-    case 'redo': {
-      state = VPEditorState.redo(state);
-      writeToEditor(state.acceptedDraft, true);
-      renderState();
-      moveCaretToEnd(draftEditor);
-      showToast('↷ Redone');
-      VPVoiceFeedback.speak('Redone');
-      break;
-    }
-
-    case 'read': {
-      const textToRead = state.pendingProposal ? state.pendingProposal.text : draftEditor.innerText;
-      if (!textToRead.trim()) {
-        showToast('Nothing to read aloud.');
-      } else {
-        VPVoiceFeedback.speak(textToRead);
-        showToast('🔊 Reading document...');
-      }
-      break;
-    }
-
-    case 'stop': {
-      VPVoiceFeedback.stop();
-      if (_activeAbortController) {
-        _activeAbortController.abort();
-        _activeAbortController = null;
-        _currentOpId++;
-        if (editorWrapper) editorWrapper.classList.remove('thinking');
-        setStatus('ready', 'Wispr Ready');
-      }
-      showToast('🛑 Playback stopped.');
-      break;
-    }
-
-    case 'copy': {
-      const fullText = draftEditor.innerText || '';
-      if (!fullText.trim()) {
-        showToast('Document is empty.');
-        return;
-      }
-      navigator.clipboard.writeText(fullText).then(() => {
-        showToast('✓ Copied to clipboard!');
-        VPVoiceFeedback.speak('Copied to clipboard');
-      }).catch(() => {
-        showToast('Could not copy automatically.');
-      });
-      break;
-    }
-
-    case 'clear': {
-      state = VPEditorState.acceptDraft(state, '');
-      writeToEditor('', true);
-      renderState();
-      moveCaretToEnd(draftEditor);
-      showToast('Document cleared.');
-      VPVoiceFeedback.speak('Document cleared');
-      break;
-    }
-
-    case 'separate_note': {
-      showToast('Saved to notes.');
-      break;
-    }
-  }
-}
-
-// ── Clean Command Text & Strip Any Stray 'Shaz' / 'Shazam' ──
-function cleanCommandFromHtml(html, cmdText, catchword) {
-  let cleaned = html || '';
-
-  // 1. If html contains the exact commandText, remove it directly
-  if (cmdText && cleaned.includes(cmdText)) {
-    const idx = cleaned.lastIndexOf(cmdText);
-    cleaned = cleaned.slice(0, idx) + cleaned.slice(idx + cmdText.length);
-  } else if (cmdText) {
-    const escCmd = cmdText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    cleaned = cleaned.replace(new RegExp(escCmd, 'gi'), '');
-  }
-
-  // 2. Strip any trailing or lingering wake word (e.g. 'Shazam')
-  const escCatch = (catchword || 'Shazam').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  cleaned = cleaned.replace(new RegExp('\\b' + escCatch + '\\b[\\s,.:;!?-]*', 'gi'), '');
-
-  // 3. Specifically strip any leftover 'Shaz' or 'Shaza' that Wispr stream truncation leaves behind
-  cleaned = cleaned.replace(/\bShaz(?:a|am)?\b[\s,.:;!?-]*/gi, '');
-
-  // 4. Clean up any empty dangling HTML tags created by removal
-  cleaned = cleaned.replace(/<(?:div|p|span)[^>]*>\s*<\/(?:div|p|span)>/gi, '');
-  cleaned = cleaned.replace(/(?:&nbsp;|\s)+$/, '');
-
-  return cleaned.trim();
-}
-
-// ── Wispr Segment Router ──
-function handleSegment(insertedText, fullText) {
-  const cmd = VPCommandParser.parse(insertedText, catchword);
-  if (!cmd) {
-    state = VPEditorState.acceptDraft(state, draftEditor.innerHTML);
-    updateStats();
-    triggerAutoSave();
-    return;
-  }
-
-  // Scrub the command and any leftover 'Shaz' from the editor content before executing
-  const rawInner = draftEditor.innerHTML;
-  const cleanInner = cleanCommandFromHtml(rawInner, cmd.commandText, catchword);
-  writeToEditor(cleanInner, true);
-  state = VPEditorState.acceptDraft(state, cleanInner);
-
-  executeCommand(cmd, insertedText);
-}
-
-// Attach Segment Tracker
-function attachTracker() {
-  if (tracker) tracker.destroy();
-  tracker = new VPWisprTracker(draftEditor, {
-    debounceMs: 400,
-    onSegment: handleSegment,
-  });
-}
-
-// Stop thinking when status pill is clicked
-voiceStatusPill.addEventListener('click', () => {
-  if (_activeAbortController) {
-    _activeAbortController.abort();
-    _activeAbortController = null;
-    _currentOpId++;
-    if (editorWrapper) editorWrapper.classList.remove('thinking');
-    setStatus('ready', 'Wispr Ready');
-    showToast('🛑 AI thinking stopped.');
-    VPVoiceFeedback.speak('Stopped');
-    moveCaretToEnd(draftEditor);
-  }
-});
-
-// ── Button Listeners ──
-document.getElementById('btn-trigger-review').addEventListener('click', () => {
-  executeCommand({ action: 'review', arg: null }, '');
-});
-
-document.getElementById('btn-read-aloud').addEventListener('click', () => {
-  executeCommand({ action: 'read', arg: null }, '');
-});
-
-document.getElementById('btn-quick-copy').addEventListener('click', () => {
-  executeCommand({ action: 'copy', arg: null }, '');
-});
-
-// Inline Proposal Actions
-document.getElementById('btn-inline-accept').addEventListener('click', () => {
-  executeCommand({ action: 'accept', arg: null }, '');
-});
-
-document.getElementById('btn-inline-decline').addEventListener('click', () => {
-  executeCommand({ action: 'decline', arg: null }, '');
-});
-
-document.getElementById('btn-speak-proposal').addEventListener('click', () => {
-  if (state.pendingProposal) {
-    VPVoiceFeedback.speak(state.pendingProposal.text);
-  }
-});
-
-// Minimal Formatting Toolbar
-document.getElementById('t-bold').addEventListener('click', () => formatDoc('bold'));
-document.getElementById('t-italic').addEventListener('click', () => formatDoc('italic'));
-document.getElementById('t-heading').addEventListener('click', () => {
-  const current = (document.queryCommandValue('formatBlock') || 'p').toLowerCase();
-  formatDoc('formatBlock', current === 'h2' ? 'p' : 'h2');
-});
-document.getElementById('t-list').addEventListener('click', () => formatDoc('insertUnorderedList'));
-document.getElementById('t-undo').addEventListener('click', () => executeCommand({ action: 'undo', arg: null }, ''));
-document.getElementById('t-redo').addEventListener('click', () => executeCommand({ action: 'redo', arg: null }, ''));
-
-// Footer Actions
-document.getElementById('btn-clear-doc').addEventListener('click', () => {
-  if (confirm('Clear the entire document?')) {
-    executeCommand({ action: 'clear', arg: null }, '');
-  }
-});
-
-document.getElementById('btn-download-md').addEventListener('click', () => {
-  const md = editorToMarkdown();
-  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = (docTitleInput.value.trim() || 'Untitled Note') + '.md';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('✓ Downloaded Markdown file');
-});
-
-document.getElementById('btn-download-txt').addEventListener('click', () => {
-  const txt = draftEditor.innerText || '';
-  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = (docTitleInput.value.trim() || 'Untitled Note') + '.txt';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('✓ Downloaded Text file');
-});
-
-// Theme Toggle
-const themeBtn = document.getElementById('btn-theme-toggle');
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('vp_theme', theme);
-  themeBtn.textContent = theme === 'dark' ? '🌙' : '☀️';
-}
-themeBtn.addEventListener('click', () => {
-  const current = document.documentElement.getAttribute('data-theme') || 'dark';
-  applyTheme(current === 'dark' ? 'light' : 'dark');
-});
-
-// Settings Modal
-const settingsBackdrop = document.getElementById('settings-backdrop');
-const catchwordInput   = document.getElementById('catchword-input');
-
-document.getElementById('btn-open-settings').addEventListener('click', () => {
-  if (catchwordInput) catchwordInput.value = catchword;
-  settingsBackdrop.classList.add('open');
-});
-
-document.getElementById('btn-close-settings').addEventListener('click', () => settingsBackdrop.classList.remove('open'));
-settingsBackdrop.addEventListener('click', (e) => {
-  if (e.target === settingsBackdrop) settingsBackdrop.classList.remove('open');
-});
-
-catchwordInput.addEventListener('change', () => {
-  const val = catchwordInput.value.trim();
-  if (val) {
-    catchword = val;
-    showToast('Wake word set to "' + catchword + '"');
-  }
-});
-
-document.getElementById('spoken-feedback-toggle').addEventListener('change', (e) => {
-  VPVoiceFeedback.setEnabled(e.target.checked);
-  showToast(e.target.checked ? 'Spoken feedback enabled' : 'Spoken feedback muted');
-});
-
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    settingsBackdrop.classList.remove('open');
-    if (_activeAbortController) {
-      _activeAbortController.abort();
-      _activeAbortController = null;
-      _currentOpId++;
-      if (editorWrapper) editorWrapper.classList.remove('thinking');
-      setStatus('ready', 'Wispr Ready');
-      showToast('🛑 AI thinking stopped.');
-      moveCaretToEnd(draftEditor);
-    }
-  }
-});
-
-// Auto-save title on edit
-docTitleInput.addEventListener('input', triggerAutoSave);
-
-function loadSampleDraft() {
-  const sampleHtml = `
-<h1>Welcome to FlowPad</h1>
-<p>FlowPad is a <strong>hands-free voice text editor</strong> built specifically for dictating with <em>Wispr Flow</em>.</p>
-<h2>Key Capabilities</h2>
-<ul>
-  <li><strong>Direct Voice Edits:</strong> Say <code>"Shazam, put a comma next to hello"</code> to make instant edits.</li>
-  <li><strong>Full AI Polish:</strong> Say <code>"Shazam, polish"</code> to review phrasing with in-place diffs.</li>
-  <li><strong>Instant Formatting:</strong> Say <code>"Shazam, bold"</code> or <code>"Shazam, list"</code> without touching your keyboard.</li>
-</ul>
-<blockquote>"Speak freely at the speed of thought. FlowPad handles the punctuation, formatting, and polish."</blockquote>
-<p>Try saying <em>"Shazam, polish"</em> or click the Polish button above!</p>
-  `.trim();
-  state = VPEditorState.acceptDraft(state, sampleHtml);
-  writeToEditor(sampleHtml);
-  renderState();
-}
-
-// ── Initialization ──
-function init() {
-  const savedTheme = localStorage.getItem('vp_theme') || 'dark';
-  applyTheme(savedTheme);
-
-  const savedTitle = localStorage.getItem('vp_doc_title');
-  if (savedTitle) docTitleInput.value = savedTitle;
-
-  const savedContent = localStorage.getItem('vp_doc_content');
-  if (savedContent && savedContent.trim()) {
-    state = VPEditorState.acceptDraft(state, savedContent);
-    writeToEditor(savedContent);
-  } else {
-    loadSampleDraft();
-  }
-
-  attachTracker();
-  renderState();
-
-  setTimeout(() => {
-    moveCaretToEnd(draftEditor);
-  }, 100);
-}
-
-window.addEventListener('DOMContentLoaded', init);
-  </script>
+  <script src="src/sanitizer.js"></script>
+  <script src="src/dom_range_remover.js"></script>
+  <script src="src/command_parser.js"></script>
+  <script src="src/editor_state.js"></script>
+  <script src="src/segment_tracker.js"></script>
+  <script src="src/voice_feedback.js"></script>
+  <script src="src/app_controller.js"></script>
 </body>
 </html>

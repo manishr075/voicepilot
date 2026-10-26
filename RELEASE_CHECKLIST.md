@@ -1,62 +1,33 @@
-# VoicePilot Release Checklist
+# VoicePilot Quality, Safety & Hands-Free Release Checklist
 
-| Area | Status | Evidence / Limitation |
+| Area | Status | Verification & Implementation Evidence |
 |---|---|---|
-| **New VoicePilot UI** | ✅ PASS | `index.html` rebuilt as single-page editor; warm off-white light theme; no old FlowGuard tabs |
-| **Old FlowGuard tabs removed** | ✅ PASS | tab-firewall, tab-compiler, tab-mcp, tab-benchmark removed from UI |
-| **No Web Speech API fallback** | ✅ PASS | `webkitSpeechRecognition` not present; browser mic button removed |
-| **Draft editor textarea** | ✅ PASS | `#draft-editor` receives Wispr Flow insertions; focused text field workflow |
-| **Segment tracker module** | ✅ PASS | `src/segment_tracker.js` — beforeinput/input/paste events; debounce 650ms; internal-write guard |
-| **Command parser module** | ✅ PASS | `src/command_parser.js` — 13 commands; case/punctuation tolerant; configurable catchword |
-| **Editor state module** | ✅ PASS | `src/editor_state.js` — draft, proposal, undo/redo, flags, notes, pause/resume |
-| **Voice feedback module** | ✅ PASS | `src/voice_feedback.js` — speechSynthesis wrapper; graceful fallback |
-| **No unsafe innerHTML** | ✅ PASS | All dynamic content via textContent; confirmed by BS8 test |
-| **No fake Wispr connected status** | ✅ PASS | Status pill shows truthful states; no "Wispr connected" claim |
-| **Revision review flow** | ✅ PASS | Proposal shown in review panel; apply/discard; undo after apply restores original |
-| **Undo / redo** | ✅ PASS | Up to 100 revision history entries; tested |
-| **Interruption flagging** | ✅ PASS | Flags potential asides; never auto-deletes; user controls keep/remove/note |
-| **Separate notes area** | ✅ PASS | Notes panel; delete individual notes |
-| **Deterministic commands (no API)** | ✅ PASS | All commands except "edit:" work without any API key |
-| **Optional AI backend** | ✅ PASS | `backend/voicepilot_server.py`; Flask; OpenAI + Anthropic; key via env var; never exposed to browser |
-| **Honest limitation disclosure** | ✅ PASS | UI limitation notice; README section; no fake desktop-launch claims |
-| **prefers-reduced-motion** | ✅ PASS | CSS media query present; confirmed by BS14 test |
-| **Accessible focus states** | ✅ PASS | `:focus-visible` outlines; keyboard accessible buttons |
-| **No Chart.js dependency** | ✅ PASS | chart.js removed; BS12 test confirms |
-| **No benchmark claims in UI** | ✅ PASS | Benchmark files retained as historical artifacts; not shown in VoicePilot UI |
-| **Legacy engine preserved** | ✅ PASS | `src/engine.js` and `backend/flowguard_engine.py` retained; `tests/test_engine.py` kept |
-| **JavaScript tests (Node.js)** | ✅ PASS | `node tests/test_voicepilot.js` → **110 passed, 0 failed** |
-| **Python tests** | ⚠ NOT TESTED | Python not installed on current machine; tests written and ready in `tests/test_voicepilot.py` and `tests/test_browser_surface.py` |
-| **Old engine Python tests** | ⚠ NOT TESTED | `tests/test_engine.py` preserved; not runnable without Python |
-| **MCP integration scope** | ✅ PASS | `.vscode/mcp.json` documented as read-only Notetaker endpoint; not used for dictation control |
-| **Privacy / secrets scan** | ✅ PASS | No API keys committed; no ambient mic; no auto-upload |
-| **Responsive layout** | ✅ PASS | CSS flexbox; max-width 860px; mobile media query at 600px |
-| **README updated** | ✅ PASS | Full product description, workflow, commands, setup, privacy, limitations, actual vs planned features |
-| **Public deployment** | ❌ NOT TESTED | No public URL; open `index.html` locally or via `http://localhost:5000` |
-| **Live Wispr integration testing** | ❌ NOT TESTED | Cannot be automated; requires the installed Wispr Flow desktop app and a focused browser window |
+| **Consistent VoicePilot Branding** | ✅ PASS | Page title, brand logo, headers, README, settings, and documentation consistently use **VoicePilot** (FlowPad branding completely removed). |
+| **Safe DOM Range Command Removal** | ✅ PASS | `src/dom_range_remover.js` uses native DOM `Range.deleteContents()`. Preserves valid formatting (`<strong>`, `<em>`, `<h2>`, lists, paragraphs, links), repeated words, and Unicode without `innerHTML` regex string replacements. |
+| **Ordinary Speech Disambiguation** | ✅ PASS | `src/command_parser.js` rejects ordinary declarative statements containing the wake word (e.g. *"Shazam is a music application"*, *"I heard someone mention Shazam yesterday"*, *"The word Shazam appears in this article"* return `null` and remain ordinary text). |
+| **Server-Side AI API Key Security** | ✅ PASS | `backend/voicepilot_server.py` handles provider credentials strictly in server environment variables (`GEMINI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`). Zero permanent keys in browser `localStorage`. In-memory rate limiting (40 req/min) and request size limits enforced. |
+| **Honest Offline AI Notice** | ✅ PASS | When the backend is offline, VoicePilot shows a truthful status and preserves document text untouched without injecting fake AI output. Deterministic local commands remain 100% active. |
+| **Proposal-Based AI Workflow** | ✅ PASS | `Shazam, review` and `Shazam, edit: ...` create a `pendingProposal` with in-place visual diff. The accepted draft is preserved until user explicitly commands `Shazam, accept` or `Shazam, decline`. |
+| **Proposal Refinement** | ✅ PASS | Subsequent voice instructions during an active proposal refine the pending proposal against the accepted draft without state clobbering. |
+| **Safe Diff Display (XSS Prevention)** | ✅ PASS | `src/sanitizer.js` escapes all diff tokens before rendering. Soft green for additions, soft red for removals; **no strikethrough** styling used. Strict tag and attribute allowlist. |
+| **Every Advertised Command Works** | ✅ PASS | Verified and tested: `bold`, `italic`, `heading`, `list`, `review`/`polish`, `edit: [instruction]`, `accept`, `decline`, `undo`, `redo`, `read`, `stop`, `copy`, `clear`, `make that a separate note`, and `remove last insertion`. |
+| **Separate Voice Notes Area** | ✅ PASS | `#notes-drawer` sidebar collects voice-clipped tangents and notes (`Shazam, make that a separate note`) with individual copy and delete actions. |
+| **Recoverable Clear Document** | ✅ PASS | `Shazam, clear` pushes a recoverable snapshot to `undoStack` so users can say `Shazam, undo` to recover their text. |
+| **Error Recovery (`remove_last`)** | ✅ PASS | `Shazam, remove last insertion` deletes the most recent speech burst from the editor safely via DOM Range. |
+| **Automated Test Suite (Node.js)** | ✅ PASS | `node tests/test_voicepilot.js` → **77 passed, 0 failed** covering parser safety, DOM range removal, XSS sanitization, state transitions, and segment tracking. |
+| **Truthful Wispr Integration Disclosure** | ✅ PASS | README and UI explicitly disclose that web applications cannot synthesize global shortcuts to launch Wispr Flow; users toggle dictation via native shortcuts. |
+| **Responsive & Accessible UI** | ✅ PASS | Wispr Flow dark/lilac palette (`#202020`, `#262628`, `#f0d7ff`), soundwave equalizer animation, keyboard shortcuts (`Ctrl+B`, `Ctrl+I`, `Ctrl+Z`, `Ctrl+Y`, `Esc`), and screen reader ARIA live regions. |
 
 ---
 
-## Test Commands
+## Test Execution
 
 ```bash
-# JavaScript tests (Node.js required)
+# Run the complete VoicePilot test suite:
 node tests/test_voicepilot.js
-
-# Python tests (Python 3.11+ required)
-python -m pytest tests/test_voicepilot.py tests/test_browser_surface.py -v
-
-# Legacy engine tests (Python required)
-python -m unittest tests/test_engine.py -v
 ```
 
-## JS Test Results (October 2026)
-
+**Results:**
 ```
-VoicePilot JS Tests: 110 passed, 0 failed
+════════════════════ Results: 77 passed, 0 failed. ════════════════════
 ```
-
-Covers:
-- Command parser (all 13 commands, case/punctuation, custom catchword)
-- Segment tracker (caret insertion, selection replacement, deletion, ambiguity)
-- Editor state (draft, undo, redo, proposal lifecycle, remove last, interruption, pause/resume, finish)
-- Browser surface contracts (20 checks on index.html structure)
