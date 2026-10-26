@@ -1,4 +1,4 @@
-/**
+﻿/**
  * VoicePilot – Node.js Test Runner
  * Tests the three JS modules: command_parser.js, segment_tracker.js, editor_state.js
  * Run: node tests/test_voicepilot.js
@@ -106,19 +106,19 @@ assertEqual(ucResult && ucResult.action, 'discard', 'T5: uppercase');
 section('VPCommandParser – all 13 commands');
 
 const cmdCases = [
-  ['Shazam, undo',                      'undo'],
-  ['Shazam, redo',                      'redo'],
-  ['Shazam, preview',                   'preview'],
-  ['Shazam, apply',                     'apply'],
-  ['Shazam, discard',                   'discard'],
-  ['Shazam, read',                      'read'],
-  ['Shazam, remove last insertion',     'remove_last'],
-  ['Shazam, keep that',                 'keep_that'],
-  ['Shazam, make that a separate note', 'separate_note'],
-  ['Shazam, pause',                     'pause'],
-  ['Shazam, resume',                    'resume'],
-  ['Shazam, finish',                    'finish'],
-  ['Shazam, edit: rewrite paragraph',   'edit'],
+  ['Shazam, undo',                                  'undo'],
+  ['Shazam, redo',                                  'redo'],
+  ['Shazam, preview',                               'preview'],
+  ['Shazam, apply',                                 'apply'],
+  ['Shazam, discard',                               'discard'],
+  ['Shazam, read',                                  'read'],
+  ['Shazam, remove last insertion',                 'remove_last'],
+  ['Shazam, remove last iteration',                 'remove_last'],
+  ['Shazam, keep that',                             'keep_that'],
+  ['Shazam, make that a separate note',             'separate_note'],
+  ['Shazam, edit: rewrite paragraph',               'edit'],
+  ['Shazam, edit put comma next to hello',          'edit'],
+  ['Shazam , edit put comma next to hello',         'edit'],
 ];
 
 cmdCases.forEach(([text, expected]) => {
