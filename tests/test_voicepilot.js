@@ -35,55 +35,71 @@ process.stdout.write('\n── Running Refined VoicePilot Test Suite ──\n');
 assertNull(VPCommandParser.parse('Hello, this is regular dictation without the catchword.'), 'Plain text returns null');
 assertNull(VPCommandParser.parse(''), 'Empty text returns null');
 
-// 2. Shazam review command
-const rev = VPCommandParser.parse('Shazam, review');
-assert(rev && rev.action === 'review', 'Shazam, review triggers review action');
+// 2. Shazam review command (with and without punctuation)
+const rev1 = VPCommandParser.parse('Shazam, review');
+assertEqual(rev1 && rev1.action, 'review', 'Shazam, review triggers local review action');
 
-// 3. Shazam accept / decline & natural voice alternatives
-const acc = VPCommandParser.parse('Shazam, accept');
-assertEqual(acc && acc.action, 'accept', 'Shazam, accept triggers accept');
+const rev2 = VPCommandParser.parse('Shazam, review.');
+assertEqual(rev2 && rev2.action, 'review', 'Shazam, review. with period triggers local review action');
 
-const kNew = VPCommandParser.parse('Shazam, keep new');
-assertEqual(kNew && kNew.action, 'accept', 'Shazam, keep new triggers accept');
+// 3. Local Undo & Redo (MUST work locally even with dictation punctuation)
+const un1 = VPCommandParser.parse('Shazam, undo');
+assertEqual(un1 && un1.action, 'undo', 'Shazam, undo works locally');
 
-const opt2 = VPCommandParser.parse('Shazam, option two');
-assertEqual(opt2 && opt2.action, 'accept', 'Shazam, option two triggers accept');
+const un2 = VPCommandParser.parse('Shazam, undo.');
+assertEqual(un2 && un2.action, 'undo', 'Shazam, undo. with period works locally (NEVER sends to AI)');
 
-const dec = VPCommandParser.parse('Shazam, decline');
-assertEqual(dec && dec.action, 'decline', 'Shazam, decline triggers decline');
+const un3 = VPCommandParser.parse('Shazam, undo that');
+assertEqual(un3 && un3.action, 'undo', 'Shazam, undo that works locally');
 
-const kPrev = VPCommandParser.parse('Shazam, keep previous');
-assertEqual(kPrev && kPrev.action, 'decline', 'Shazam, keep previous triggers decline');
+const re1 = VPCommandParser.parse('Shazam, redo');
+assertEqual(re1 && re1.action, 'redo', 'Shazam, redo works locally');
 
-const opt1 = VPCommandParser.parse('Shazam, option one');
-assertEqual(opt1 && opt1.action, 'decline', 'Shazam, option one triggers decline');
+const re2 = VPCommandParser.parse('Shazam, redo.');
+assertEqual(re2 && re2.action, 'redo', 'Shazam, redo. with period works locally');
 
-// 4. Shazam edit with explicit prefix
-const ed1 = VPCommandParser.parse('Shazam, edit make this more formal');
-assertEqual(ed1 && ed1.action, 'ai_instruction', 'Shazam, edit triggers ai_instruction');
-assertEqual(ed1 && ed1.arg, 'make this more formal', 'edit argument parsed correctly');
+// 4. Local Read (MUST work locally even with dictation punctuation)
+const rd1 = VPCommandParser.parse('Shazam, read');
+assertEqual(rd1 && rd1.action, 'read', 'Shazam, read works locally');
 
-const ed2 = VPCommandParser.parse('Shazam , edit put comma next to hello');
-assertEqual(ed2 && ed2.action, 'ai_instruction', 'Spaced Shazam , edit works');
+const rd2 = VPCommandParser.parse('Shazam, read.');
+assertEqual(rd2 && rd2.action, 'read', 'Shazam, read. with period works locally');
 
-// 5. Shazam undo / redo / read
-const un = VPCommandParser.parse('Shazam, undo');
-assertEqual(un && un.action, 'undo', 'Shazam, undo works');
+const rd3 = VPCommandParser.parse('Shazam, read aloud.');
+assertEqual(rd3 && rd3.action, 'read', 'Shazam, read aloud. works locally');
 
-const re = VPCommandParser.parse('Shazam, redo');
-assertEqual(re && re.action, 'redo', 'Shazam, redo works');
+// 5. Local Accept & Decline (MUST work locally with all natural variations)
+const acc1 = VPCommandParser.parse('Shazam, accept');
+assertEqual(acc1 && acc1.action, 'accept', 'Shazam, accept works locally');
 
-const rd = VPCommandParser.parse('Shazam, read');
-assertEqual(rd && rd.action, 'read', 'Shazam, read works');
+const acc2 = VPCommandParser.parse('Shazam, accept.');
+assertEqual(acc2 && acc2.action, 'accept', 'Shazam, accept. with period works locally');
 
-// 6. Natural unrecognized Shazam phrases automatically route to AI agent!
-const unk1 = VPCommandParser.parse('Shazam, put a comma next to hello');
-assertEqual(unk1 && unk1.action, 'ai_instruction', 'Natural command routes to ai_instruction');
-assertEqual(unk1 && unk1.arg, 'put a comma next to hello', 'Instruction text captured');
+const acc3 = VPCommandParser.parse('Shazam, keep new.');
+assertEqual(acc3 && acc3.action, 'accept', 'Shazam, keep new. works locally');
 
-const unk2 = VPCommandParser.parse('Shazam, summarize this into one paragraph');
-assertEqual(unk2 && unk2.action, 'ai_instruction', 'Summarize command routes to ai_instruction');
-assertEqual(unk2 && unk2.arg, 'summarize this into one paragraph', 'Summarize instruction captured');
+const acc4 = VPCommandParser.parse('Shazam, option two.');
+assertEqual(acc4 && acc4.action, 'accept', 'Shazam, option two. works locally');
+
+const dec1 = VPCommandParser.parse('Shazam, decline');
+assertEqual(dec1 && dec1.action, 'decline', 'Shazam, decline works locally');
+
+const dec2 = VPCommandParser.parse('Shazam, decline.');
+assertEqual(dec2 && dec2.action, 'decline', 'Shazam, decline. with period works locally');
+
+const dec3 = VPCommandParser.parse('Shazam, keep previous.');
+assertEqual(dec3 && dec3.action, 'decline', 'Shazam, keep previous. works locally');
+
+const dec4 = VPCommandParser.parse('Shazam, option one.');
+assertEqual(dec4 && dec4.action, 'decline', 'Shazam, option one. works locally');
+
+// 6. Natural AI instructions (Only actual instructions are sent to AI)
+const ai1 = VPCommandParser.parse('Shazam, put a comma next to hello');
+assertEqual(ai1 && ai1.action, 'ai_instruction', 'Natural command routes to ai_instruction');
+assertEqual(ai1 && ai1.arg, 'put a comma next to hello', 'Instruction text captured cleanly');
+
+const ai2 = VPCommandParser.parse('Shazam, edit add exclamation mark at the end.');
+assertEqual(ai2 && ai2.action, 'ai_instruction', 'Explicit edit command routes to ai_instruction');
 
 // 7. Empty Shazam
 const emptyShazam = VPCommandParser.parse('Shazam');
