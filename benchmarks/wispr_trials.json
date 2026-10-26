@@ -1,0 +1,23 @@
+{
+  "schema_version": "flowguard-wispr-trial-v1",
+  "description": "Blank log for genuine Wispr trials. Do not populate from scripted benchmark fixtures.",
+  "evidence": {
+    "trial_type": "genuine_wispr_trial",
+    "requires_actual_wispr_transcript": true,
+    "requires_manual_timing": true
+  },
+  "record_template": {
+    "trial_id": "",
+    "date": "",
+    "intended_instruction": "",
+    "actual_wispr_transcript": "",
+    "known_technical_tokens": [],
+    "raw_token_matches": [],
+    "flowguard_recovered_tokens": [],
+    "missed_errors": [],
+    "false_alarms": [],
+    "manually_measured_time_sec": null,
+    "notes": ""
+  },
+  "trials": []
+}

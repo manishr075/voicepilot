@@ -1,0 +1,14 @@
+[
+  {
+    "name": "verify parity suite",
+    "text": "Run python3 scripts/check_parity.py and python3 -m unittest discover -s tests -v. Report any mismatch between src/engine.js and backend/flowguard_engine.py before committing."
+  },
+  {
+    "name": "safe serverless deploy check",
+    "text": "Validate template.yaml with sam validate --lint, verify CORS and health endpoint response, and do not claim deployment succeeded until the public URL and end-to-end save/reload journey are verified."
+  },
+  {
+    "name": "guard prompt context",
+    "text": "Inspect the referenced repository files first, preserve all existing negation guards and numeric bounds, and do not overwrite existing sort keys or environment variables."
+  }
+]

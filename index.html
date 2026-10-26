@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoicePilot — Write by voice. Edit by voice. Stay hands-free.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Design tokens ─────────────────────────────────────────────── */
+    :root {
+      --paper:    #f8f7f3;
+      --surface:  #ffffff;
+      --ink:      #1a2420;
+      --ink-2:    #2d3b35;
+      --muted:    #6b7a73;
+      --accent:   #147a50;
+      --accent-h: #0f5e3d;
+      --accent-l: #e8f5ee;
+      --warn:     #b45309;
+      --warn-l:   #fef3c7;
+      --danger:   #be123c;
+      --danger-l: #fce7f3;
+      --line:     #d9e2db;
+      --line-2:   #eef1ee;
+      --shadow:   0 1px 3px rgba(26,36,32,.07), 0 4px 12px rgba(26,36,32,.05);
+      --radius:   10px;
+    }
+
+    /* ── Reset / Base ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ── Reduced motion ─────────────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ── Typography helpers ─────────────────────────────────────────── */
+    .mono { font-family: 'JetBrains Mono', 'Fira Mono', monospace; }
+    .muted { color: var(--muted); }
+    .accent { color: var(--accent); }
+    .small { font-size: 0.8rem; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────── */
+    #vp-header {
+      background: rgba(248,247,243,.97);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    #vp-header-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .vp-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    .vp-logo-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .vp-logo-mark svg { display: block; }
+
+    .vp-logo-text h1 {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .vp-logo-text p {
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1;
+      margin-top: 1px;
+    }
+
+    /* ── Status pill ─────────────────────────────────────────────────── */
+    #vp-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+      border-radius: 99px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+
+    #vp-status-pill .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    #vp-status-pill.ready    { background: var(--accent-l); color: var(--accent); border-color: rgba(20,122,80,.25); }
+    #vp-status-pill.ready .dot    { background: var(--accent); }
+    #vp-status-pill.command  { background: #e0f2fe; color: #0369a1; border-color: rgba(3,105,161,.25); }
+    #vp-status-pill.command .dot  { background: #0369a1; }
+    #vp-status-pill.review   { background: var(--warn-l); color: var(--warn); border-color: rgba(180,83,9,.25); }
+    #vp-status-pill.review .dot   { background: var(--warn); }
+    #vp-status-pill.paused   { background: var(--line-2); color: var(--muted); border-color: var(--line); }
+    #vp-status-pill.error    { background: var(--danger-l); color: var(--danger); border-color: rgba(190,18,60,.25); }
+    #vp-status-pill.error .dot    { background: var(--danger); }
+
+    /* ── Main layout ─────────────────────────────────────────────────── */
+    main {
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.75rem 1.25rem 3rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ── Cards / panels ─────────────────────────────────────────────── */
+    .vp-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .vp-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 0.875rem 1.125rem 0;
+    }
+
+    .vp-card-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+
+    /* ── Wispr guidance notice ───────────────────────────────────────── */
+    #wispr-guidance {
+      border-left: 3px solid var(--accent);
+      background: var(--accent-l);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 0.875rem 1.125rem;
+      font-size: 0.825rem;
+      color: var(--ink-2);
+      line-height: 1.65;
+    }
+
+    #wispr-guidance strong { color: var(--accent); font-weight: 600; }
+    #wispr-guidance kbd {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.1em 0.45em;
+      border-radius: 4px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      line-height: 1.4;
+    }
+
+    /* ── Draft editor ───────────────────────────────────────────────── */
+    #draft-card { position: relative; }
+
+    #draft-editor {
+      width: 100%;
+      min-height: 280px;
+      resize: vertical;
+      border: none;
+      outline: none;
+      padding: 1.25rem 1.125rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--ink);
+      background: transparent;
+      display: block;
+    }
+
+    #draft-editor::placeholder { color: var(--muted); }
+
+    /* focus ring on the card instead of the bare textarea */
+    #draft-card:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(20,122,80,.12), var(--shadow);
+    }
+
+    .draft-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 1.125rem 0.75rem;
+      border-top: 1px solid var(--line-2);
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .draft-word-count { font-size: 0.72rem; color: var(--muted); }
+
+    /* ── Review panel ────────────────────────────────────────────────── */
+    #review-panel {
+      display: none;
+      border: 2px solid var(--warn);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    #review-panel.visible { display: block; }
+
+    .review-header {
+      background: var(--warn-l);
+      padding: 0.75rem 1.125rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--warn);
+    }
+
+    .review-body { padding: 1rem 1.125rem; }
+
+    .diff-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.375rem;
+    }
+
+    .diff-box {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin-bottom: 0.75rem;
+      border: 1px solid var(--line);
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .diff-current { background: #fff5f5; border-color: #fecdd3; }
+    .diff-proposed { background: #f0fdf4; border-color: #bbf7d0; }
+
+    .diff-del { background: #fecdd3; color: #9f1239; text-decoration: line-through; border-radius: 2px; padding: 0 1px; }
+    .diff-ins { background: #bbf7d0; color: #14532d; border-radius: 2px; padding: 0 1px; }
+
+    .review-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      padding: 0 1.125rem 1rem;
+    }
+
+    /* ── Interruption notice ─────────────────────────────────────────── */
+    #interruption-panel {
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    #interruption-panel.visible { display: block; }
+
+    .interruption-header {
+      background: var(--line-2);
+      padding: 0.625rem 1.125rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .interruption-body {
+      padding: 0.75rem 1.125rem;
+      font-size: 0.825rem;
+      color: var(--ink-2);
+    }
+
+    .interruption-quote {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      background: var(--line-2);
+      border-left: 3px solid var(--line);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0 6px 6px 0;
+      margin: 0.5rem 0;
+      color: var(--ink);
+    }
+
+    .interruption-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      padding: 0 1.125rem 0.875rem;
+    }
+
+    /* ── Notes area ──────────────────────────────────────────────────── */
+    #notes-panel {
+      display: none;
+    }
+
+    #notes-panel.visible { display: block; }
+
+    #notes-list {
+      padding: 0.75rem 1.125rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .note-item {
+      background: var(--line-2);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.625rem 0.875rem;
+      font-size: 0.85rem;
+      color: var(--ink-2);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .note-item-text { flex: 1; }
+
+    .note-item-del {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1;
+      padding: 0;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .note-item-del:hover { color: var(--danger); }
+
+    /* ── Command help ────────────────────────────────────────────────── */
+    #help-panel details { }
+
+    #help-panel summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      padding: 0.875rem 1.125rem;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      user-select: none;
+    }
+
+    #help-panel summary::-webkit-details-marker { display: none; }
+    #help-panel summary::before { content: '›'; font-size: 1rem; transition: transform 0.2s; display: inline-block; }
+    #help-panel details[open] summary::before { transform: rotate(90deg); }
+
+    .command-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 0.5rem;
+      padding: 0 1.125rem 1rem;
+    }
+
+    .command-item {
+      background: var(--line-2);
+      border-radius: 7px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.78rem;
+    }
+
+    .command-item .cmd-phrase {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .command-item .cmd-desc { color: var(--muted); }
+
+    /* ── Settings panel ─────────────────────────────────────────────── */
+    #settings-panel details { }
+
+    #settings-panel summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 0.875rem 1.125rem;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      user-select: none;
+    }
+
+    #settings-panel summary::-webkit-details-marker { display: none; }
+    #settings-panel summary::before { content: '⚙'; font-size: 0.85rem; }
+
+    .settings-body {
+      padding: 0 1.125rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .setting-row label {
+      font-size: 0.825rem;
+      font-weight: 500;
+      color: var(--ink-2);
+      min-width: 130px;
+    }
+
+    .setting-row input[type="text"] {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.35rem 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--ink);
+      background: var(--surface);
+      outline: none;
+      width: 160px;
+    }
+
+    .setting-row input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(20,122,80,.1);
+    }
+
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      font-size: 0.825rem;
+      color: var(--ink-2);
+    }
+
+    .toggle-label input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 15px;
+      height: 15px;
+    }
+
+    /* ── Buttons ──────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.45rem 1rem;
+      border-radius: 7px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      line-height: 1;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:focus-visible {
+      outline: 3px solid rgba(20,122,80,.35);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover { background: var(--accent-h); border-color: var(--accent-h); }
+
+    .btn-outline {
+      background: var(--surface);
+      color: var(--ink-2);
+      border-color: var(--line);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-danger {
+      background: var(--danger-l);
+      color: var(--danger);
+      border-color: rgba(190,18,60,.25);
+    }
+    .btn-danger:hover { background: #fce7f3; }
+
+    .btn-warn {
+      background: var(--warn-l);
+      color: var(--warn);
+      border-color: rgba(180,83,9,.25);
+    }
+    .btn-warn:hover { background: #fef0c7; }
+
+    .btn-ghost {
+      background: none;
+      color: var(--muted);
+      border-color: transparent;
+    }
+    .btn-ghost:hover { color: var(--ink); background: var(--line-2); }
+
+    .btn-sm { font-size: 0.75rem; padding: 0.32rem 0.75rem; }
+
+    /* ── Toast ────────────────────────────────────────────────────────── */
+    #vp-toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 99;
+      max-width: 380px;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: #f1f5f0;
+      font-size: 0.825rem;
+      line-height: 1.5;
+      box-shadow: 0 8px 30px rgba(0,0,0,.22);
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    #vp-toast.visible { display: flex; }
+    #vp-toast-close { background: none; border: none; color: #8aa496; cursor: pointer; font-size: 1rem; line-height: 1; padding: 0; }
+    #vp-toast-close:hover { color: #fff; }
+
+    /* ── Provider notice ─────────────────────────────────────────────── */
+    #provider-notice {
+      font-size: 0.78rem;
+      color: var(--muted);
+      padding: 0.5rem 1.125rem 0.75rem;
+      border-top: 1px solid var(--line-2);
+    }
+
+    /* ── History sidebar ─────────────────────────────────────────────── */
+    #history-bar {
+      font-size: 0.78rem;
+      color: var(--muted);
+      padding: 0 1.125rem 0.75rem;
+    }
+
+    /* ── Limitation notice ───────────────────────────────────────────── */
+    #limitation-notice {
+      background: var(--line-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 0.875rem 1.125rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    #limitation-notice strong { color: var(--ink-2); }
+
+    /* ── Footer ──────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--line);
+      background: var(--paper);
+      padding: 1rem 1.25rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ──────────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      main { padding: 1rem 0.875rem 2.5rem; }
+      #draft-editor { min-height: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════ HEADER ════════════════════ -->
+  <header id="vp-header" role="banner">
+    <div id="vp-header-inner">
+      <div class="vp-logo">
+        <div class="vp-logo-mark" aria-hidden="true">
+          <!-- Minimal microphone-wave icon -->
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="1" width="6" height="9" rx="3" fill="white" opacity=".95"/>
+            <path d="M3 9a6 6 0 0012 0" stroke="white" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".85"/>
+            <line x1="9" y1="15" x2="9" y2="17" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>
+            <line x1="6.5" y1="17" x2="11.5" y2="17" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>
+          </svg>
+        </div>
+        <div class="vp-logo-text">
+          <h1>VoicePilot</h1>
+          <p>Write by voice. Edit by voice. Stay hands-free.</p>
+        </div>
+      </div>
+
+      <div id="vp-status-pill" class="ready" role="status" aria-live="polite" aria-atomic="true">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="vp-status-text">Ready for Wispr input</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════════ TOAST ════════════════════ -->
+  <div id="vp-toast" role="status" aria-live="assertive" aria-atomic="true">
+    <span id="vp-toast-msg"></span>
+    <button id="vp-toast-close" type="button" aria-label="Close notification">✕</button>
+  </div>
+
+  <!-- ════════════════════ MAIN ════════════════════ -->
+  <main id="vp-main">
+
+    <!-- ── Wispr workflow guidance ── -->
+    <div id="wispr-guidance" role="note" aria-label="Wispr Flow usage guidance">
+      <strong>How to use VoicePilot with Wispr Flow:</strong>
+      Focus the editor below, then use <kbd>Ctrl+Win</kbd> (Windows) or <kbd>Fn</kbd> (Mac) to start Wispr Flow.
+      Wispr transcribes your speech and inserts it here. To issue a command, say
+      <strong>"Shazam, &lt;command&gt;"</strong> — VoicePilot will detect it automatically.
+      <br/><span class="muted small">Note: VoicePilot receives text that Wispr inserts; it does not start Wispr itself. Browser microphone fallback is intentionally not provided — Wispr Flow is the intended dictation source.</span>
+    </div>
+
+    <!-- ── Draft editor ── -->
+    <div class="vp-card" id="draft-card">
+      <div class="vp-card-header">
+        <span class="vp-card-title">Draft</span>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button type="button" class="btn btn-outline btn-sm" id="btn-undo" title="Shazam, undo">⟵ Undo</button>
+          <button type="button" class="btn btn-outline btn-sm" id="btn-redo" title="Shazam, redo">Redo ⟶</button>
+          <button type="button" class="btn btn-outline btn-sm" id="btn-read" title="Shazam, read">▶ Read aloud</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-draft" title="Clear draft">🗑 Clear</button>
+        </div>
+      </div>
+      <textarea
+        id="draft-editor"
+        aria-label="Voice draft editor — focus here to receive Wispr Flow input"
+        placeholder="Focus here, then use Wispr Flow to dictate. Your text will appear below.&#10;&#10;Say 'Shazam, edit: make this more formal' to request an AI revision, or use any other Shazam command."
+        spellcheck="true"
+        autocomplete="off"
+      ></textarea>
+      <div class="draft-footer">
+        <span class="draft-word-count" id="word-count" aria-live="polite">0 words</span>
+        <span id="history-bar" class="accent small" style="padding:0;border:none;"></span>
+      </div>
+    </div>
+
+    <!-- ── Revision review panel (shown only when proposal pending) ── -->
+    <section id="review-panel" aria-label="Pending revision review" aria-live="polite">
+      <div class="review-header">
+        <span aria-hidden="true">✎</span>
+        <span>Revision proposal — review before applying</span>
+        <span id="review-instruction" class="muted small" style="margin-left:auto;"></span>
+      </div>
+      <div class="review-body">
+        <div class="diff-label">Current draft</div>
+        <div class="diff-box diff-current" id="diff-current" aria-label="Current draft text"></div>
+        <div class="diff-label">Proposed revision</div>
+        <div class="diff-box diff-proposed" id="diff-proposed" aria-label="Proposed revision text"></div>
+      </div>
+      <div class="review-actions">
+        <button type="button" class="btn btn-primary" id="btn-apply">✓ Apply (Shazam, apply)</button>
+        <button type="button" class="btn btn-danger" id="btn-discard">✕ Discard (Shazam, discard)</button>
+        <button type="button" class="btn btn-outline" id="btn-preview-speak">▶ Speak summary</button>
+      </div>
+      <div id="provider-notice" class="hidden">
+        <span>⚠ AI provider not configured — deterministic commands work, but natural-language edits require a configured provider. See README for setup.</span>
+      </div>
+    </section>
+
+    <!-- ── Interruption / out-of-context panel ── -->
+    <section id="interruption-panel" aria-label="Potential off-topic insertion">
+      <div class="interruption-header">
+        <span aria-hidden="true">?</span>
+        <span>This insertion may be off-topic — review before keeping</span>
+      </div>
+      <div class="interruption-body">
+        <p>The following segment was recently added and may not relate to the current draft. <strong>VoicePilot will not remove it automatically.</strong></p>
+        <div class="interruption-quote" id="interruption-quote" aria-label="Flagged segment text"></div>
+      </div>
+      <div class="interruption-actions">
+        <button type="button" class="btn btn-outline btn-sm" id="btn-keep">Keep it (Shazam, keep that)</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-remove-last">Remove (Shazam, remove last insertion)</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-separate-note">Move to Notes (Shazam, make that a separate note)</button>
+      </div>
+    </section>
+
+    <!-- ── Separate notes ── -->
+    <section id="notes-panel" class="vp-card" aria-label="Separate notes">
+      <div class="vp-card-header">
+        <span class="vp-card-title">Separate Notes</span>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-notes">Clear all</button>
+      </div>
+      <div id="notes-list"></div>
+    </section>
+
+    <!-- ── Command quick-reference ── -->
+    <div class="vp-card" id="help-panel">
+      <details>
+        <summary>Command reference — say "Shazam, &lt;command&gt;"</summary>
+        <div class="command-grid" aria-label="Available voice commands">
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, edit: [instruction]</span>
+            <span class="cmd-desc">Create an AI-powered revision proposal from the current draft.</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, preview</span>
+            <span class="cmd-desc">Show (and optionally speak) the pending revision.</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, apply</span>
+            <span class="cmd-desc">Accept the pending proposal and save it to history.</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, discard</span>
+            <span class="cmd-desc">Reject the proposal; keep the current accepted draft.</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, undo</span>
+            <span class="cmd-desc">Undo the last accepted change.</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, redo</span>
+            <span class="cmd-desc">Redo a previously undone change.</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, read</span>
+            <span class="cmd-desc">Read the accepted draft aloud (browser speech synthesis).</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, remove last insertion</span>
+            <span class="cmd-desc">Remove the most recent Wispr-inserted segment.</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, keep that</span>
+            <span class="cmd-desc">Dismiss the off-topic flag and keep the segment.</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, make that a separate note</span>
+            <span class="cmd-desc">Move the flagged segment to the Notes area.</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, pause</span>
+            <span class="cmd-desc">Suspend command processing (dictation still enters as text).</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, resume</span>
+            <span class="cmd-desc">Resume normal command processing.</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, finish</span>
+            <span class="cmd-desc">End the session; draft is preserved.</span>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- ── Settings ── -->
+    <div class="vp-card" id="settings-panel">
+      <details>
+        <summary>Settings</summary>
+        <div class="settings-body">
+          <div class="setting-row">
+            <label for="catchword-input">Command catchword</label>
+            <input
+              type="text"
+              id="catchword-input"
+              value="Shazam"
+              maxlength="40"
+              aria-describedby="catchword-hint"
+            />
+            <span class="muted small" id="catchword-hint">Case-insensitive; used at start of new insertions only.</span>
+          </div>
+          <div class="setting-row">
+            <label class="toggle-label">
+              <input type="checkbox" id="spoken-feedback-toggle" checked />
+              Spoken feedback (browser speech synthesis)
+            </label>
+          </div>
+          <div class="setting-row">
+            <label class="toggle-label">
+              <input type="checkbox" id="debug-mode-toggle" />
+              Show segment debug log (developer mode)
+            </label>
+          </div>
+          <div id="debug-log-container" style="display:none;">
+            <div class="diff-label" style="margin-top:.5rem;">Segment log</div>
+            <div id="debug-log" class="diff-box" style="font-size:.72rem;max-height:140px;"></div>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- ── Limitation notice ── -->
+    <div id="limitation-notice" role="note" aria-label="Known limitations">
+      <strong>Known limitations:</strong>
+      VoicePilot processes text inserted into this focused editor by Wispr Flow.
+      It cannot hear a wake phrase while Wispr is stopped, nor start Wispr from a web page.
+      Use Wispr Flow's own shortcut (<kbd style="font-family:monospace;font-size:.78rem;border:1px solid #d9e2db;border-radius:4px;padding:.1em .4em;background:#fff;">Ctrl+Win</kbd>/<kbd style="font-family:monospace;font-size:.78rem;border:1px solid #d9e2db;border-radius:4px;padding:.1em .4em;background:#fff;">Fn</kbd>) to activate dictation.
+      Natural-language "edit" commands require a configured AI provider (see README).
+      All other commands work fully offline without any API key.
+    </div>
+
+  </main>
+
+  <!-- ════════════════════ FOOTER ════════════════════ -->
+  <footer>
+    VoicePilot — local-first, privacy-first voice text editor ·
+    <a href="https://github.com/manishr075" target="_blank" rel="noopener">Manish Reddy</a> ·
+    Dictation by <a href="https://wisprflow.ai" target="_blank" rel="noopener">Wispr Flow</a>
+  </footer>
+
+  <!-- ════════════════════ SCRIPTS ════════════════════ -->
+  <!-- Load modules before the app script -->
+  <script src="src/command_parser.js"></script>
+  <script src="src/segment_tracker.js"></script>
+  <script src="src/editor_state.js"></script>
+  <script src="src/voice_feedback.js"></script>
+  <!-- Legacy FlowGuard engine kept for its reusable utilities (computeEditDistance, etc.) -->
+  <script src="src/engine.js"></script>
+
+  <script>
+    // ══════════════════════════════════════════════════════════════════
+    //  VoicePilot — Application Controller
+    //  All text is rendered via textContent / DOM APIs; no innerHTML with
+    //  untrusted content.
+    // ══════════════════════════════════════════════════════════════════
+
+    // ── State ──────────────────────────────────────────────────────────
+    let state = VPEditorState.createState();
+    let tracker = null;    // segment tracker handle
+    let catchword = 'Shazam';
+
+    // Internal-update guard: set before programmatic textarea writes
+    let _internalWrite = false;
+
+    // ── DOM refs ───────────────────────────────────────────────────────
+    const draftEditor       = document.getElementById('draft-editor');
+    const wordCountEl       = document.getElementById('word-count');
+    const historyBarEl      = document.getElementById('history-bar');
+    const statusPill        = document.getElementById('vp-status-pill');
+    const statusText        = document.getElementById('vp-status-text');
+
+    const reviewPanel       = document.getElementById('review-panel');
+    const reviewInstruction = document.getElementById('review-instruction');
+    const diffCurrent       = document.getElementById('diff-current');
+    const diffProposed      = document.getElementById('diff-proposed');
+    const providerNotice    = document.getElementById('provider-notice');
+
+    const interruptionPanel = document.getElementById('interruption-panel');
+    const interruptionQuote = document.getElementById('interruption-quote');
+
+    const notesPanel        = document.getElementById('notes-panel');
+    const notesList         = document.getElementById('notes-list');
+
+    const debugLog          = document.getElementById('debug-log');
+    const debugContainer    = document.getElementById('debug-log-container');
+
+    const toastEl           = document.getElementById('vp-toast');
+    const toastMsg          = document.getElementById('vp-toast-msg');
+    let _toastTimer         = null;
+
+    // ── Toast ──────────────────────────────────────────────────────────
+    function showToast(msg, durationMs = 3500) {
+      toastMsg.textContent = msg;
+      toastEl.classList.add('visible');
+      clearTimeout(_toastTimer);
+      _toastTimer = setTimeout(() => toastEl.classList.remove('visible'), durationMs);
+    }
+
+    document.getElementById('vp-toast-close').addEventListener('click', () => {
+      clearTimeout(_toastTimer);
+      toastEl.classList.remove('visible');
+    });
+
+    // ── Status pill ────────────────────────────────────────────────────
+    const STATUS_LABELS = {
+      ready:    'Ready for Wispr input',
+      command:  'Command detected',
+      preparing:'Preparing revision…',
+      review:   'Review changes',
+      paused:   'Command processing paused',
+      finished: 'Session finished',
+      error:    'Error — draft preserved',
+    };
+
+    const STATUS_CLASSES = ['ready','command','review','paused','finished','error'];
+
+    function setStatus(key, customLabel) {
+      STATUS_CLASSES.forEach(c => statusPill.classList.remove(c));
+      statusPill.classList.add(key === 'command' ? 'command' : key);
+      statusText.textContent = customLabel || STATUS_LABELS[key] || key;
+    }
+
+    // ── Programmatic textarea write ─────────────────────────────────────
+    function writeToEditor(newValue) {
+      _internalWrite = true;
+      if (tracker) tracker.setGuard(true);
+      draftEditor.value = newValue;
+      if (tracker) tracker.setGuard(false);
+      _internalWrite = false;
+      updateWordCount();
+    }
+
+    // ── Render state to UI ──────────────────────────────────────────────
+    function renderState() {
+      // Editor value
+      if (draftEditor.value !== state.acceptedDraft) {
+        writeToEditor(state.acceptedDraft);
+      }
+
+      // Word count
+      updateWordCount();
+
+      // Undo/redo history bar
+      historyBarEl.textContent = state.undoStack.length > 0
+        ? `${state.undoStack.length} revision${state.undoStack.length > 1 ? 's' : ''} in history`
+        : '';
+
+      // Status pill
+      if (state.status === 'review')    setStatus('review');
+      else if (state.paused)            setStatus('paused');
+      else if (state.status === 'finished') setStatus('finished', 'Session finished — draft saved');
+      else                              setStatus('ready');
+
+      // Review panel
+      if (state.pendingProposal) {
+        reviewPanel.classList.add('visible');
+        reviewInstruction.textContent = state.pendingProposal.instruction
+          ? `"${state.pendingProposal.instruction}"`
+          : '';
+        diffCurrent.textContent  = state.acceptedDraft || '(empty)';
+        diffProposed.textContent = state.pendingProposal.text || '(empty)';
+      } else {
+        reviewPanel.classList.remove('visible');
+      }
+
+      // Interruption panel
+      if (state.flaggedSegment) {
+        interruptionPanel.classList.add('visible');
+        interruptionQuote.textContent = state.flaggedSegment.text || '';
+      } else {
+        interruptionPanel.classList.remove('visible');
+      }
+
+      // Notes panel
+      if (state.notes.length > 0) {
+        notesPanel.classList.add('visible');
+        renderNotes();
+      } else {
+        notesPanel.classList.remove('visible');
+      }
+    }
+
+    function updateWordCount() {
+      const words = draftEditor.value.trim().split(/\s+/).filter(Boolean);
+      wordCountEl.textContent = `${words.length} word${words.length !== 1 ? 's' : ''}`;
+    }
+
+    function renderNotes() {
+      while (notesList.firstChild) notesList.removeChild(notesList.firstChild);
+      state.notes.forEach((note, idx) => {
+        const item = document.createElement('div');
+        item.className = 'note-item';
+        const txt = document.createElement('span');
+        txt.className = 'note-item-text';
+        txt.textContent = note;
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'note-item-del';
+        del.setAttribute('aria-label', `Delete note ${idx + 1}`);
+        del.textContent = '✕';
+        del.addEventListener('click', () => {
+          state = { ...state, notes: state.notes.filter((_, i) => i !== idx) };
+          renderState();
+        });
+        item.appendChild(txt);
+        item.appendChild(del);
+        notesList.appendChild(item);
+      });
+    }
+
+    // ── Debug logging ──────────────────────────────────────────────────
+    function dbg(msg) {
+      if (!document.getElementById('debug-mode-toggle').checked) return;
+      const line = document.createElement('div');
+      const ts = new Date().toLocaleTimeString('en', { hour12: false });
+      line.textContent = `[${ts}] ${msg}`;
+      debugLog.appendChild(line);
+      debugLog.scrollTop = debugLog.scrollHeight;
+    }
+
+    // ── LLM provider call (optional backend) ───────────────────────────
+    // Returns { text: string } on success, throws on failure.
+    // The backend endpoint /api/edit is optional; if absent, throws with a
+    // user-readable message so the draft is preserved.
+    // VOICEPILOT_BACKEND_URL can be set at build time (e.g. Vercel env var) or
+    // left empty to use a relative /api/edit (local / same-origin backend).
+    const VP_BACKEND_URL = (window.VOICEPILOT_BACKEND_URL || '').replace(/\/$/, '');
+    async function callLLMProvider(draft, instruction) {
+      const response = await fetch(`${VP_BACKEND_URL}/api/edit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ draft, instruction }),
+      });
+      if (!response.ok) {
+        const errText = await response.text().catch(() => '');
+        throw new Error(`Provider returned ${response.status}: ${errText || 'No details.'}`);
+      }
+      const data = await response.json();
+      if (typeof data.result !== 'string' || !data.result.trim()) {
+        throw new Error('Provider returned an empty or malformed response. Draft unchanged.');
+      }
+      return { text: data.result };
+    }
+
+    // ── Command router ─────────────────────────────────────────────────
+    async function routeCommand(parsed, insertedText, insertStart, insertEnd) {
+      const { action, arg } = parsed;
+
+      // Prevent re-processing by removing the command text from the editor first,
+      // then operating on the accepted draft.
+      // We remove the newly-inserted command segment from the editor.
+      const beforeCmd = state.acceptedDraft.slice(0, insertStart);
+      const afterCmd  = state.acceptedDraft.slice(insertEnd);
+      // Clean surrounding whitespace/newlines at the junction
+      const cleaned   = (beforeCmd + afterCmd).replace(/\s{3,}/g, '\n\n');
+
+      // Update accepted draft to remove command text first (no undo entry for this)
+      state = { ...state, acceptedDraft: cleaned };
+
+      setStatus('command', `Command: ${action}`);
+      VPVoiceFeedback.speak(`${action.replace(/_/g, ' ')}`);
+      dbg(`Command: ${action} | arg: "${arg}"`);
+
+      // Paused mode: only allow resume
+      if (state.paused && action !== 'resume') {
+        showToast('Command processing is paused. Say "Shazam, resume" to continue.');
+        renderState();
+        return;
+      }
+
+      switch (action) {
+
+        case 'edit': {
+          if (!arg) { showToast('Please provide an instruction after "edit:".'); break; }
+          setStatus('preparing', 'Preparing revision…');
+          showToast(`Preparing revision: "${arg}"…`);
+          try {
+            const result = await callLLMProvider(state.acceptedDraft, arg);
+            if (!result.text || !result.text.trim()) throw new Error('Empty response from provider.');
+            state = VPEditorState.setProposal(state, result.text, arg);
+            showToast('Revision ready — say "Shazam, apply" or "Shazam, discard".');
+          } catch (err) {
+            state = { ...state, status: 'error' };
+            setStatus('error', 'Provider unavailable');
+            providerNotice.classList.remove('hidden');
+            showToast(`Edit failed: ${err.message} Draft is unchanged.`, 6000);
+            dbg(`Edit error: ${err.message}`);
+          }
+          break;
+        }
+
+        case 'undo': {
+          const prev = state;
+          state = VPEditorState.undo(state);
+          if (state === prev) showToast('Nothing to undo.');
+          else { showToast('Undone.'); VPVoiceFeedback.speak('Undone'); }
+          break;
+        }
+
+        case 'redo': {
+          const prev = state;
+          state = VPEditorState.redo(state);
+          if (state === prev) showToast('Nothing to redo.');
+          else { showToast('Redone.'); VPVoiceFeedback.speak('Redone'); }
+          break;
+        }
+
+        case 'preview': {
+          if (!state.pendingProposal) {
+            showToast('No pending proposal to preview.');
+            VPVoiceFeedback.speak('No pending proposal.');
+          } else {
+            const words = state.pendingProposal.text.trim().split(/\s+/).slice(0, 30).join(' ');
+            VPVoiceFeedback.speak(`Proposal: ${words}`);
+            showToast('Proposal shown in review panel.');
+          }
+          break;
+        }
+
+        case 'apply': {
+          if (!state.pendingProposal) { showToast('No pending proposal to apply.'); break; }
+          state = VPEditorState.applyProposal(state);
+          showToast('Proposal applied.');
+          VPVoiceFeedback.speak('Applied.');
+          break;
+        }
+
+        case 'discard': {
+          if (!state.pendingProposal) { showToast('No pending proposal to discard.'); break; }
+          state = VPEditorState.discardProposal(state);
+          showToast('Proposal discarded. Draft unchanged.');
+          VPVoiceFeedback.speak('Discarded.');
+          break;
+        }
+
+        case 'read': {
+          if (!VPVoiceFeedback.isAvailable()) {
+            showToast('Browser speech synthesis is not available on this device.');
+          } else if (!state.acceptedDraft.trim()) {
+            showToast('Draft is empty — nothing to read.');
+          } else {
+            VPVoiceFeedback.speak(state.acceptedDraft, { rate: 0.95 });
+            showToast('Reading draft aloud…');
+          }
+          break;
+        }
+
+        case 'remove_last': {
+          const prev = state;
+          state = VPEditorState.removeLastInsertion(state);
+          if (state === prev) showToast('No recent insertion to remove, or boundaries are unclear.');
+          else { showToast('Last insertion removed.'); VPVoiceFeedback.speak('Removed.'); }
+          break;
+        }
+
+        case 'keep_that': {
+          state = VPEditorState.keepFlaggedSegment(state);
+          showToast('Segment kept.');
+          break;
+        }
+
+        case 'separate_note': {
+          if (!state.flaggedSegment) { showToast('Nothing flagged to move.'); break; }
+          state = VPEditorState.moveFlaggedToNotes(state);
+          showToast('Moved to separate notes.');
+          VPVoiceFeedback.speak('Moved to notes.');
+          break;
+        }
+
+        case 'pause': {
+          state = VPEditorState.pause(state);
+          showToast('Command processing paused. Say "Shazam, resume" to continue.');
+          VPVoiceFeedback.speak('Paused.');
+          break;
+        }
+
+        case 'resume': {
+          state = VPEditorState.resume(state);
+          showToast('Command processing resumed.');
+          VPVoiceFeedback.speak('Resumed.');
+          break;
+        }
+
+        case 'finish': {
+          state = VPEditorState.finish(state);
+          showToast('Session finished. Your draft is preserved.');
+          VPVoiceFeedback.speak('Session finished. Your draft is saved.');
+          break;
+        }
+
+        case 'unknown':
+        default: {
+          showToast(`Unrecognised command: "${arg}". Say "Shazam, edit: …" for AI editing or check the command list.`);
+          // Restore text as plain draft content (not removed)
+          state = { ...state, acceptedDraft: beforeCmd + insertedText + afterCmd };
+          break;
+        }
+      }
+
+      renderState();
+    }
+
+    // ── Interruption heuristic ─────────────────────────────────────────
+    // Flags a segment if it looks drastically unlike the rest of the draft.
+    // This is NEVER destructive; it only sets flaggedSegment.
+    // Heuristic: topic shift detected by very short punctuation-heavy sentences
+    // or abrupt first-person question patterns unrelated to the draft topic.
+    const INTERRUPTION_PATTERNS = [
+      /^(hey|can you|could you|would you|will you|do you|did you)\b/i,
+      /\?\s*$/,   // ends with question mark (possible spoken aside)
+    ];
+
+    function maybeFlag(insertedText, insertStart, insertEnd) {
+      const trimmed = insertedText.trim();
+      if (trimmed.length < 15) return; // too short to care
+      const isQuestion = INTERRUPTION_PATTERNS.some(p => p.test(trimmed));
+      if (!isQuestion) return;
+      // Only flag if the draft has existing content – no false positives on empty draft
+      if (state.acceptedDraft.trim().length < 50) return;
+      state = {
+        ...state,
+        flaggedSegment: { text: trimmed, start: insertStart, end: insertEnd },
+      };
+      showToast('Potential off-topic insertion flagged — see panel below.', 5000);
+    }
+
+    // ── Segment handler (called by tracker after debounce) ─────────────
+    async function handleSegment({ insertedText, insertStart, insertEnd }) {
+      if (!insertedText) return;
+
+      dbg(`Segment: "${insertedText.slice(0, 80)}" @[${insertStart},${insertEnd}]`);
+
+      // First: update accepted draft to include this insertion
+      // (The tracker fires after input, so draft editor already has the full new value.)
+      // We must sync state.acceptedDraft with editor value before operating on it.
+      const editorVal = draftEditor.value;
+      if (state.acceptedDraft !== editorVal) {
+        // New text was inserted normally — sync without creating an undo entry
+        state = { ...state, acceptedDraft: editorVal };
+      }
+
+      // Record this segment as lastSegment (for remove_last)
+      state = { ...state, lastSegment: { insertedText, insertStart, insertEnd } };
+
+      // Check if this is a command
+      const parsed = VPCommandParser.parse(insertedText, catchword);
+
+      if (parsed) {
+        setStatus('command', `Command: ${parsed.action}`);
+        await routeCommand(parsed, insertedText, insertStart, insertEnd);
+      } else {
+        // Ordinary dictated text — keep as-is, maybe flag interruption
+        setStatus('ready');
+        maybeFlag(insertedText, insertStart, insertEnd);
+        renderState();
+      }
+    }
+
+    // ── Attach segment tracker ─────────────────────────────────────────
+    function attachTracker() {
+      if (tracker) tracker.detach();
+      tracker = VPSegmentTracker.attach(draftEditor, {
+        debounceMs: 650,
+        onSegment: handleSegment,
+        onStatus: (msg) => {
+          dbg(`Tracker: ${msg}`);
+        },
+      });
+    }
+
+    // ── Manual button handlers ─────────────────────────────────────────
+    document.getElementById('btn-undo').addEventListener('click', () => {
+      const prev = state;
+      state = VPEditorState.undo(state);
+      if (state === prev) showToast('Nothing to undo.');
+      else showToast('Undone.');
+      renderState();
+    });
+
+    document.getElementById('btn-redo').addEventListener('click', () => {
+      const prev = state;
+      state = VPEditorState.redo(state);
+      if (state === prev) showToast('Nothing to redo.');
+      else showToast('Redone.');
+      renderState();
+    });
+
+    document.getElementById('btn-read').addEventListener('click', () => {
+      if (!VPVoiceFeedback.isAvailable()) {
+        showToast('Speech synthesis not available on this device.');
+        return;
+      }
+      if (!state.acceptedDraft.trim()) { showToast('Draft is empty.'); return; }
+      VPVoiceFeedback.speak(state.acceptedDraft, { rate: 0.95 });
+      showToast('Reading draft aloud…');
+    });
+
+    document.getElementById('btn-clear-draft').addEventListener('click', () => {
+      if (!state.acceptedDraft && !draftEditor.value) return;
+      state = VPEditorState.acceptDraft(state, '');
+      renderState();
+      showToast('Draft cleared.');
+    });
+
+    document.getElementById('btn-apply').addEventListener('click', () => {
+      state = VPEditorState.applyProposal(state);
+      showToast('Proposal applied.');
+      renderState();
+    });
+
+    document.getElementById('btn-discard').addEventListener('click', () => {
+      state = VPEditorState.discardProposal(state);
+      showToast('Proposal discarded.');
+      renderState();
+    });
+
+    document.getElementById('btn-preview-speak').addEventListener('click', () => {
+      if (!state.pendingProposal) return;
+      const words = state.pendingProposal.text.trim().split(/\s+/).slice(0, 30).join(' ');
+      VPVoiceFeedback.speak(`Proposal: ${words}`);
+    });
+
+    document.getElementById('btn-keep').addEventListener('click', () => {
+      state = VPEditorState.keepFlaggedSegment(state);
+      showToast('Segment kept in draft.');
+      renderState();
+    });
+
+    document.getElementById('btn-remove-last').addEventListener('click', () => {
+      const prev = state;
+      state = VPEditorState.removeLastInsertion(state);
+      if (state === prev) showToast('Could not remove — boundaries unclear.');
+      else showToast('Segment removed.');
+      renderState();
+    });
+
+    document.getElementById('btn-separate-note').addEventListener('click', () => {
+      if (!state.flaggedSegment) { showToast('Nothing to move.'); return; }
+      state = VPEditorState.moveFlaggedToNotes(state);
+      showToast('Moved to notes.');
+      renderState();
+    });
+
+    document.getElementById('btn-clear-notes').addEventListener('click', () => {
+      state = { ...state, notes: [] };
+      renderState();
+    });
+
+    // ── Settings handlers ──────────────────────────────────────────────
+    document.getElementById('catchword-input').addEventListener('change', function() {
+      const val = this.value.trim();
+      if (!val) { this.value = catchword; return; }
+      catchword = val;
+      showToast(`Catchword updated to "${catchword}".`);
+    });
+
+    document.getElementById('spoken-feedback-toggle').addEventListener('change', function() {
+      VPVoiceFeedback.setEnabled(this.checked);
+      showToast(this.checked ? 'Voice feedback enabled.' : 'Voice feedback disabled.');
+    });
+
+    document.getElementById('debug-mode-toggle').addEventListener('change', function() {
+      debugContainer.style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Keep editor in sync when user types manually (non-Wispr)
+    draftEditor.addEventListener('input', () => {
+      if (_internalWrite) return;
+      updateWordCount();
+    });
+
+    // Keep accepted draft in sync when user types/edits manually in the textarea
+    // (only sync on blur to avoid race conditions with the tracker)
+    draftEditor.addEventListener('blur', () => {
+      if (_internalWrite) return;
+      // Sync editor value to accepted draft if no proposal pending
+      if (!state.pendingProposal) {
+        state = { ...state, acceptedDraft: draftEditor.value };
+      }
+    });
+
+    // ── Init ───────────────────────────────────────────────────────────
+    attachTracker();
+    renderState();
+    setStatus('ready');
+
+  </script>
+</body>
+</html>

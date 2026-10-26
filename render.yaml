@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: voicepilot-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn backend.voicepilot_server:app
+    plan: free
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false   # set this manually in Render dashboard
+      - key: ANTHROPIC_API_KEY
+        sync: false   # set this manually in Render dashboard
+      - key: PORT
+        value: 10000

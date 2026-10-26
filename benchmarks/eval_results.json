@@ -1,0 +1,201 @@
+{
+  "evidence": {
+    "type": "scripted_scenario_benchmark",
+    "live_wispr_trial": false,
+    "human_timing_measured": false,
+    "transcripts_source": "predefined fixtures in scripts/run_evaluation.py",
+    "timings_source": "predefined scenario inputs in scripts/run_evaluation.py",
+    "repository_basis": "repository manifest and symbols supplied in this script"
+  },
+
+  "tasks_evaluated": 12,
+  "total_structured_tokens": 41,
+  "dictionary_entries_compiled": 174,
+  "snippets_compiled": 3,
+  "baseline_uncalibrated": {
+    "ctem_pct": 4.9,
+    "tsr_pct": 0.0,
+    "meaning_critical_errors_total": 44,
+    "avg_scripted_fix_time_sec": 38.8,
+    "total_scripted_fix_time_sec": 466
+  },
+  "flowguard_lattice_repair_only": {
+    "ctem_pct": 97.6,
+    "tsr_pct": 58.3,
+    "meaning_critical_errors_remaining_unflagged": 0,
+    "semantic_hazards_intercepted": 6,
+    "avg_scripted_verify_time_sec": 4.8,
+    "total_scripted_verify_time_sec": 58
+  },
+  "second_run_with_compiled_wispr_dictionary": {
+    "ctem_pct": 100.0,
+    "tsr_pct": 100.0
+  },
+  "per_task_results": [
+    {
+      "task_id": "T01",
+      "domain": "Tankwise Serverless",
+      "title": "Parity Check & Engine Sync",
+      "targets": 3,
+      "baseline_raw_ctem_pct": 0.0,
+      "flowguard_repaired_ctem_pct": 100.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 50.0,
+      "hazards_caught": [],
+      "scripted_baseline_fix_sec": 38,
+      "scripted_flowguard_verify_sec": 4
+    },
+    {
+      "task_id": "T02",
+      "domain": "Tankwise Serverless",
+      "title": "DynamoDB Idempotent Sort Key Guard",
+      "targets": 4,
+      "baseline_raw_ctem_pct": 0.0,
+      "flowguard_repaired_ctem_pct": 100.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 31.3,
+      "hazards_caught": [
+        "NEGATION_DROPPED"
+      ],
+      "scripted_baseline_fix_sec": 44,
+      "scripted_flowguard_verify_sec": 6
+    },
+    {
+      "task_id": "T03",
+      "domain": "Tankwise Serverless",
+      "title": "CORS & Frontend Env Wiring",
+      "targets": 4,
+      "baseline_raw_ctem_pct": 0.0,
+      "flowguard_repaired_ctem_pct": 100.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 50.0,
+      "hazards_caught": [],
+      "scripted_baseline_fix_sec": 41,
+      "scripted_flowguard_verify_sec": 4
+    },
+    {
+      "task_id": "T04",
+      "domain": "Tankwise Serverless",
+      "title": "SAM Template Validation",
+      "targets": 5,
+      "baseline_raw_ctem_pct": 0.0,
+      "flowguard_repaired_ctem_pct": 80.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 93.3,
+      "hazards_caught": [],
+      "scripted_baseline_fix_sec": 46,
+      "scripted_flowguard_verify_sec": 5
+    },
+    {
+      "task_id": "T05",
+      "domain": "Tankwise Serverless",
+      "title": "Rainfall Input Boundary Validation",
+      "targets": 1,
+      "baseline_raw_ctem_pct": 0.0,
+      "flowguard_repaired_ctem_pct": 100.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 36.8,
+      "hazards_caught": [
+        "NUMERIC_CONSTRAINT_DRIFT",
+        "BOUNDARY_OPERATOR_DRIFT"
+      ],
+      "scripted_baseline_fix_sec": 35,
+      "scripted_flowguard_verify_sec": 6
+    },
+    {
+      "task_id": "T06",
+      "domain": "Tankwise Serverless",
+      "title": "Local Mock Labelling Guard",
+      "targets": 3,
+      "baseline_raw_ctem_pct": 0.0,
+      "flowguard_repaired_ctem_pct": 100.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 26.3,
+      "hazards_caught": [],
+      "scripted_baseline_fix_sec": 31,
+      "scripted_flowguard_verify_sec": 4
+    },
+    {
+      "task_id": "T07",
+      "domain": "ESP32 TFLite IoT",
+      "title": "Tensor Arena Allocation Check",
+      "targets": 4,
+      "baseline_raw_ctem_pct": 0.0,
+      "flowguard_repaired_ctem_pct": 100.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 91.7,
+      "hazards_caught": [
+        "SELF_CORRECTION_RESIDUE"
+      ],
+      "scripted_baseline_fix_sec": 39,
+      "scripted_flowguard_verify_sec": 5
+    },
+    {
+      "task_id": "T08",
+      "domain": "ESP32 TFLite IoT",
+      "title": "Keras to TFLite Header Pipeline",
+      "targets": 3,
+      "baseline_raw_ctem_pct": 0.0,
+      "flowguard_repaired_ctem_pct": 100.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 69.2,
+      "hazards_caught": [],
+      "scripted_baseline_fix_sec": 36,
+      "scripted_flowguard_verify_sec": 4
+    },
+    {
+      "task_id": "T09",
+      "domain": "Wispr MCP & Full-Stack",
+      "title": "Remote MCP Server Configuration",
+      "targets": 3,
+      "baseline_raw_ctem_pct": 0.0,
+      "flowguard_repaired_ctem_pct": 100.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 33.3,
+      "hazards_caught": [],
+      "scripted_baseline_fix_sec": 48,
+      "scripted_flowguard_verify_sec": 5
+    },
+    {
+      "task_id": "T10",
+      "domain": "Wispr MCP & Full-Stack",
+      "title": "Booking Window Stress Scenario",
+      "targets": 2,
+      "baseline_raw_ctem_pct": 0.0,
+      "flowguard_repaired_ctem_pct": 100.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 43.8,
+      "hazards_caught": [],
+      "scripted_baseline_fix_sec": 29,
+      "scripted_flowguard_verify_sec": 4
+    },
+    {
+      "task_id": "T11",
+      "domain": "Wispr MCP & Full-Stack",
+      "title": "Destructive Stack Cleanup Warning",
+      "targets": 5,
+      "baseline_raw_ctem_pct": 20.0,
+      "flowguard_repaired_ctem_pct": 100.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 58.8,
+      "hazards_caught": [],
+      "scripted_baseline_fix_sec": 42,
+      "scripted_flowguard_verify_sec": 5
+    },
+    {
+      "task_id": "T12",
+      "domain": "Wispr MCP & Full-Stack",
+      "title": "Read-Only MCP Constraint Guard",
+      "targets": 4,
+      "baseline_raw_ctem_pct": 25.0,
+      "flowguard_repaired_ctem_pct": 100.0,
+      "post_wispr_dict_ctem_pct": 100.0,
+      "baseline_wer_pct": 23.5,
+      "hazards_caught": [
+        "NEGATION_DROPPED"
+      ],
+      "scripted_baseline_fix_sec": 37,
+      "scripted_flowguard_verify_sec": 6
+    }
+  ]
+}
