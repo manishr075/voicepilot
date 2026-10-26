@@ -29,7 +29,12 @@ const VPCommandParser = (() => {
     { pattern: /^(?:clear|clear\s+(?:draft|all|text|document)|delete\s+all)$/i,                             action: 'clear',         hasArg: false },
     // 10. Separate Note
     { pattern: /^(?:make\s+that\s+a\s+separate\s+note|separate\s+note|move\s+to\s+notes?)$/i,                 action: 'separate_note', hasArg: false },
-    // 11. Explicit "edit" instruction
+    // 11. Rich Text Formatting Commands (Local, instant)
+    { pattern: /^(?:bold|make\s+(?:this|that)\s+bold|bold\s+(?:this|that))$/i,                                action: 'format_bold',   hasArg: false },
+    { pattern: /^(?:italic|italicize(?:\s+(?:this|that))?|make\s+(?:this|that)\s+italic)$/i,                  action: 'format_italic', hasArg: false },
+    { pattern: /^(?:heading|make\s+(?:this|that)\s+a?\s*heading|h1|h2)$/i,                                     action: 'format_heading',hasArg: false },
+    { pattern: /^(?:bullet\s+point|bullet\s+list|make\s+(?:this|that)\s+a?\s*list|list)$/i,                    action: 'format_list',   hasArg: false },
+    // 12. Explicit "edit" instruction
     { pattern: /^edit(?:\s*:\s*|\s+)(.+)/is,                                                                   action: 'ai_instruction',hasArg: true  },
   ];
 

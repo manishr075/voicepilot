@@ -133,7 +133,23 @@ assertEqual(dec5 && dec5.action, 'decline', 'Shazam, reject works locally');
 const dec6 = VPCommandParser.parse('Shazam, discard');
 assertEqual(dec6 && dec6.action, 'decline', 'Shazam, discard works locally');
 
-// 7. Natural AI instructions (Only actual instructions are sent to AI)
+// 7. Rich Text Formatting Commands (Local, instant)
+const fmt1 = VPCommandParser.parse('Shazam, bold');
+assertEqual(fmt1 && fmt1.action, 'format_bold', 'Shazam, bold works locally');
+
+const fmt2 = VPCommandParser.parse('Shazam, make this bold.');
+assertEqual(fmt2 && fmt2.action, 'format_bold', 'Shazam, make this bold. works locally');
+
+const fmt3 = VPCommandParser.parse('Shazam, italic');
+assertEqual(fmt3 && fmt3.action, 'format_italic', 'Shazam, italic works locally');
+
+const fmt4 = VPCommandParser.parse('Shazam, heading');
+assertEqual(fmt4 && fmt4.action, 'format_heading', 'Shazam, heading works locally');
+
+const fmt5 = VPCommandParser.parse('Shazam, bullet point');
+assertEqual(fmt5 && fmt5.action, 'format_list', 'Shazam, bullet point works locally');
+
+// 8. Natural AI instructions (Only actual instructions are sent to AI)
 const ai1 = VPCommandParser.parse('Shazam, put a comma next to hello');
 assertEqual(ai1 && ai1.action, 'ai_instruction', 'Natural command routes to ai_instruction');
 assertEqual(ai1 && ai1.arg, 'put a comma next to hello', 'Instruction text captured cleanly');
@@ -141,7 +157,7 @@ assertEqual(ai1 && ai1.arg, 'put a comma next to hello', 'Instruction text captu
 const ai2 = VPCommandParser.parse('Shazam, edit add exclamation mark at the end.');
 assertEqual(ai2 && ai2.action, 'ai_instruction', 'Explicit edit command routes to ai_instruction');
 
-// 8. Empty Shazam
+// 9. Empty Shazam
 const emptyShazam = VPCommandParser.parse('Shazam');
 assertEqual(emptyShazam && emptyShazam.action, 'empty_prompt', 'Standalone catchword returns empty_prompt');
 

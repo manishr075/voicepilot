@@ -3,424 +3,731 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VoicePilot — Professional Voice Writing &amp; Editing</title>
-  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='%23090d16'/%3E%3Crect x='13' y='6' width='6' height='12' rx='3' fill='url(%23g)'/%3E%3Cpath d='M10 13 A6 6 0 0 0 22 13' stroke='url(%23g)' stroke-width='2.5' stroke-linecap='round' fill='none'/%3E%3Cline x1='16' y1='19' x2='16' y2='25' stroke='url(%23g)' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <title>VoicePilot — Professional Hands-Free Voice Text Editor</title>
+  <link rel="icon" type="image/jpeg" href="assets/app-icon.jpg" />
+  <link rel="apple-touch-icon" href="assets/app-icon.jpg" />
+
+  <!-- Google Fonts: Plus Jakarta Sans (Modern UI/Doc), Merriweather (Editorial Serif), JetBrains Mono (Code) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet" />
+
   <!-- Google Identity Services (optional SSO) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <style>
-    /* ── Design Tokens & Themes ── */
+    /* ══════════════════════════════════════════════════════════════
+       PRODUCTION DESIGN SYSTEM — RESTRAINED, INTENTIONAL & ACCESSIBLE
+       ══════════════════════════════════════════════════════════════ */
     :root {
       --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-      --radius-lg: 14px;
-      --radius-md: 9px;
+      --font-serif: 'Merriweather', Georgia, Cambria, serif;
+      --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
       --radius-sm: 6px;
-      --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      --radius-md: 9px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+
+      --transition-fast: 0.12s ease;
+      --transition-base: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Dark Theme */
+    /* Dark Theme (Default) — Restrained Obsidian & Slate */
     html[data-theme="dark"] {
-      --bg: #090d16;
-      --bg-subtle: #0f1629;
-      --card-bg: rgba(17, 24, 39, 0.82);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-border-hover: rgba(99, 102, 241, 0.35);
-      --card-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04);
+      --bg-app: #0e1015;
+      --bg-paper: #15181f;
+      --bg-subtle: #1a1d26;
+      --bg-surface: #202430;
+      --bg-elevated: #262b3a;
 
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
+      --border-subtle: #1e222d;
+      --border-default: #282d3b;
+      --border-hover: #3d4458;
+      --border-focus: #6366f1;
+
+      --text-main: #f3f5f8;
+      --text-muted: #9aa1b3;
+      --text-dim: #636a7e;
 
       --primary: #6366f1;
       --primary-hover: #4f46e5;
-      --primary-glow: rgba(99, 102, 241, 0.25);
-      --accent: #06b6d4;
+      --primary-subtle: rgba(99, 102, 241, 0.12);
+      --primary-border: rgba(99, 102, 241, 0.3);
 
-      --diff-curr-bg: rgba(239, 68, 68, 0.22);
-      --diff-curr-border: rgba(239, 68, 68, 0.45);
+      /* In-Place Diff Colors (Soft, accessible, no eye-strain) */
+      --diff-curr-bg: rgba(239, 68, 68, 0.18);
+      --diff-curr-border: rgba(239, 68, 68, 0.42);
       --diff-curr-text: #fca5a5;
 
-      --diff-prop-bg: rgba(16, 185, 129, 0.22);
-      --diff-prop-border: rgba(16, 185, 129, 0.45);
+      --diff-prop-bg: rgba(16, 185, 129, 0.18);
+      --diff-prop-border: rgba(16, 185, 129, 0.42);
       --diff-prop-text: #6ee7b7;
 
-      --input-bg: rgba(0, 0, 0, 0.4);
-      --header-bg: rgba(9, 13, 22, 0.88);
-      --badge-bg: rgba(255, 255, 255, 0.04);
-      --modal-bg: rgba(15, 23, 42, 0.96);
+      --paper-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-default);
+      --modal-backdrop: rgba(6, 8, 12, 0.75);
     }
 
-    /* Light Theme */
+    /* Light Theme — Editorial Studio Paper */
     html[data-theme="light"] {
-      --bg: #f8fafc;
-      --bg-subtle: #f1f5f9;
-      --card-bg: #ffffff;
-      --card-border: #e2e8f0;
-      --card-border-hover: rgba(99, 102, 241, 0.4);
-      --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      --bg-app: #f5f6f9;
+      --bg-paper: #ffffff;
+      --bg-subtle: #f0f2f6;
+      --bg-surface: #e6e9f0;
+      --bg-elevated: #ffffff;
 
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --text-dim: #94a3b8;
+      --border-subtle: #eaecf1;
+      --border-default: #d9dce5;
+      --border-hover: #b4bac9;
+      --border-focus: #4f46e5;
+
+      --text-main: #121620;
+      --text-muted: #52596d;
+      --text-dim: #8c93a7;
 
       --primary: #4f46e5;
       --primary-hover: #4338ca;
-      --primary-glow: rgba(79, 70, 229, 0.2);
-      --accent: #0891b2;
+      --primary-subtle: rgba(79, 70, 229, 0.08);
+      --primary-border: rgba(79, 70, 229, 0.28);
 
       --diff-curr-bg: #fee2e2;
       --diff-curr-border: #fca5a5;
-      --diff-curr-text: #b91c1c;
+      --diff-curr-text: #991b1b;
 
       --diff-prop-bg: #d1fae5;
       --diff-prop-border: #86efac;
-      --diff-prop-text: #047857;
+      --diff-prop-text: #065f46;
 
-      --input-bg: #ffffff;
-      --header-bg: rgba(255, 255, 255, 0.9);
-      --badge-bg: rgba(0, 0, 0, 0.03);
-      --modal-bg: #ffffff;
+      --paper-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 20px 40px -15px rgba(0, 0, 0, 0.07), 0 0 0 1px var(--border-subtle);
+      --modal-backdrop: rgba(15, 23, 42, 0.45);
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Base Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    body {
-      font-family: var(--font-sans);
-      background: var(--bg);
+    html, body {
+      height: 100%;
+      background: var(--bg-app);
       color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: var(--font-sans);
       font-size: 15px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      transition: background-color 0.25s ease, color 0.25s ease;
-      width: 100%;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      transition: background-color var(--transition-base), color var(--transition-base);
     }
 
-    /* ── Full-Width Header ── */
-    #vp-header {
-      background: var(--header-bg);
-      border-bottom: 1px solid var(--card-border);
+    /* ══════════════════════════════════════════════════════════════
+       TOP APPLICATION HEADER (Sleek SaaS Nav, 52px)
+       ══════════════════════════════════════════════════════════════ */
+    #app-header {
+      height: 52px;
+      background: var(--bg-paper);
+      border-bottom: 1px solid var(--border-subtle);
       position: sticky;
       top: 0;
-      z-index: 50;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      width: 100%;
-      transition: var(--transition);
-    }
-
-    #vp-header-inner {
-      width: 100%;
-      max-width: 100%;
-      padding: 0.75rem 2rem;
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1.25rem;
+      padding: 0 1.25rem;
+      gap: 1rem;
     }
 
-    .vp-logo {
+    .header-left {
       display: flex;
       align-items: center;
       gap: 0.85rem;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
       text-decoration: none;
       color: inherit;
       user-select: none;
-    }
-
-    .vp-logo-mark {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 14px var(--primary-glow);
       flex-shrink: 0;
     }
 
-    .vp-logo-text {
-      display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
+    .brand-icon-img {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
-    .vp-logo-text h1 {
-      font-size: 1.18rem;
-      font-weight: 800;
-      letter-spacing: -0.025em;
-      line-height: 1;
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
     }
 
-    .vp-logo-text .badge-pro {
+    .brand-tag {
       font-size: 0.68rem;
       font-weight: 700;
-      padding: 0.15rem 0.45rem;
-      border-radius: 4px;
-      background: var(--badge-bg);
-      border: 1px solid var(--card-border);
-      color: var(--primary);
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 99px;
+      background: var(--primary-subtle);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
     }
 
-    .header-actions {
+    .header-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border-default);
+      flex-shrink: 0;
+    }
+
+    /* Editable Document Title */
+    .doc-title-wrapper {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.5rem;
+      min-width: 0;
+      flex: 1;
+      max-width: 320px;
     }
 
-    /* ── Status Pill ── */
-    #vp-status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.76rem;
+    #doc-title-input {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.88rem;
       font-weight: 600;
-      padding: 0.35rem 0.8rem;
-      border-radius: 99px;
-      border: 1px solid var(--card-border);
+      padding: 0.25rem 0.5rem;
+      width: 100%;
+      outline: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: border-color var(--transition-fast), background var(--transition-fast);
+    }
+
+    #doc-title-input:hover {
       background: var(--bg-subtle);
-      color: var(--text-muted);
-      transition: var(--transition);
+    }
+
+    #doc-title-input:focus {
+      background: var(--bg-paper);
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 2px var(--primary-subtle);
+    }
+
+    .save-indicator {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
       white-space: nowrap;
     }
 
-    #vp-status-pill .dot {
+    .save-indicator.saved {
+      color: #10b981;
+    }
+
+    /* Header Right Actions */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    /* Status Pill: Minimalist semantic indicator */
+    #voice-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 99px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      color: var(--text-muted);
+      transition: all var(--transition-fast);
+      user-select: none;
+    }
+
+    #voice-status-pill .dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--text-dim);
-      transition: background 0.25s ease;
-    }
-
-    #vp-status-pill.ready {
-      background: rgba(16, 185, 129, 0.12);
-      color: #10b981;
-      border-color: rgba(16, 185, 129, 0.3);
-    }
-    #vp-status-pill.ready .dot {
       background: #10b981;
-      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+      transition: background var(--transition-fast);
     }
 
-    #vp-status-pill.command {
-      background: rgba(99, 102, 241, 0.15);
-      color: var(--primary);
-      border-color: rgba(99, 102, 241, 0.3);
-    }
-    #vp-status-pill.command .dot {
-      background: var(--primary);
-      box-shadow: 0 0 8px var(--primary-glow);
-    }
+    #voice-status-pill.ready .dot { background: #10b981; }
+    #voice-status-pill.listening .dot { background: var(--primary); }
+    #voice-status-pill.review .dot { background: #f59e0b; }
+    #voice-status-pill.error .dot { background: #f43f5e; }
 
-    #vp-status-pill.review {
-      background: rgba(245, 158, 11, 0.12);
-      color: #f59e0b;
-      border-color: rgba(245, 158, 11, 0.3);
-    }
-    #vp-status-pill.review .dot {
-      background: #f59e0b;
-      box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
-    }
-
-    #vp-status-pill.error {
-      background: rgba(244, 63, 94, 0.12);
-      color: #f43f5e;
-      border-color: rgba(244, 63, 94, 0.3);
-    }
-    #vp-status-pill.error .dot {
-      background: #f43f5e;
-      box-shadow: 0 0 8px rgba(244, 63, 94, 0.6);
-    }
-
-    /* ── Icon Buttons in Header (Theme & Settings) ── */
+    /* Button Icon (General) */
     .btn-icon {
       background: var(--bg-subtle);
-      border: 1px solid var(--card-border);
+      border: 1px solid var(--border-default);
+      color: var(--text-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .btn-icon:hover {
+      background: var(--bg-surface);
       color: var(--text-main);
-      width: 36px;
-      height: 36px;
+      border-color: var(--border-hover);
+    }
+
+    .btn-icon:focus-visible {
+      outline: 2px solid var(--border-focus);
+      outline-offset: 1px;
+    }
+
+    /* Dropdown Menus */
+    .dropdown-container {
+      position: relative;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-default);
       border-radius: var(--radius-md);
+      box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.4);
+      min-width: 170px;
+      padding: 0.4rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.2rem;
+      z-index: 250;
+      animation: menuFadeIn 0.15s ease;
+    }
+
+    .dropdown-menu.show {
+      display: flex;
+    }
+
+    @keyframes menuFadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      transition: var(--transition-fast);
+      font-family: inherit;
+    }
+
+    .dropdown-item:hover {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       RICH FORMATTING TOOLBAR (Sticky, Tactile & Professional, 42px)
+       ══════════════════════════════════════════════════════════════ */
+    #formatting-toolbar {
+      background: var(--bg-paper);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 52px;
+      z-index: 90;
+      padding: 0.35rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    #formatting-toolbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      flex-shrink: 0;
+    }
+
+    .toolbar-sep {
+      width: 1px;
+      height: 18px;
+      background: var(--border-default);
+      margin: 0 0.25rem;
+      flex-shrink: 0;
+    }
+
+    .t-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.32rem 0.55rem;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: var(--transition);
+      gap: 0.35rem;
+      min-width: 28px;
+      height: 28px;
+      line-height: 1;
+      transition: var(--transition-fast);
+      user-select: none;
     }
-    .btn-icon:hover {
-      border-color: var(--card-border-hover);
-      background: var(--card-border);
+
+    .t-btn:hover {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    .t-btn.active {
+      background: var(--primary-subtle);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+
+    .t-btn:focus-visible {
+      outline: 2px solid var(--border-focus);
+    }
+
+    .t-select {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      height: 28px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .t-select:focus {
+      border-color: var(--border-focus);
+    }
+
+    /* Primary Accent Action Buttons */
+    .btn-ai-review {
+      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+      color: #ffffff !important;
+      border: none;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px var(--primary-subtle);
+      transition: var(--transition-fast);
+    }
+
+    .btn-ai-review:hover {
+      filter: brightness(1.08);
       transform: translateY(-1px);
     }
 
-    /* ── Full-Width Main Workspace ── */
-    main {
-      width: 100%;
-      max-width: 100%;
-      padding: 1.25rem 2rem 3rem;
-      flex: 1;
+    /* ══════════════════════════════════════════════════════════════
+       DOCUMENT WORKSPACE & PAPER CANVAS
+       ══════════════════════════════════════════════════════════════ */
+    #document-viewport {
+      min-height: calc(100vh - 52px - 42px - 36px);
+      padding: 2.2rem 1.5rem 4rem;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      align-items: center;
+      transition: padding var(--transition-base);
     }
 
-    /* ── Cards & Containers ── */
-    .vp-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--card-shadow);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      transition: border-color 0.2s, box-shadow 0.2s;
+    /* The Centered Document Paper */
+    #doc-paper {
       width: 100%;
-    }
-
-    .vp-card:hover {
-      border-color: var(--card-border-hover);
-    }
-
-    .vp-card-header {
+      max-width: 860px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--paper-shadow);
+      min-height: 75vh;
       display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: max-width var(--transition-base), border-color var(--transition-fast);
+    }
+
+    /* When Full-Width Mode is active */
+    #doc-paper.full-width {
+      max-width: 100%;
+    }
+
+    /* Document typography dynamic classes */
+    #doc-paper.font-sans { font-family: var(--font-sans); }
+    #doc-paper.font-serif { font-family: var(--font-serif); }
+    #doc-paper.font-mono { font-family: var(--font-mono); }
+
+    /* ── Proposal Review Reason Banner ── */
+    #proposal-reason-banner {
+      display: none;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-default);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      padding: 0.85rem 1.4rem;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      padding: 0.9rem 1.4rem;
-      border-bottom: 1px solid var(--card-border);
       flex-wrap: wrap;
+      animation: menuFadeIn 0.2s ease;
     }
 
-    .vp-card-title {
-      font-size: 0.8rem;
+    #proposal-reason-banner.visible {
+      display: flex;
+    }
+
+    .proposal-reason-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.85rem;
+      flex: 1;
+    }
+
+    .proposal-tag {
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.55rem;
+      border-radius: 99px;
+      background: var(--primary-subtle);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      white-space: nowrap;
+    }
+
+    .proposal-reason-text {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .proposal-reason-actions {
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
 
-    /* ── Guidance Banner ── */
-    #wispr-guidance {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.06) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.22);
-      border-radius: var(--radius-md);
-      padding: 0.8rem 1.25rem;
-      font-size: 0.86rem;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-    }
-
-    #wispr-guidance .icon {
-      font-size: 1.25rem;
-      line-height: 1;
-    }
-
-    #wispr-guidance kbd {
-      font-family: var(--font-mono);
-      font-size: 0.74rem;
-      padding: 0.15rem 0.5rem;
-      border-radius: 5px;
-      background: var(--badge-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
+    .btn-action {
+      font-family: inherit;
+      font-size: 0.8rem;
       font-weight: 600;
+      padding: 0.35rem 0.8rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      border: 1px solid transparent;
+      transition: var(--transition-fast);
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       DRAFT CARD & IN-PLACE INLINE PROPOSAL FIELD
-       ══════════════════════════════════════════════════════════════ */
-    #draft-card {
+    .btn-action-accept {
+      background: #10b981;
+      color: #ffffff;
+    }
+    .btn-action-accept:hover { background: #059669; }
+
+    .btn-action-decline {
+      background: var(--diff-curr-bg);
+      color: var(--diff-curr-text);
+      border-color: var(--diff-curr-border);
+    }
+    .btn-action-decline:hover { background: rgba(239, 68, 68, 0.28); }
+
+    /* ── The Rich Editable Surface (#draft-editor) ── */
+    .editor-wrapper {
       position: relative;
-      overflow: hidden;
+      flex: 1;
+      padding: 3rem 3.5rem;
       display: flex;
       flex-direction: column;
-      flex: 1;
-      min-height: 480px;
     }
 
-    #draft-card:focus-within {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-glow), var(--card-shadow);
-    }
-
-    .editor-field-wrapper {
-      position: relative;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 380px;
-      transition: box-shadow 0.3s ease, border-color 0.3s ease;
-    }
-
-    /* ── Subtle Breathing Glow While AI is Thinking ── */
-    @keyframes thinkingGlow {
-      0% { box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.4), 0 0 20px -4px rgba(99, 102, 241, 0.35); }
-      50% { box-shadow: inset 0 0 0 2px rgba(6, 182, 212, 0.6), 0 0 35px 2px rgba(6, 182, 212, 0.45); }
-      100% { box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.4), 0 0 20px -4px rgba(99, 102, 241, 0.35); }
-    }
-
-    .editor-field-wrapper.thinking {
-      animation: thinkingGlow 1.6s infinite ease-in-out;
-      border-radius: var(--radius-md);
+    @media (max-width: 768px) {
+      .editor-wrapper {
+        padding: 1.5rem 1.25rem;
+      }
     }
 
     #draft-editor {
-      width: 100%;
-      height: 100%;
-      min-height: 380px;
-      resize: vertical;
-      border: none;
-      outline: none;
-      padding: 1.4rem;
-      font-family: var(--font-sans);
-      font-size: 1.1rem;
-      line-height: 1.85;
-      color: var(--text-main);
-      background: transparent;
-      display: block;
       flex: 1;
+      min-height: 550px;
+      outline: none;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text-main);
+      word-break: break-word;
+      caret-color: var(--primary);
     }
 
-    #draft-editor::placeholder {
+    /* Contenteditable Empty Placeholder */
+    #draft-editor:empty::before {
+      content: attr(data-placeholder);
       color: var(--text-dim);
+      pointer-events: none;
+      display: block;
+      font-style: italic;
     }
 
-    /* ── Inline In-Place Diff / Proposal Display (SAME FIELD) ── */
+    /* High-Quality Typography for Rich Text Elements */
+    #draft-editor h1, .inline-diff-display h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      margin-top: 1.6rem;
+      margin-bottom: 0.6rem;
+      color: var(--text-main);
+    }
+
+    #draft-editor h2, .inline-diff-display h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.35;
+      margin-top: 1.4rem;
+      margin-bottom: 0.45rem;
+      color: var(--text-main);
+    }
+
+    #draft-editor h3, .inline-diff-display h3 {
+      font-size: 1.2rem;
+      font-weight: 650;
+      line-height: 1.4;
+      margin-top: 1.1rem;
+      margin-bottom: 0.35rem;
+      color: var(--text-main);
+    }
+
+    #draft-editor p, .inline-diff-display p {
+      margin-bottom: 0.95rem;
+    }
+
+    #draft-editor strong, .inline-diff-display strong,
+    #draft-editor b, .inline-diff-display b {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    #draft-editor em, .inline-diff-display em,
+    #draft-editor i, .inline-diff-display i {
+      font-style: italic;
+    }
+
+    #draft-editor u, .inline-diff-display u {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    #draft-editor strike, #draft-editor s, #draft-editor del {
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+
+    #draft-editor blockquote, .inline-diff-display blockquote {
+      border-left: 3px solid var(--primary);
+      background: var(--primary-subtle);
+      padding: 0.6rem 1.1rem;
+      margin: 1rem 0;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    #draft-editor ul, .inline-diff-display ul,
+    #draft-editor ol, .inline-diff-display ol {
+      margin: 0.85rem 0 0.85rem 1.6rem;
+    }
+
+    #draft-editor li, .inline-diff-display li {
+      margin-bottom: 0.35rem;
+    }
+
+    #draft-editor code, .inline-diff-display code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      padding: 0.15rem 0.4rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+    }
+
+    #draft-editor hr {
+      border: none;
+      height: 1px;
+      background: var(--border-default);
+      margin: 1.8rem 0;
+    }
+
+    /* ── Proposal In-Place Diff View ── */
     #draft-diff-display {
       display: none;
-      width: 100%;
-      height: 100%;
-      min-height: 380px;
-      padding: 1.4rem;
-      font-family: var(--font-sans);
-      font-size: 1.1rem;
-      line-height: 1.85;
+      font-size: 1.05rem;
+      line-height: 1.8;
       color: var(--text-main);
-      background: transparent;
       white-space: pre-wrap;
       word-break: break-word;
-      overflow-y: auto;
-      flex: 1;
     }
 
-    /* When proposal is active, textarea overlays invisibly so Wispr Flow can still type into it! */
-    .editor-field-wrapper.has-proposal #draft-diff-display {
+    /* Proposal active: textarea overlays invisibly so Wispr Flow can type into it without losing focus */
+    .editor-wrapper.has-proposal #draft-diff-display {
       display: block;
     }
 
-    .editor-field-wrapper.has-proposal #draft-editor {
+    .editor-wrapper.has-proposal #draft-editor {
       position: absolute;
       top: 0;
       left: 0;
@@ -459,771 +766,558 @@
       display: inline;
     }
 
-    /* ── Proposal Review Reason Banner (Only for Review) ── */
-    #proposal-reason-banner {
-      display: none;
-      background: linear-gradient(90deg, rgba(99, 102, 241, 0.14) 0%, rgba(6, 182, 212, 0.1) 100%);
-      border-bottom: 1px solid var(--card-border);
-      padding: 0.85rem 1.4rem;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      animation: fadeIn 0.2s ease;
+    /* AI Thinking subtle border glow */
+    .editor-wrapper.thinking {
+      position: relative;
     }
-
-    #proposal-reason-banner.visible {
-      display: flex;
+    .editor-wrapper.thinking::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid var(--primary);
+      border-radius: var(--radius-lg);
+      pointer-events: none;
+      animation: thinkingPulse 1.5s infinite ease-in-out;
     }
-
-    .proposal-reason-content {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      font-size: 0.86rem;
-      flex: 1;
-    }
-
-    .proposal-reason-content .tag {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding: 0.2rem 0.55rem;
-      border-radius: 99px;
-      background: var(--badge-bg);
-      border: 1px solid var(--card-border);
-      color: var(--primary);
-    }
-
-    .proposal-reason-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-    }
-
-    /* ── Draft Footer ── */
-    .draft-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1.4rem;
-      border-top: 1px solid var(--card-border);
-      background: var(--badge-bg);
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    /* ── Buttons ── */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.48rem 1.1rem;
-      border-radius: var(--radius-md);
-      font-size: 0.84rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid transparent;
-      line-height: 1;
-      transition: var(--transition);
-      white-space: nowrap;
-      font-family: inherit;
-    }
-
-    .btn:focus-visible {
-      outline: 2px solid var(--primary);
-      outline-offset: 2px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-      color: #fff;
-      box-shadow: 0 4px 12px var(--primary-glow);
-    }
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px var(--primary-glow);
-    }
-
-    .btn-outline {
-      background: var(--badge-bg);
-      color: var(--text-main);
-      border-color: var(--card-border);
-    }
-    .btn-outline:hover {
-      background: var(--card-border);
-      color: var(--text-main);
-    }
-
-    .btn-danger {
-      background: var(--diff-curr-bg);
-      color: var(--diff-curr-text);
-      border-color: var(--diff-curr-border);
-    }
-    .btn-danger:hover {
-      background: rgba(244, 63, 94, 0.22);
-    }
-
-    .btn-ghost {
-      background: none;
-      color: var(--text-muted);
-      border-color: transparent;
-    }
-    .btn-ghost:hover {
-      color: var(--text-main);
-      background: var(--badge-bg);
-    }
-
-    .btn-sm {
-      font-size: 0.78rem;
-      padding: 0.38rem 0.85rem;
-      border-radius: 7px;
-    }
-
-    /* ── Separate Notes Card ── */
-    #notes-panel {
-      display: none;
-    }
-    #notes-panel.visible { display: block; }
-
-    #notes-list {
-      padding: 1rem 1.4rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-    }
-
-    .note-item {
-      background: var(--badge-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-md);
-      padding: 0.75rem 1rem;
-      font-size: 0.88rem;
-      color: var(--text-main);
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-    }
-
-    .note-item-text { flex: 1; }
-
-    .note-item-del {
-      background: none;
-      border: none;
-      color: var(--text-dim);
-      cursor: pointer;
-      font-size: 1rem;
-      line-height: 1;
-      padding: 0 0.25rem;
-      transition: color 0.15s;
-    }
-    .note-item-del:hover { color: #f43f5e; }
-
-    /* ── Command Reference Guide ── */
-    details summary {
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      padding: 0.9rem 1.4rem;
-      list-style: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      user-select: none;
-      transition: color 0.15s;
-    }
-    details summary::-webkit-details-marker { display: none; }
-    details summary::before {
-      content: '▶';
-      font-size: 0.65rem;
-      transition: transform 0.2s ease;
-      color: var(--text-dim);
-    }
-    details[open] summary::before { transform: rotate(90deg); color: var(--primary); }
-    details summary:hover { color: var(--text-main); }
-
-    .command-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 0.75rem;
-      padding: 0 1.4rem 1.25rem;
-    }
-
-    .command-item {
-      background: var(--badge-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-md);
-      padding: 0.8rem 1rem;
-      transition: border-color 0.15s;
-    }
-    .command-item:hover { border-color: var(--card-border-hover); }
-
-    .command-item .cmd-phrase {
-      font-family: var(--font-mono);
-      color: var(--primary);
-      font-weight: 600;
-      font-size: 0.84rem;
-      display: block;
-      margin-bottom: 0.25rem;
-    }
-
-    .command-item .cmd-desc {
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      line-height: 1.5;
+    @keyframes thinkingPulse {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.8; }
     }
 
     /* ══════════════════════════════════════════════════════════════
-       SETTINGS EXPANDABLE MODAL / DIALOG (TOP-RIGHT CORNER TRIGGER)
+       APPLICATION FOOTER / STATUS BAR (Minimalist, 36px)
+       ══════════════════════════════════════════════════════════════ */
+    #app-footer {
+      height: 36px;
+      background: var(--bg-paper);
+      border-top: 1px solid var(--border-subtle);
+      position: sticky;
+      bottom: 0;
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.25rem;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: color var(--transition-fast);
+    }
+    .btn-link:hover { color: var(--primary); }
+
+    /* ══════════════════════════════════════════════════════════════
+       SLIDE-OVER MODALS (Settings & Voice Commands Guide)
        ══════════════════════════════════════════════════════════════ */
     .modal-backdrop {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 200;
+      inset: 0;
+      background: var(--modal-backdrop);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 300;
       display: none;
       align-items: flex-start;
       justify-content: flex-end;
-      padding: 1.5rem 2rem;
-      animation: fadeIn 0.2s ease;
+      padding: 1.5rem;
+      animation: menuFadeIn 0.2s ease;
     }
 
     .modal-backdrop.open {
       display: flex;
     }
 
-    .modal-card {
-      background: var(--modal-bg);
-      border: 1px solid var(--card-border);
+    .modal-sheet {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-default);
       border-radius: var(--radius-lg);
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--card-border);
+      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6);
       width: 100%;
       max-width: 520px;
-      max-height: 90vh;
+      max-height: calc(100vh - 3rem);
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .modal-header {
+    .modal-sheet-header {
+      padding: 1.1rem 1.4rem;
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.15rem 1.4rem;
-      border-bottom: 1px solid var(--card-border);
     }
 
-    .modal-header h2 {
+    .modal-sheet-header h2 {
       font-size: 0.96rem;
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      color: var(--text-main);
     }
 
-    .modal-body {
-      padding: 1.25rem 1.4rem;
+    .modal-sheet-body {
+      padding: 1.4rem;
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
     }
 
-    .settings-tabs {
-      display: flex;
-      gap: 0.5rem;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 0.75rem;
-    }
-
-    .settings-tab-btn {
-      background: none;
-      border: 1px solid transparent;
-      padding: 0.45rem 0.85rem;
-      border-radius: var(--radius-md);
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: inherit;
-    }
-
-    .settings-tab-btn.active {
-      background: var(--badge-bg);
-      border-color: var(--card-border);
-      color: var(--text-main);
-    }
-
-    .tab-content { display: none; }
-    .tab-content.active { display: flex; flex-direction: column; gap: 1rem; }
-
+    /* Service Cards in Settings */
     .service-card {
-      background: var(--badge-bg);
-      border: 1px solid var(--card-border);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
       border-radius: var(--radius-md);
-      padding: 1.1rem;
+      padding: 1rem 1.15rem;
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0.75rem;
     }
 
-    .service-card-header {
+    .service-card-title {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
     }
 
-    .service-title {
-      font-size: 0.86rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .service-desc {
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      line-height: 1.55;
-    }
-
-    .setting-row {
+    .form-group {
       display: flex;
       flex-direction: column;
-      gap: 0.45rem;
+      gap: 0.35rem;
     }
 
-    .setting-row label {
-      font-size: 0.8rem;
+    .form-group label {
+      font-size: 0.78rem;
       font-weight: 600;
-      color: var(--text-main);
+      color: var(--text-muted);
     }
 
-    .setting-row input[type="text"],
-    .setting-row input[type="password"] {
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-md);
-      padding: 0.55rem 0.85rem;
+    .form-input {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.75rem;
       font-family: var(--font-mono);
       font-size: 0.82rem;
       color: var(--text-main);
-      background: var(--input-bg);
       outline: none;
       width: 100%;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color var(--transition-fast);
     }
 
-    .setting-row input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-glow);
+    .form-input:focus {
+      border-color: var(--border-focus);
     }
 
-    .setting-hint {
+    .badge-status {
       font-size: 0.72rem;
-      color: var(--text-dim);
-    }
-
-    .auth-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.74rem;
       font-weight: 600;
-      padding: 0.25rem 0.65rem;
+      padding: 0.2rem 0.55rem;
       border-radius: 99px;
-      white-space: nowrap;
     }
-
-    .auth-badge.connected {
+    .badge-status.connected {
       background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
       color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-status.disconnected {
+      background: var(--bg-surface);
+      color: var(--text-dim);
+      border: 1px solid var(--border-default);
     }
 
-    .auth-badge.disconnected {
-      background: var(--badge-bg);
-      border: 1px solid var(--card-border);
+    /* Voice Commands Grid */
+    .cmd-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .cmd-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+    }
+
+    .cmd-phrase {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--primary);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .cmd-desc {
+      font-size: 0.78rem;
       color: var(--text-muted);
+      line-height: 1.5;
     }
 
     /* ── Toast Notification ── */
     #vp-toast {
       position: fixed;
-      bottom: 2rem;
+      bottom: 2.5rem;
       right: 2rem;
-      z-index: 300;
-      max-width: 440px;
-      padding: 0.85rem 1.25rem;
-      border-radius: var(--radius-md);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      z-index: 400;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-default);
       color: var(--text-main);
+      border-radius: var(--radius-md);
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5);
+      padding: 0.75rem 1.15rem;
       font-size: 0.84rem;
-      line-height: 1.5;
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      font-weight: 500;
       display: none;
       align-items: center;
-      gap: 0.85rem;
-      animation: fadeIn 0.2s ease;
+      gap: 0.75rem;
+      animation: menuFadeIn 0.2s ease;
     }
-    #vp-toast.visible { display: flex; }
+
+    #vp-toast.visible {
+      display: flex;
+    }
 
     #vp-toast-close {
       background: none;
       border: none;
       color: var(--text-dim);
       cursor: pointer;
-      font-size: 1.1rem;
+      font-size: 1rem;
       padding: 0;
-      margin-left: auto;
+      line-height: 1;
     }
     #vp-toast-close:hover { color: var(--text-main); }
-
-    /* ── Footer ── */
-    footer {
-      border-top: 1px solid var(--card-border);
-      background: var(--header-bg);
-      padding: 1.2rem 2rem;
-      font-size: 0.78rem;
-      color: var(--text-dim);
-      text-align: center;
-      width: 100%;
-    }
-    footer a { color: var(--text-muted); text-decoration: none; font-weight: 500; }
-    footer a:hover { color: var(--primary); }
   </style>
 </head>
 <body>
 
-  <!-- FULL-WIDTH HEADER -->
-  <header id="vp-header" role="banner">
-    <div id="vp-header-inner">
-      <!-- Modern VoicePilot Logo -->
-      <div class="vp-logo">
-        <div class="vp-logo-mark" aria-hidden="true" style="overflow:hidden; padding:0; background:none;">
-          <img src="assets/logo.jpg" alt="VoicePilot Icon" style="width:100%; height:100%; object-fit:cover; border-radius:10px;" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 32\'%3E%3Crect width=\'32\' height=\'32\' rx=\'8\' fill=\'%236366f1\'/%3E%3C/svg%3E';" />
-        </div>
-        <div class="vp-logo-text">
-          <h1>VoicePilot</h1>
-          <span class="badge-pro">Hands-Free</span>
+  <!-- ════════════════════ TOP APPLICATION HEADER ════════════════════ -->
+  <header id="app-header" role="banner">
+    <div class="header-left">
+      <a href="#" class="brand-mark" aria-label="VoicePilot Home">
+        <img src="assets/app-icon.jpg" alt="VoicePilot Icon" class="brand-icon-img" onerror="this.style.display='none'" />
+        <span class="brand-title">VoicePilot</span>
+        <span class="brand-tag">Rich Editor</span>
+      </a>
+
+      <div class="header-divider" aria-hidden="true"></div>
+
+      <!-- Editable Document Title with Auto-Save -->
+      <div class="doc-title-wrapper">
+        <input type="text" id="doc-title-input" value="Untitled Document" placeholder="Document title..." aria-label="Document Title" spellcheck="false" />
+        <span id="save-status" class="save-indicator saved" title="Auto-saved to local browser storage">✓ Saved</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <!-- Live Wispr Flow / Voice Status -->
+      <div id="voice-status-pill" class="ready" title="Hands-free listening status for Wispr Flow" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="voice-status-text">Wispr Flow Ready</span>
+      </div>
+
+      <!-- Typography Selector (Sans / Serif / Mono) -->
+      <div class="dropdown-container">
+        <button type="button" class="btn-icon" id="btn-font-toggle" title="Change Document Font" aria-label="Select Typography">
+          <span style="font-weight:700;font-size:0.85rem;">Aa</span>
+        </button>
+        <div class="dropdown-menu" id="font-dropdown-menu">
+          <button type="button" class="dropdown-item" data-font="sans">Modern Sans (Plus Jakarta)</button>
+          <button type="button" class="dropdown-item" data-font="serif">Editorial Serif (Merriweather)</button>
+          <button type="button" class="dropdown-item" data-font="mono">Technical Mono (JetBrains)</button>
         </div>
       </div>
 
-      <div class="header-actions">
-        <!-- Live Status Indicator -->
-        <div id="vp-status-pill" class="ready" aria-live="polite">
-          <span class="dot" aria-hidden="true"></span>
-          <span id="vp-status-text">Ready for Wispr input</span>
-        </div>
+      <!-- Full-Width / Reading Width Toggle -->
+      <button type="button" class="btn-icon" id="btn-width-toggle" title="Toggle Reading / Full Width" aria-label="Toggle Document Width">
+        <span id="width-icon">↔</span>
+      </button>
 
-        <!-- Dark / Light Mode Switcher Icon -->
-        <button type="button" id="theme-toggle" class="btn-icon" aria-label="Toggle dark/light theme" title="Toggle Theme">
-          <span id="theme-icon">☀️</span>
-        </button>
+      <!-- Theme Switcher (Dark / Light) -->
+      <button type="button" class="btn-icon" id="btn-theme-toggle" title="Toggle Dark / Light Theme" aria-label="Toggle Theme">
+        <span id="theme-icon">☀️</span>
+      </button>
 
-        <!-- Settings Icon in Top-Right Corner -->
-        <button type="button" id="btn-open-settings" class="btn-icon" aria-label="Open Settings" title="AI &amp; Configuration Settings">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
+      <!-- Export Dropdown -->
+      <div class="dropdown-container">
+        <button type="button" class="btn-icon" id="btn-export-toggle" title="Export Document" aria-label="Export Document">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
         </button>
+        <div class="dropdown-menu" id="export-dropdown-menu">
+          <button type="button" class="dropdown-item" id="export-copy-rich">📋 Copy Rich Text</button>
+          <button type="button" class="dropdown-item" id="export-copy-markdown">📝 Copy Markdown</button>
+          <button type="button" class="dropdown-item" id="export-download-md">💾 Download .md file</button>
+          <button type="button" class="dropdown-item" id="export-download-txt">📄 Download .txt file</button>
+          <button type="button" class="dropdown-item" id="export-print">🖨️ Print / Save PDF</button>
+        </div>
       </div>
+
+      <!-- Settings Icon (⚙️) -->
+      <button type="button" class="btn-icon" id="btn-open-settings" title="AI &amp; API Key Settings" aria-label="Open Settings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      </button>
     </div>
   </header>
 
-  <!-- TOAST NOTIFICATION -->
-  <div id="vp-toast" role="alert" aria-live="assertive">
-    <span id="vp-toast-msg"></span>
-    <button id="vp-toast-close" type="button" aria-label="Close notification">✕</button>
-  </div>
-
-  <!-- MAIN APP (FULL-WIDTH) -->
-  <main id="vp-main">
-
-    <!-- Wispr Guidance Banner -->
-    <div id="wispr-guidance" role="note">
-      <div class="icon">🎙️</div>
-      <div style="flex:1;">
-        <strong>Hands-Free Workflow:</strong> Speak freely using <strong>Wispr Flow</strong> (<kbd>Ctrl+Win</kbd> or <kbd>Fn</kbd>).
-        To edit directly, say <strong>"Shazam, &lt;any instruction&gt;"</strong> (e.g. <em>"Shazam, put a comma next to hello"</em>).
-        To polish, say <strong>"Shazam, review"</strong> — proposed changes are highlighted with AI reasoning and accepted/declined hands-free with <strong>"Shazam, accept"</strong> or <strong>"Shazam, decline"</strong>!
-        To clear, say <strong>"Shazam, clear"</strong> (always backed up to undo).
-      </div>
+  <!-- ════════════════════ RICH FORMATTING TOOLBAR ════════════════════ -->
+  <nav id="formatting-toolbar" aria-label="Text formatting toolbar">
+    <!-- Group 1: Undo & Redo -->
+    <div class="toolbar-group">
+      <button type="button" class="t-btn" id="t-undo" title="Undo (Ctrl+Z or 'Shazam, undo')" aria-label="Undo">↺</button>
+      <button type="button" class="t-btn" id="t-redo" title="Redo (Ctrl+Y or 'Shazam, redo')" aria-label="Redo">↻</button>
     </div>
 
-    <!-- MAIN DRAFT CARD WITH IN-PLACE PROPOSAL ON THE SAME FIELD -->
-    <div class="vp-card" id="draft-card">
-      <div class="vp-card-header">
-        <div style="display:flex;align-items:center;gap:.75rem;">
-          <span class="vp-card-title">Document Draft</span>
-          <span id="proposal-active-pill" class="auth-badge connected" style="display:none;font-size:0.72rem;">
-            ✨ Proposal Active (Say "Shazam, accept" or "Shazam, decline")
-          </span>
-        </div>
-        <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
-          <button type="button" class="btn btn-primary btn-sm" id="btn-review" title="Say 'Shazam, review'">✨ AI Review</button>
-          <button type="button" class="btn btn-outline btn-sm" id="btn-copy-draft" title="Say 'Shazam, copy'">📋 Copy</button>
-          <button type="button" class="btn btn-outline btn-sm" id="btn-undo" title="Say 'Shazam, undo'">↺ Undo</button>
-          <button type="button" class="btn btn-outline btn-sm" id="btn-redo" title="Say 'Shazam, redo'">↻ Redo</button>
-          <button type="button" class="btn btn-outline btn-sm" id="btn-read" title="Say 'Shazam, read'">▶ Read Aloud</button>
-          <button type="button" class="btn btn-ghost btn-sm" id="btn-sample-draft" title="Load sample draft to test">🪄 Sample</button>
-          <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-draft">Clear</button>
-        </div>
-      </div>
+    <div class="toolbar-sep" aria-hidden="true"></div>
 
-      <!-- REVIEW REASON BANNER (ONLY SHOWN FOR REVIEW PROPOSALS) -->
-      <div id="proposal-reason-banner" class="proposal-reason-banner">
-        <div class="proposal-reason-content">
-          <span class="tag">AI Review</span>
+    <!-- Group 2: Headings & Block Format -->
+    <div class="toolbar-group">
+      <select id="t-block-format" class="t-select" aria-label="Paragraph Style">
+        <option value="p">Paragraph</option>
+        <option value="h1">Heading 1</option>
+        <option value="h2">Heading 2</option>
+        <option value="h3">Heading 3</option>
+        <option value="blockquote">Quote Callout</option>
+      </select>
+    </div>
+
+    <div class="toolbar-sep" aria-hidden="true"></div>
+
+    <!-- Group 3: Inline Styles (Bold, Italic, Underline, Strikethrough, Code) -->
+    <div class="toolbar-group">
+      <button type="button" class="t-btn" id="t-bold" title="Bold (Ctrl+B or 'Shazam, bold')" aria-label="Bold"><strong>B</strong></button>
+      <button type="button" class="t-btn" id="t-italic" title="Italic (Ctrl+I or 'Shazam, italic')" aria-label="Italic"><em>I</em></button>
+      <button type="button" class="t-btn" id="t-underline" title="Underline (Ctrl+U)" aria-label="Underline"><u>U</u></button>
+      <button type="button" class="t-btn" id="t-strike" title="Strikethrough" aria-label="Strikethrough"><s>S</s></button>
+      <button type="button" class="t-btn" id="t-code" title="Inline Code" aria-label="Inline Code"><code>&lt;&gt;</code></button>
+    </div>
+
+    <div class="toolbar-sep" aria-hidden="true"></div>
+
+    <!-- Group 4: Lists & Structure -->
+    <div class="toolbar-group">
+      <button type="button" class="t-btn" id="t-bullet-list" title="Bullet List (or 'Shazam, list')" aria-label="Bullet List">• List</button>
+      <button type="button" class="t-btn" id="t-num-list" title="Numbered List" aria-label="Numbered List">1. List</button>
+      <button type="button" class="t-btn" id="t-quote" title="Blockquote" aria-label="Blockquote">” Quote</button>
+      <button type="button" class="t-btn" id="t-clear-fmt" title="Clear Formatting" aria-label="Clear Formatting">Tx</button>
+    </div>
+
+    <div class="toolbar-sep" aria-hidden="true"></div>
+
+    <!-- Group 5: AI & Assistant Actions -->
+    <div class="toolbar-group" style="margin-left:auto;">
+      <button type="button" class="btn-ai-review" id="btn-trigger-review" title="Say 'Shazam, review'">✨ AI Review</button>
+      <button type="button" class="t-btn" id="btn-trigger-read" title="Read Aloud (or 'Shazam, read')">▶ Read</button>
+      <button type="button" class="t-btn" id="btn-load-sample" title="Load Rich Sample Document">🪄 Sample</button>
+      <button type="button" class="t-btn" id="btn-clear-doc" title="Clear Canvas (or 'Shazam, clear')">Clear</button>
+    </div>
+  </nav>
+
+  <!-- ════════════════════ DOCUMENT WORKSPACE ════════════════════ -->
+  <main id="document-viewport">
+    <div id="doc-paper" class="font-sans">
+
+      <!-- AI Review Reason Banner (Only shown during Review proposals) -->
+      <div id="proposal-reason-banner">
+        <div class="proposal-reason-left">
+          <span class="proposal-tag">✨ AI Polish</span>
           <div>
             <strong>Reason: </strong>
-            <span id="proposal-reason-text">Polished flow, phrasing, and punctuation.</span>
+            <span id="proposal-reason-text" class="proposal-reason-text">Improved structure, clarity, and phrasing.</span>
           </div>
         </div>
         <div class="proposal-reason-actions">
-          <button type="button" class="btn btn-primary btn-sm" id="btn-inline-accept">✓ Accept (Shazam, accept)</button>
-          <button type="button" class="btn btn-danger btn-sm" id="btn-inline-decline">✕ Decline (Shazam, decline)</button>
-          <button type="button" class="btn btn-outline btn-sm" id="btn-speak-proposal">🔊 Hear</button>
+          <button type="button" class="btn-action btn-action-accept" id="btn-inline-accept" title="Say 'Shazam, accept'">✓ Accept (Shazam, accept)</button>
+          <button type="button" class="btn-action btn-action-decline" id="btn-inline-decline" title="Say 'Shazam, decline'">✕ Decline (Shazam, decline)</button>
+          <button type="button" class="btn-action" id="btn-speak-proposal" style="background:var(--bg-paper);color:var(--text-main);border-color:var(--border-default);">🔊 Hear</button>
         </div>
       </div>
 
-      <!-- IN-PLACE FIELD: TEXTAREA OR INLINE FADED DIFF ON THE SAME FIELD -->
-      <div class="editor-field-wrapper">
-        <textarea
+      <!-- Editable Document Surface -->
+      <div class="editor-wrapper" id="editor-wrapper">
+        <!-- Live Rich Text Contenteditable Editor -->
+        <div
           id="draft-editor"
-          aria-label="Voice draft editor"
-          placeholder="Dictate your ideas freely using Wispr Flow...&#10;&#10;When ready, say 'Shazam, review' for full polish, or say any instruction like 'Shazam, put a comma next to hello' to make edits automatically."
+          contenteditable="true"
+          role="textbox"
+          aria-multiline="true"
+          aria-label="Rich Voice Document Editor"
+          data-placeholder="Start typing or speaking freely with Wispr Flow...&#10;&#10;• Use toolbar buttons or voice commands for Bold, Italic, Headings, and Lists.&#10;• Say 'Shazam, put a comma next to hello' for instant targeted edits.&#10;• Say 'Shazam, review' for full comprehensive polish."
           spellcheck="true"
-          autocomplete="off"
-        ></textarea>
+        ></div>
 
-        <!-- Inline Faded Diff View (Rendered in the exact same field!) -->
+        <!-- In-Place Diff View (Active during AI Review) -->
         <div id="draft-diff-display" class="inline-diff-display" aria-live="polite"></div>
       </div>
 
-      <div class="draft-footer">
-        <div style="display:flex;gap:1rem;align-items:center;">
-          <span id="word-count" aria-live="polite">0 words</span>
-          <span id="reading-time" style="color:var(--text-dim);">· ~0 min read</span>
-        </div>
-        <span id="history-bar" style="color:var(--primary);font-weight:600;"></span>
-      </div>
     </div>
-
-    <!-- Separate Notes Area -->
-    <section id="notes-panel" class="vp-card" aria-label="Separate notes">
-      <div class="vp-card-header">
-        <span class="vp-card-title">📝 Separate Notes</span>
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-notes">Clear All</button>
-      </div>
-      <div id="notes-list"></div>
-    </section>
-
-    <!-- Command Reference Guide -->
-    <div class="vp-card" id="help-panel">
-      <details>
-        <summary>Voice Command Reference — Hands-Free Voice Control</summary>
-        <div class="command-grid">
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, &lt;any instruction&gt;</span>
-            <span class="cmd-desc">Say ANY targeted edit (e.g. "Shazam, put a comma next to hello"). Applied directly to your draft and saved to undo history.</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, review</span>
-            <span class="cmd-desc">Full comprehensive polish. Highlights proposed additions in green and removals in red on the field with the AI's reason.</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, accept / keep new</span>
-            <span class="cmd-desc">Accepts the proposed review changes into your document. Also works with "option two" or "yes".</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, decline / keep previous</span>
-            <span class="cmd-desc">Declines the proposed review changes and keeps your original text. Also works with "option one" or "no".</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, clear</span>
-            <span class="cmd-desc">Clears the draft document. Automatically saved to undo history so you can say "Shazam, undo" to restore anytime.</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, undo</span>
-            <span class="cmd-desc">Reverts the most recent insertion or accepted revision. Always works locally.</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, redo</span>
-            <span class="cmd-desc">Restores an undone action. Always works locally.</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, read</span>
-            <span class="cmd-desc">Reads your current draft aloud using speech synthesis. Always works locally.</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, stop / silence</span>
-            <span class="cmd-desc">Immediately halts speech synthesis playback if you want to silence reading.</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, copy</span>
-            <span class="cmd-desc">Copies your active draft directly to your clipboard hands-free.</span>
-          </div>
-          <div class="command-item">
-            <span class="cmd-phrase">Shazam, make that a separate note</span>
-            <span class="cmd-desc">Moves your latest spoken phrase into the Separate Notes scratchpad.</span>
-          </div>
-        </div>
-      </details>
-    </div>
-
   </main>
 
-  <!-- ══════════════════════════════════════════════════════════════
-       SETTINGS EXPANDABLE MODAL (CLICK ⚙️ IN TOP RIGHT CORNER)
-       ══════════════════════════════════════════════════════════════ -->
-  <div id="settings-backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-settings-title">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h2 id="modal-settings-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-          AI &amp; Configuration Settings
-        </h2>
-        <button type="button" id="btn-close-settings" class="btn-ghost btn-sm" aria-label="Close Settings">✕</button>
+  <!-- ════════════════════ FOOTER / STATUS BAR ════════════════════ -->
+  <footer id="app-footer">
+    <div class="footer-left">
+      <span id="doc-stats">0 words · 0 characters · ~0 min read</span>
+      <span id="history-counter" style="color:var(--primary);font-weight:600;"></span>
+    </div>
+    <div class="footer-right">
+      <button type="button" class="btn-link" id="btn-open-guide">
+        🎙️ Voice Commands Guide
+      </button>
+    </div>
+  </footer>
+
+  <!-- ════════════════════ VOICE COMMANDS GUIDE DRAWER ════════════════════ -->
+  <div class="modal-backdrop" id="guide-backdrop" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+    <div class="modal-sheet">
+      <div class="modal-sheet-header">
+        <h2 id="guide-title">🎙️ Hands-Free Voice Commands Guide</h2>
+        <button type="button" class="btn-icon" id="btn-close-guide" aria-label="Close Guide">✕</button>
       </div>
-
-      <div class="modal-body">
-        <!-- Segregated Tabs -->
-        <div class="settings-tabs" role="tablist">
-          <button type="button" class="settings-tab-btn active" data-tab="tab-gemini" role="tab">
-            🌟 Google Gemini (Free)
-          </button>
-          <button type="button" class="settings-tab-btn" data-tab="tab-openai" role="tab">
-            🤖 OpenAI / ChatGPT
-          </button>
-          <button type="button" class="settings-tab-btn" data-tab="tab-general" role="tab">
-            🎙️ Voice &amp; General
-          </button>
+      <div class="modal-sheet-body">
+        <div style="font-size:0.84rem;color:var(--text-muted);line-height:1.5;">
+          VoicePilot works seamlessly alongside <strong>Wispr Flow</strong> (<kbd>Ctrl+Win</kbd> or <kbd>Fn</kbd>). Speak freely to dictate, or prefix with <strong>"Shazam"</strong> for commands:
         </div>
 
-        <!-- TAB 1: Google Gemini (Recommended) -->
-        <div id="tab-gemini" class="tab-content active" role="tabpanel">
-          <div class="service-card">
-            <div class="service-card-header">
-              <span class="service-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#6366f1"/></svg>
-                Google Gemini (3.5 Flash-Lite)
-              </span>
-              <span class="auth-badge disconnected" id="gemini-status-badge">● Not Connected</span>
-            </div>
-            <p class="service-desc">
-              Google provides free access to Gemini through your Google account via Google AI Studio.
-              No credit card required. Uses <strong>Gemini 3.5 Flash-Lite</strong> for instant responses.
-            </p>
-            
-            <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
-              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="text-decoration:none;">
-                🔑 Get Free Google Key in 1 Click ↗
-              </a>
-            </div>
-
-            <div class="setting-row" style="margin-top:0.4rem;">
-              <label for="gemini-key-input">Paste Google Gemini API Key</label>
-              <div style="display:flex;gap:0.6rem;align-items:center;">
-                <input type="password" id="gemini-key-input" placeholder="AIzaSy..." style="flex:1;" />
-                <button type="button" class="btn btn-outline btn-sm" id="btn-save-gemini">Save &amp; Test</button>
-              </div>
-              <span class="setting-hint">Stored strictly inside your local browser. Never sent to any third-party server.</span>
-            </div>
-
-            <!-- Optional Google Cloud OAuth Client ID -->
-            <details style="margin-top:0.5rem;">
-              <summary style="font-size:0.75rem;padding:0.4rem 0;">Advanced: Google Cloud OAuth Single Sign-On</summary>
-              <div class="setting-row" style="margin-top:0.5rem;">
-                <label for="google-client-id-input">Google OAuth Client ID (Optional)</label>
-                <input type="text" id="google-client-id-input" placeholder="your-client-id.apps.googleusercontent.com" />
-                <span class="setting-hint">If you registered a Client ID for https://manishr075.github.io in Google Cloud Console.</span>
-                <div style="margin-top:0.5rem;" id="oauth-btn-container" style="display:none;">
-                  <button type="button" class="btn btn-outline btn-sm" id="btn-google-oauth-signin">Sign in with Google</button>
-                </div>
-              </div>
-            </details>
-          </div>
-        </div>
-
-        <!-- TAB 2: OpenAI / ChatGPT -->
-        <div id="tab-openai" class="tab-content" role="tabpanel">
-          <div class="service-card">
-            <div class="service-card-header">
-              <span class="service-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                OpenAI / ChatGPT (gpt-4o-mini)
-              </span>
-              <span class="auth-badge disconnected" id="openai-status-badge">● Not Connected</span>
-            </div>
-            <p class="service-desc">
-              Connect to OpenAI gpt-4o-mini using your personal API key. (Note: OpenAI requires an API key and does not support Google Sign-In).
-            </p>
-
-            <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
-              <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="text-decoration:none;">
-                Get OpenAI Key ↗
-              </a>
-            </div>
-
-            <div class="setting-row" style="margin-top:0.4rem;">
-              <label for="openai-key-input">OpenAI API Key</label>
-              <div style="display:flex;gap:0.6rem;align-items:center;">
-                <input type="password" id="openai-key-input" placeholder="sk-..." style="flex:1;" />
-                <button type="button" class="btn btn-outline btn-sm" id="btn-save-openai">Save</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 3: General & Voice Settings -->
-        <div id="tab-general" class="tab-content" role="tabpanel">
-          <div class="setting-row">
-            <label for="catchword-input">Voice Catchword (Wake Word)</label>
-            <input type="text" id="catchword-input" value="Shazam" style="max-width:320px;" />
-            <span class="setting-hint">The wake word triggering commands (default: "Shazam").</span>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <span class="cmd-phrase">Shazam, &lt;any instruction&gt;</span>
+            <span class="cmd-desc">Say ANY targeted edit (e.g. <em>"Shazam, put a comma next to hello"</em> or <em>"Shazam, capitalize the title"</em>). Applied directly to your document and saved to undo history.</span>
           </div>
 
-          <div class="setting-row" style="flex-direction:row;align-items:center;gap:.6rem;margin-top:.4rem;">
-            <input type="checkbox" id="spoken-feedback-toggle" checked style="width:16px;height:16px;accent-color:var(--primary);" />
-            <label for="spoken-feedback-toggle" style="cursor:pointer;margin:0;">Voice audio feedback (read confirmations aloud)</label>
+          <div class="cmd-card">
+            <span class="cmd-phrase">Shazam, review</span>
+            <span class="cmd-desc">Comprehensive polish. Shows proposed additions in green and removals in red on the exact field with the AI's reason.</span>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-phrase">Shazam, accept / keep new</span>
+            <span class="cmd-desc">Accepts the proposed review changes. Also works with <em>"option two"</em> or <em>"yes"</em>.</span>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-phrase">Shazam, decline / keep previous</span>
+            <span class="cmd-desc">Declines review changes and keeps original draft. Also works with <em>"option one"</em> or <em>"no"</em>.</span>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-phrase">Shazam, bold / italic / heading / list</span>
+            <span class="cmd-desc">Instantly formats current text selection or line as bold, italic, heading, or bullet list hands-free without AI delay.</span>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-phrase">Shazam, undo / redo</span>
+            <span class="cmd-desc">Reverts or restores previous insertions and edits. Local and instant.</span>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-phrase">Shazam, clear</span>
+            <span class="cmd-desc">Clears the document. Automatically backed up to undo history (say <em>"Shazam, undo"</em> to restore).</span>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-phrase">Shazam, read / stop</span>
+            <span class="cmd-desc">Reads your document aloud using speech synthesis, or halts speech immediately.</span>
+          </div>
+
+          <div class="cmd-card">
+            <span class="cmd-phrase">Shazam, copy</span>
+            <span class="cmd-desc">Copies your active draft directly to your clipboard.</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <footer>
-    VoicePilot Professional · Hands-Free Voice Editing · Designed for <a href="https://wisprflow.ai" target="_blank" rel="noopener">Wispr Flow</a>
-  </footer>
+  <!-- ════════════════════ SETTINGS MODAL ════════════════════ -->
+  <div class="modal-backdrop" id="settings-backdrop" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="modal-sheet">
+      <div class="modal-sheet-header">
+        <h2 id="settings-title">⚙️ AI &amp; Configuration Settings</h2>
+        <button type="button" class="btn-icon" id="btn-close-settings" aria-label="Close Settings">✕</button>
+      </div>
+      <div class="modal-sheet-body">
 
-  <!-- ════════════════════ SCRIPTS ════════════════════ -->
+        <!-- Google Gemini 3.5 Flash-Lite Card -->
+        <div class="service-card">
+          <div class="service-card-title">
+            <span>Google Gemini (Recommended)</span>
+            <span id="gemini-status-badge" class="badge-status disconnected">● Not Connected</span>
+          </div>
+          <p style="font-size:0.78rem;color:var(--text-muted);line-height:1.5;">
+            Powered by <strong>Gemini 3.5 Flash-Lite</strong> for instant, zero-latency document editing. Free from Google AI Studio.
+          </p>
+
+          <div class="form-group">
+            <label for="input-gemini-key">Gemini API Key</label>
+            <input type="password" id="input-gemini-key" class="form-input" placeholder="AIzaSy..." />
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;margin-top:0.25rem;">
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size:0.76rem;color:var(--primary);text-decoration:none;font-weight:600;">Get Free Key from Google AI Studio ↗</a>
+            <button type="button" class="btn-action" id="btn-save-gemini" style="background:var(--primary);color:#fff;">Save Key</button>
+          </div>
+        </div>
+
+        <!-- OpenAI Card -->
+        <div class="service-card">
+          <div class="service-card-title">
+            <span>OpenAI (GPT-4o mini)</span>
+            <span id="openai-status-badge" class="badge-status disconnected">● Not Connected</span>
+          </div>
+          <div class="form-group">
+            <label for="input-openai-key">OpenAI API Key</label>
+            <input type="password" id="input-openai-key" class="form-input" placeholder="sk-..." />
+          </div>
+          <div style="text-align:right;">
+            <button type="button" class="btn-action" id="btn-save-openai" style="background:var(--primary);color:#fff;">Save Key</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════ TOAST NOTIFICATION ════════════════════ -->
+  <div id="vp-toast" role="alert" aria-live="assertive">
+    <span id="vp-toast-msg"></span>
+    <button type="button" id="vp-toast-close" aria-label="Close notification">✕</button>
+  </div>
+
+  <!-- ════════════════════ APPLICATION SCRIPTS ════════════════════ -->
   <script>
 // === src/command_parser.js ===
 const VPCommandParser = (() => {
@@ -1248,7 +1342,12 @@ const VPCommandParser = (() => {
     { pattern: /^(?:clear|clear\s+(?:draft|all|text|document)|delete\s+all)$/i,                             action: 'clear',         hasArg: false },
     // 10. Separate Note
     { pattern: /^(?:make\s+that\s+a\s+separate\s+note|separate\s+note|move\s+to\s+notes?)$/i,                 action: 'separate_note', hasArg: false },
-    // 11. Explicit "edit" instruction
+    // 11. Rich Text Formatting Commands (Local, instant)
+    { pattern: /^(?:bold|make\s+(?:this|that)\s+bold|bold\s+(?:this|that))$/i,                                action: 'format_bold',   hasArg: false },
+    { pattern: /^(?:italic|italicize(?:\s+(?:this|that))?|make\s+(?:this|that)\s+italic)$/i,                  action: 'format_italic', hasArg: false },
+    { pattern: /^(?:heading|make\s+(?:this|that)\s+a?\s*heading|h1|h2)$/i,                                     action: 'format_heading',hasArg: false },
+    { pattern: /^(?:bullet\s+point|bullet\s+list|make\s+(?:this|that)\s+a?\s*list|list)$/i,                    action: 'format_list',   hasArg: false },
+    // 12. Explicit "edit" instruction
     { pattern: /^edit(?:\s*:\s*|\s+)(.+)/is,                                                                   action: 'ai_instruction',hasArg: true  },
   ];
 
@@ -1297,23 +1396,28 @@ const VPCommandParser = (() => {
   return { parse };
 })();
 
-// === src/segment_tracker.js ===
+// === src/segment_tracker.js (Adapted for Rich Text Contenteditable) ===
 const VPSegmentTracker = (() => {
-  function attach(textarea, { debounceMs = 450, onSegment } = {}) {
+  function getPlainText(el) {
+    if (!el) return '';
+    return el.innerText !== undefined ? el.innerText : (el.textContent || '');
+  }
+
+  function attach(editor, { debounceMs = 450, onSegment } = {}) {
     let _guard = false;
-    let _snapshot = textarea.value;
+    let _snapshot = getPlainText(editor);
     let _debounceTimer = null;
 
     function setGuard(val) { _guard = !!val; }
 
     function onBeforeInput() {
       if (_guard) return;
-      _snapshot = textarea.value;
+      _snapshot = getPlainText(editor);
     }
 
     function checkDiff() {
       if (_guard) return;
-      const currentVal = textarea.value;
+      const currentVal = getPlainText(editor);
       if (currentVal === _snapshot) return;
 
       const oldLen = _snapshot.length;
@@ -1338,7 +1442,7 @@ const VPSegmentTracker = (() => {
           insertedText,
           insertStart: prefixLen,
           insertEnd: newLen - suffixLen,
-          textarea,
+          editor,
         };
         clearTimeout(_debounceTimer);
         _debounceTimer = setTimeout(() => {
@@ -1347,24 +1451,24 @@ const VPSegmentTracker = (() => {
       }
     }
 
-    textarea.addEventListener('beforeinput', onBeforeInput);
-    textarea.addEventListener('input', checkDiff);
-    textarea.addEventListener('paste', () => setTimeout(checkDiff, 20));
+    editor.addEventListener('beforeinput', onBeforeInput);
+    editor.addEventListener('input', checkDiff);
+    editor.addEventListener('paste', () => setTimeout(checkDiff, 20));
 
     function detach() {
       clearTimeout(_debounceTimer);
-      textarea.removeEventListener('beforeinput', onBeforeInput);
-      textarea.removeEventListener('input', checkDiff);
+      editor.removeEventListener('beforeinput', onBeforeInput);
+      editor.removeEventListener('input', checkDiff);
     }
 
     function syncSnapshot() {
-      _snapshot = textarea.value;
+      _snapshot = getPlainText(editor);
     }
 
     return { detach, setGuard, syncSnapshot };
   }
 
-  return { attach };
+  return { attach, getPlainText };
 })();
 
 // === src/voice_feedback.js ===
@@ -1398,7 +1502,7 @@ const VPEditorState = (() => {
 
   function createState() {
     return {
-      acceptedDraft: '',
+      acceptedDraft: '', // stores the HTML content of the document
       pendingProposal: null, // { text, instruction, reason, isReview }
       undoStack: [],
       redoStack: [],
@@ -1413,18 +1517,18 @@ const VPEditorState = (() => {
     return next;
   }
 
-  function acceptDraft(state, newText) {
+  function acceptDraft(state, newHtml) {
     const next = pushUndo(state);
-    next.acceptedDraft = typeof newText === 'string' ? newText : state.acceptedDraft;
+    next.acceptedDraft = typeof newHtml === 'string' ? newHtml : state.acceptedDraft;
     next.pendingProposal = null;
     return next;
   }
 
-  function setProposal(state, proposalText, instruction, reason = '', isReview = false) {
+  function setProposal(state, proposalHtml, instruction, reason = '', isReview = false) {
     return {
       ...state,
       pendingProposal: {
-        text: proposalText,
+        text: proposalHtml,
         instruction: instruction || '',
         reason: reason || '',
         isReview: !!isReview,
@@ -1491,40 +1595,34 @@ const VPEditorState = (() => {
     let catchword = 'Shazam';
     let _internalWrite = false;
 
-    // Interruption handling: sequence counter and active AbortController
+    // Interruption handling
     let _currentOpId = 0;
     let _activeAbortController = null;
 
     // Keys stored in local storage
     let VP_GEMINI_KEY = localStorage.getItem('vp_gemini_key') || '';
     let VP_OPENAI_KEY = localStorage.getItem('vp_openai_key') || '';
-    let VP_GOOGLE_CLIENT_ID = localStorage.getItem('vp_google_client_id') || '';
-    let VP_GOOGLE_TOKEN = '';
-    let _googleTokenClient = null;
     let _activeGeminiModel = 'gemini-3.5-flash-lite';
 
     // DOM Elements
     const draftEditor          = document.getElementById('draft-editor');
-    const editorFieldWrapper   = document.querySelector('.editor-field-wrapper');
+    const editorWrapper        = document.getElementById('editor-wrapper');
     const draftDiffDisplay     = document.getElementById('draft-diff-display');
-    const proposalActivePill   = document.getElementById('proposal-active-pill');
     const proposalReasonBanner = document.getElementById('proposal-reason-banner');
     const proposalReasonText   = document.getElementById('proposal-reason-text');
-
-    const wordCountEl          = document.getElementById('word-count');
-    const readingTimeEl        = document.getElementById('reading-time');
-    const historyBarEl         = document.getElementById('history-bar');
-    const statusPill           = document.getElementById('vp-status-pill');
-    const statusText           = document.getElementById('vp-status-text');
-
-    const notesPanel           = document.getElementById('notes-panel');
-    const notesList            = document.getElementById('notes-list');
+    const voiceStatusPill      = document.getElementById('voice-status-pill');
+    const voiceStatusText      = document.getElementById('voice-status-text');
+    const docStatsEl           = document.getElementById('doc-stats');
+    const historyCounterEl     = document.getElementById('history-counter');
+    const docTitleInput        = document.getElementById('doc-title-input');
+    const saveStatusEl         = document.getElementById('save-status');
+    const docPaper             = document.getElementById('doc-paper');
 
     const toastEl              = document.getElementById('vp-toast');
     const toastMsg             = document.getElementById('vp-toast-msg');
     let _toastTimer            = null;
 
-    function showToast(msg, durationMs = 4000) {
+    function showToast(msg, durationMs = 3800) {
       toastMsg.textContent = msg;
       toastEl.classList.add('visible');
       clearTimeout(_toastTimer);
@@ -1537,8 +1635,8 @@ const VPEditorState = (() => {
     });
 
     function setStatus(type, label) {
-      statusPill.className = type;
-      statusText.textContent = label || (type === 'ready' ? 'Ready for Wispr input' : type);
+      voiceStatusPill.className = type;
+      voiceStatusText.textContent = label || (type === 'ready' ? 'Wispr Flow Ready' : type);
     }
 
     function escapeHtml(str) {
@@ -1550,147 +1648,216 @@ const VPEditorState = (() => {
         .replace(/'/g, '&#039;');
     }
 
-    function writeToEditor(val) {
+    // ── Markdown ⟷ Rich HTML Helpers ──
+    function markdownToHtml(md) {
+      if (!md) return '';
+      // If already contains HTML tags like <p>, <h1>, <div>, return directly
+      if (/<(p|h1|h2|h3|ul|ol|blockquote|div|strong|em)[\s>]/i.test(md)) {
+        return md;
+      }
+
+      const lines = md.replace(/\r\n/g, '\n').split('\n');
+      let html = '';
+      let inList = false;
+
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (!line) {
+          if (inList) { html += '</ul>'; inList = false; }
+          continue;
+        }
+
+        // Inline formatting: bold, italic, code
+        line = line
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '<em>$1</em>')
+          .replace(/`(.+?)`/g, '<code>$1</code>');
+
+        if (line.startsWith('# ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<h1>${line.slice(2)}</h1>`;
+        } else if (line.startsWith('## ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<h2>${line.slice(3)}</h2>`;
+        } else if (line.startsWith('### ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<h3>${line.slice(4)}</h3>`;
+        } else if (line.startsWith('&gt; ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<blockquote>${line.slice(5)}</blockquote>`;
+        } else if (/^[-*+]\s+/.test(line)) {
+          if (!inList) { html += '<ul>'; inList = true; }
+          html += `<li>${line.replace(/^[-*+]\s+/, '')}</li>`;
+        } else {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<p>${line}</p>`;
+        }
+      }
+      if (inList) html += '</ul>';
+      return html || '<p><br></p>';
+    }
+
+    function htmlToMarkdown(html) {
+      if (!html) return '';
+      const div = document.createElement('div');
+      div.innerHTML = html;
+
+      // Clean simple markdown extractor
+      function walk(node) {
+        if (node.nodeType === Node.TEXT_NODE) return node.nodeValue;
+        if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+        const tag = node.tagName.toLowerCase();
+        let inner = Array.from(node.childNodes).map(walk).join('');
+
+        switch (tag) {
+          case 'h1': return `\n# ${inner.trim()}\n\n`;
+          case 'h2': return `\n## ${inner.trim()}\n\n`;
+          case 'h3': return `\n### ${inner.trim()}\n\n`;
+          case 'strong':
+          case 'b': return `**${inner}**`;
+          case 'em':
+          case 'i': return `*${inner}*`;
+          case 'u': return `${inner}`;
+          case 'blockquote': return `\n> ${inner.trim()}\n\n`;
+          case 'code': return `\`${inner}\``;
+          case 'li': return `- ${inner.trim()}\n`;
+          case 'p':
+          case 'div': return `${inner}\n\n`;
+          case 'br': return '\n';
+          default: return inner;
+        }
+      }
+
+      return walk(div).replace(/\n{3,}/g, '\n\n').trim();
+    }
+
+    function writeToEditor(htmlVal) {
       _internalWrite = true;
       if (tracker) tracker.setGuard(true);
-      draftEditor.value = val;
+      draftEditor.innerHTML = htmlVal || '';
       if (tracker) {
         tracker.syncSnapshot();
         tracker.setGuard(false);
       }
       _internalWrite = false;
-      updateWordCount();
+      updateStats();
+      triggerAutoSave();
     }
 
-    function updateWordCount() {
-      const textToCount = state.pendingProposal ? state.pendingProposal.text : draftEditor.value;
-      const words = textToCount.trim().split(/\s+/).filter(Boolean);
-      wordCountEl.textContent = `${words.length} word${words.length !== 1 ? 's' : ''}`;
-      const minutes = Math.ceil(words.length / 180);
-      if (readingTimeEl) {
-        readingTimeEl.textContent = `· ~${minutes} min read`;
-      }
-    }
+    // ── In-Place Diff Generation (Highlights in Red/Green, NO Strikethrough) ──
+    function renderInPlaceDiff(oldHtml, newHtml) {
+      const oldText = typeof oldHtml === 'string' ? oldHtml : '';
+      const newText = typeof newHtml === 'string' ? newHtml : '';
 
-    // ── Generate In-Place Diff HTML (Highlight in Red, NO scratch-off / strikethrough) ──
-    function renderInPlaceDiff(oldText, newText) {
       if (!oldText && !newText) return '';
-      if (!oldText) {
-        return `<span class="diff-added-highlight">${escapeHtml(newText)}</span>`;
-      }
-      if (!newText) {
-        return `<span class="diff-removed-highlight">${escapeHtml(oldText)}</span>`;
-      }
+      if (!oldText) return `<span class="diff-added-highlight">${newText}</span>`;
+      if (!newText) return `<span class="diff-removed-highlight">${oldText}</span>`;
+
+      // Word-level diff
+      const oldWords = oldText.split(/(\s+)/);
+      const newWords = newText.split(/(\s+)/);
 
       let prefixLen = 0;
-      while (prefixLen < oldText.length && prefixLen < newText.length && oldText[prefixLen] === newText[prefixLen]) {
+      while (prefixLen < oldWords.length && prefixLen < newWords.length && oldWords[prefixLen] === newWords[prefixLen]) {
         prefixLen++;
       }
 
       let suffixLen = 0;
-      while (suffixLen < (oldText.length - prefixLen) && suffixLen < (newText.length - prefixLen) &&
-             oldText[oldText.length - 1 - suffixLen] === newText[newText.length - 1 - suffixLen]) {
+      while (suffixLen < (oldWords.length - prefixLen) && suffixLen < (newWords.length - prefixLen) &&
+             oldWords[oldWords.length - 1 - suffixLen] === newWords[newWords.length - 1 - suffixLen]) {
         suffixLen++;
       }
 
-      const commonPrefix = oldText.slice(0, prefixLen);
-      const commonSuffix = oldText.slice(oldText.length - suffixLen);
-      const removedPart = oldText.slice(prefixLen, oldText.length - suffixLen);
-      const addedPart = newText.slice(prefixLen, newText.length - suffixLen);
+      const commonPrefix = oldWords.slice(0, prefixLen).join('');
+      const commonSuffix = oldWords.slice(oldWords.length - suffixLen).join('');
+      const removedPart = oldWords.slice(prefixLen, oldWords.length - suffixLen).join('');
+      const addedPart = newWords.slice(prefixLen, newWords.length - suffixLen).join('');
 
-      let html = '';
-      if (commonPrefix) html += `<span>${escapeHtml(commonPrefix)}</span>`;
-      if (removedPart) html += `<span class="diff-removed-highlight">${escapeHtml(removedPart)}</span>`;
-      if (addedPart) html += `<span class="diff-added-highlight">${escapeHtml(addedPart)}</span>`;
-      if (commonSuffix) html += `<span>${escapeHtml(commonSuffix)}</span>`;
-      return html;
-    }
-
-    function renderNotes() {
-      while (notesList.firstChild) notesList.removeChild(notesList.firstChild);
-      state.notes.forEach((note, idx) => {
-        const item = document.createElement('div');
-        item.className = 'note-item';
-        const txt = document.createElement('span');
-        txt.className = 'note-item-text';
-        txt.textContent = note;
-        const del = document.createElement('button');
-        del.type = 'button';
-        del.className = 'note-item-del';
-        del.textContent = '✕';
-        del.addEventListener('click', () => {
-          state.notes = state.notes.filter((_, i) => i !== idx);
-          renderState();
-        });
-        item.appendChild(txt);
-        item.appendChild(del);
-        notesList.appendChild(item);
-      });
+      let out = '';
+      if (commonPrefix) out += commonPrefix;
+      if (removedPart) out += `<span class="diff-removed-highlight">${removedPart}</span>`;
+      if (addedPart) out += `<span class="diff-added-highlight">${addedPart}</span>`;
+      if (commonSuffix) out += commonSuffix;
+      return out;
     }
 
     function renderState() {
       if (state.pendingProposal) {
-        // Show inline in-place diff on the same field!
-        editorFieldWrapper.classList.add('has-proposal');
+        // Show in-place diff on the same field
+        editorWrapper.classList.add('has-proposal');
         draftEditor.style.display = '';
         draftDiffDisplay.style.display = '';
         draftDiffDisplay.innerHTML = renderInPlaceDiff(state.acceptedDraft, state.pendingProposal.text);
 
-        proposalActivePill.style.display = 'inline-flex';
-
-        // Reason banner is shown only for Review
         if (state.pendingProposal.isReview) {
           proposalReasonBanner.classList.add('visible');
-          proposalReasonText.textContent = state.pendingProposal.reason || 'Polished grammar, flow, and clarity.';
+          proposalReasonText.textContent = state.pendingProposal.reason || 'Polished grammar, structure, and flow.';
         } else {
           proposalReasonBanner.classList.remove('visible');
         }
 
-        setStatus('review', 'Proposed Edit Active (Say Shazam, accept/decline)');
+        setStatus('review', 'Proposal Active (Say "Shazam, accept" or "Shazam, decline")');
         setTimeout(() => {
           try { draftEditor.focus(); } catch (e) {}
         }, 50);
       } else {
-        // Normal editable field
-        editorFieldWrapper.classList.remove('has-proposal');
+        // Normal editable document mode
+        editorWrapper.classList.remove('has-proposal');
         draftEditor.style.display = '';
         draftDiffDisplay.style.display = '';
-        proposalActivePill.style.display = 'none';
         proposalReasonBanner.classList.remove('visible');
 
-        if (draftEditor.value !== state.acceptedDraft) {
+        if (draftEditor.innerHTML !== state.acceptedDraft) {
           writeToEditor(state.acceptedDraft);
         }
-        setStatus('ready', 'Ready for Wispr input');
+        setStatus('ready', 'Wispr Flow Ready');
       }
 
-      updateWordCount();
-
-      historyBarEl.textContent = state.undoStack.length > 0
-        ? `${state.undoStack.length} revision${state.undoStack.length > 1 ? 's' : ''} in history`
+      updateStats();
+      historyCounterEl.textContent = state.undoStack.length > 0
+        ? `${state.undoStack.length} revision${state.undoStack.length > 1 ? 's' : ''}`
         : '';
 
-      if (state.notes.length > 0) {
-        notesPanel.classList.add('visible');
-        renderNotes();
-      } else {
-        notesPanel.classList.remove('visible');
-      }
-
       updateConnectionBadges();
+    }
+
+    function updateStats() {
+      const text = draftEditor.innerText || '';
+      const words = (text.trim().match(/\S+/g) || []).length;
+      const chars = text.length;
+      const readMin = Math.max(1, Math.ceil(words / 200));
+
+      docStatsEl.textContent = `${words} word${words === 1 ? '' : 's'} · ${chars} char${chars === 1 ? '' : 's'} · ~${readMin} min read`;
+    }
+
+    let _saveTimer = null;
+    function triggerAutoSave() {
+      saveStatusEl.textContent = 'Saving...';
+      saveStatusEl.className = 'save-indicator';
+      clearTimeout(_saveTimer);
+      _saveTimer = setTimeout(() => {
+        try {
+          localStorage.setItem('vp_doc_content', draftEditor.innerHTML);
+          localStorage.setItem('vp_doc_title', docTitleInput.value);
+          saveStatusEl.textContent = '✓ Saved';
+          saveStatusEl.className = 'save-indicator saved';
+        } catch (e) {
+          console.warn('Auto-save failed', e);
+        }
+      }, 500);
     }
 
     function updateConnectionBadges() {
       const geminiBadge = document.getElementById('gemini-status-badge');
       if (geminiBadge) {
-        if (VP_GOOGLE_TOKEN) {
-          geminiBadge.className = 'auth-badge connected';
-          geminiBadge.textContent = '✓ Google Account Connected';
-        } else if (VP_GEMINI_KEY) {
-          geminiBadge.className = 'auth-badge connected';
-          geminiBadge.textContent = '✓ Key Active (3.5 Flash-Lite)';
+        if (VP_GEMINI_KEY) {
+          geminiBadge.className = 'badge-status connected';
+          geminiBadge.textContent = '✓ Active (3.5 Flash-Lite)';
         } else {
-          geminiBadge.className = 'auth-badge disconnected';
+          geminiBadge.className = 'badge-status disconnected';
           geminiBadge.textContent = '● Not Connected';
         }
       }
@@ -1698,77 +1865,125 @@ const VPEditorState = (() => {
       const openaiBadge = document.getElementById('openai-status-badge');
       if (openaiBadge) {
         if (VP_OPENAI_KEY) {
-          openaiBadge.className = 'auth-badge connected';
-          openaiBadge.textContent = '✓ Connected (gpt-4o-mini)';
+          openaiBadge.className = 'badge-status connected';
+          openaiBadge.textContent = '✓ Active (gpt-4o-mini)';
         } else {
-          openaiBadge.className = 'auth-badge disconnected';
+          openaiBadge.className = 'badge-status disconnected';
           openaiBadge.textContent = '● Not Connected';
         }
       }
     }
 
-    // ── Zero-Failure Google Gemini Integration (Gemini 3.5 Flash-Lite) ──
-    async function discoverBestGeminiModel(apiKey, signal) {
-      try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`, { signal });
-        if (res.ok) {
-          const data = await res.json();
-          const available = (data.models || []).filter(m => m.supportedGenerationMethods?.includes('generateContent'));
-          const prefList = [
-            'gemini-3.5-flash-lite',
-            'gemini-3.1-flash-lite',
-            'gemini-2.5-flash',
-            'gemini-2.0-flash',
-            'gemini-1.5-flash',
-            'gemini-1.5-flash-latest'
-          ];
-          for (const pref of prefList) {
-            const found = available.find(m => m.name === `models/${pref}` || m.name.endsWith(`/${pref}`));
-            if (found) {
-              _activeGeminiModel = pref;
-              return pref;
-            }
-          }
-          if (available.length > 0) {
-            const fallback = available[0].name.replace(/^models\//, '');
-            _activeGeminiModel = fallback;
-            return fallback;
-          }
-        }
-      } catch (err) {
-        if (err.name === 'AbortError') throw err;
-        console.warn('Dynamic model discovery failed, using default', err);
-      }
-      return 'gemini-3.5-flash-lite';
+    // ── Rich Formatting Controls ──
+    function formatDoc(command, value = null) {
+      draftEditor.focus();
+      document.execCommand(command, false, value);
+      updateToolbarActiveStates();
+      state = VPEditorState.acceptDraft(state, draftEditor.innerHTML);
+      triggerAutoSave();
     }
 
-    async function callGemini(draft, instruction, apiKey, token, isReview = false, signal) {
+    function updateToolbarActiveStates() {
+      try {
+        document.getElementById('t-bold').classList.toggle('active', document.queryCommandState('bold'));
+        document.getElementById('t-italic').classList.toggle('active', document.queryCommandState('italic'));
+        document.getElementById('t-underline').classList.toggle('active', document.queryCommandState('underline'));
+        document.getElementById('t-strike').classList.toggle('active', document.queryCommandState('strikeThrough'));
+
+        const block = (document.queryCommandValue('formatBlock') || 'p').toLowerCase();
+        const select = document.getElementById('t-block-format');
+        if (select) {
+          if (['p', 'h1', 'h2', 'h3', 'blockquote'].includes(block)) {
+            select.value = block;
+          } else {
+            select.value = 'p';
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Format Toolbar Listeners
+    document.getElementById('t-bold').addEventListener('click', () => formatDoc('bold'));
+    document.getElementById('t-italic').addEventListener('click', () => formatDoc('italic'));
+    document.getElementById('t-underline').addEventListener('click', () => formatDoc('underline'));
+    document.getElementById('t-strike').addEventListener('click', () => formatDoc('strikeThrough'));
+    document.getElementById('t-bullet-list').addEventListener('click', () => formatDoc('insertUnorderedList'));
+    document.getElementById('t-num-list').addEventListener('click', () => formatDoc('insertOrderedList'));
+    document.getElementById('t-clear-fmt').addEventListener('click', () => formatDoc('removeFormat'));
+
+    document.getElementById('t-code').addEventListener('click', () => {
+      const sel = window.getSelection();
+      if (!sel.rangeCount || sel.isCollapsed) return;
+      const range = sel.getRangeAt(0);
+      const code = document.createElement('code');
+      code.textContent = range.toString();
+      range.deleteContents();
+      range.insertNode(code);
+      formatDoc('removeFormat'); // sync state
+    });
+
+    document.getElementById('t-quote').addEventListener('click', () => {
+      formatDoc('formatBlock', 'blockquote');
+    });
+
+    document.getElementById('t-block-format').addEventListener('change', (e) => {
+      formatDoc('formatBlock', e.target.value);
+    });
+
+    document.getElementById('t-undo').addEventListener('click', () => executeCommand({ action: 'undo', arg: null }, ''));
+    document.getElementById('t-redo').addEventListener('click', () => executeCommand({ action: 'redo', arg: null }, ''));
+
+    // Keyboard Shortcuts (Ctrl+B, Ctrl+I, Ctrl+U, Ctrl+Z, Ctrl+Y)
+    draftEditor.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === 'b' || e.key === 'B') {
+          e.preventDefault();
+          formatDoc('bold');
+        } else if (e.key === 'i' || e.key === 'I') {
+          e.preventDefault();
+          formatDoc('italic');
+        } else if (e.key === 'u' || e.key === 'U') {
+          e.preventDefault();
+          formatDoc('underline');
+        }
+      }
+    });
+
+    document.addEventListener('selectionchange', () => {
+      if (document.activeElement === draftEditor) {
+        updateToolbarActiveStates();
+      }
+    });
+
+    // ── Zero-Failure Google Gemini Integration (Gemini 3.5 Flash-Lite) ──
+    async function callGemini(draftText, instruction, apiKey, isReview = false, signal) {
       let prompt = '';
       if (isReview) {
         prompt = `You are a world-class professional editor.
-User's draft document:
+User's document:
 """
-${draft}
+${draftText}
 """
 
-Review and polish the entire draft for grammar, flow, and elegance.
+Polish the document for clarity, flow, and elegance.
+Preserve headings, bullet points, and markdown formatting where appropriate.
 Respond with a JSON object containing EXACTLY two fields:
 {
-  "revised": "The complete polished text without quotes or markdown code blocks",
-  "reason": "A 1-sentence summary explaining the key improvements made"
+  "revised": "The complete polished text without backticks",
+  "reason": "A 1-sentence summary of the key improvements made"
 }
 Output ONLY raw JSON.`;
       } else {
         prompt = `You are a world-class professional editor.
-User's draft document:
+User's document:
 """
-${draft}
+${draftText}
 """
 
 Editing instruction:
 "${instruction}"
 
-Return ONLY the final revised draft. Do not wrap in markdown code blocks, backticks, quotes, commentary, or pleasantries.`;
+Return ONLY the final revised document text. Preserve or enhance markdown headings and formatting. Do not wrap in markdown code blocks or preamble.`;
       }
 
       const candidateModels = [
@@ -1777,25 +1992,17 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
         'gemini-3.1-flash-lite',
         'gemini-2.5-flash',
         'gemini-2.0-flash',
-        'gemini-1.5-flash',
-        'gemini-1.5-flash-latest'
+        'gemini-1.5-flash'
       ];
       const uniqueModels = [...new Set(candidateModels)];
-
       let lastError = null;
 
       for (const modelName of uniqueModels) {
         try {
-          const url = token
-            ? `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`
-            : `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-
-          const headers = { 'Content-Type': 'application/json' };
-          if (token) headers['Authorization'] = `Bearer ${token}`;
-
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
           const resp = await fetch(url, {
             method: 'POST',
-            headers,
+            headers: { 'Content-Type': 'application/json' },
             signal,
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
@@ -1807,12 +2014,6 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
             const errJson = await resp.json().catch(() => ({}));
             lastError = new Error(errJson.error?.message || `Model ${modelName} not found`);
             continue;
-          }
-
-          if (resp.status === 401 && token) {
-            VP_GOOGLE_TOKEN = '';
-            updateConnectionBadges();
-            throw new Error('Google session expired. Please sign in again or use a Gemini API key.');
           }
 
           if (!resp.ok) {
@@ -1829,51 +2030,24 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
                 const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
                 const parsed = JSON.parse(cleaned);
                 if (parsed.revised) {
-                  return { revised: parsed.revised.trim(), reason: parsed.reason || 'Polished grammar and clarity.' };
+                  return { revised: parsed.revised.trim(), reason: parsed.reason || 'Polished grammar and structure.' };
                 }
-              } catch (e) {
-                // Fallback to text directly if JSON parsing failed
-              }
-              return { revised: rawText, reason: 'Polished grammar, structure, and tone.' };
+              } catch (e) {}
+              return { revised: rawText, reason: 'Polished grammar, flow, and elegance.' };
             }
             return { revised: rawText, reason: '' };
           }
         } catch (e) {
           if (e.name === 'AbortError') throw e;
-          if (e.message && (e.message.includes('not found') || e.message.includes('404'))) {
-            lastError = e;
-            continue;
-          }
-          throw e;
+          lastError = e;
         }
       }
 
-      // Stable v1 endpoint fallback
-      if (apiKey) {
-        try {
-          const v1Url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-          const resp = await fetch(v1Url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            signal,
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.3 }
-            })
-          });
-          if (resp.ok) {
-            const data = await resp.json();
-            const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-            if (rawText) return { revised: rawText, reason: 'Polished grammar and flow.' };
-          }
-        } catch (ignored) {}
-      }
-
-      throw lastError || new Error('Could not connect to Google Gemini. Please verify your API key.');
+      throw lastError || new Error('Could not connect to Gemini. Please check your API key in Settings.');
     }
 
     // ── OpenAI Provider ──
-    async function callOpenAI(draft, instruction, apiKey, isReview = false, signal) {
+    async function callOpenAI(draftText, instruction, apiKey, isReview = false, signal) {
       const resp = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -1890,7 +2064,7 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
             },
             {
               role: 'user',
-              content: `Draft:\n${draft}\n\nInstruction: ${instruction || 'Polish and improve clarity, grammar, and flow.'}`
+              content: `Draft:\n${draftText}\n\nInstruction: ${instruction || 'Polish and improve clarity, grammar, and flow.'}`
             }
           ],
           temperature: 0.3,
@@ -1905,38 +2079,33 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
       const data = await resp.json();
       const text = data.choices?.[0]?.message?.content?.trim();
       if (!text) throw new Error('OpenAI returned an empty response.');
-      return { revised: text, reason: 'Polished grammar and clarity.' };
+      return { revised: text, reason: 'Polished grammar and flow.' };
     }
 
     // ── Unified AI Router ──
-    async function callAI(draft, instruction, isReview = false, signal) {
-      if (!draft || !draft.trim()) {
-        throw new Error('Your draft is empty. Dictate some content first before requesting AI editing.');
+    async function callAI(content, instruction, isReview = false, signal) {
+      const plain = (content || '').replace(/<[^>]+>/g, ' ').trim();
+      if (!plain) {
+        throw new Error('Your document is empty. Dictate or write some content first.');
       }
 
-      // 1. Google OAuth Token (if active)
-      if (VP_GOOGLE_TOKEN) {
-        return await callGemini(draft, instruction, null, VP_GOOGLE_TOKEN, isReview, signal);
-      }
+      const markdown = htmlToMarkdown(content);
 
-      // 2. Google Gemini API Key (Recommended Free Tier)
       if (VP_GEMINI_KEY) {
-        return await callGemini(draft, instruction, VP_GEMINI_KEY, null, isReview, signal);
+        return await callGemini(markdown, instruction, VP_GEMINI_KEY, isReview, signal);
       }
-
-      // 3. OpenAI Key
       if (VP_OPENAI_KEY) {
-        return await callOpenAI(draft, instruction, VP_OPENAI_KEY, isReview, signal);
+        return await callOpenAI(markdown, instruction, VP_OPENAI_KEY, isReview, signal);
       }
 
-      throw new Error('No AI connected. Open Settings (⚙️ in top-right) and add your free Google key in 1 click!');
+      throw new Error('No AI connected. Click ⚙️ in the top-right to add your free Google key in 1 click!');
     }
 
-    // ── Command Routing & Execution (With Interruption Handling) ──
+    // ── Command Routing & Execution ──
     async function executeCommand(parsed, insertedText) {
       const { action, arg } = parsed;
 
-      // ⚡ INTERRUPTION LOGIC: Cancel any in-flight old Shazam immediately!
+      // ⚡ Cancel any in-flight old request immediately
       _currentOpId++;
       const thisOpId = _currentOpId;
       if (_activeAbortController) {
@@ -1946,33 +2115,34 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
       _activeAbortController = new AbortController();
       const signal = _activeAbortController.signal;
 
-      setStatus('command', `Command: ${action}`);
+      setStatus('listening', `Command: ${action}`);
 
       switch (action) {
+        // Full Polish: Only Review shows Accept / Decline and Reason
         case 'review': {
           showToast('Consulting AI editor for review...');
           setStatus('review', 'AI Reviewing...');
-          if (editorFieldWrapper) editorFieldWrapper.classList.add('thinking');
+          if (editorWrapper) editorWrapper.classList.add('thinking');
           try {
             const res = await callAI(state.acceptedDraft, 'Comprehensive Review', true, signal);
-            if (thisOpId !== _currentOpId) return; // Interrupted by newer command!
+            if (thisOpId !== _currentOpId) return;
 
-            // Show proposed edit in faded text on the exact same field, with reason!
-            state = VPEditorState.setProposal(state, res.revised, 'Review & Polish', res.reason, true);
+            const revisedHtml = markdownToHtml(res.revised);
+            state = VPEditorState.setProposal(state, revisedHtml, 'Review & Polish', res.reason, true);
             renderState();
             showToast('Review ready! Say "Shazam, accept" or "Shazam, decline".');
-            VPVoiceFeedback.speak('Review ready. Say Shazam accept to apply, or Shazam decline to keep previous.');
+            VPVoiceFeedback.speak('Review ready. Say Shazam accept or decline.');
           } catch (e) {
             if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
-            showToast(`Review failed: ${e.message}`, 6500);
+            showToast(`Review failed: ${e.message}`, 6000);
             setStatus('error', 'AI Review Failed');
           } finally {
-            if (editorFieldWrapper) editorFieldWrapper.classList.remove('thinking');
+            if (editorWrapper) editorWrapper.classList.remove('thinking');
           }
           break;
         }
 
-        // Targeted Edit Instruction: Applied DIRECTLY to the draft with undo support
+        // Targeted Edit Instruction: Applied DIRECTLY into draft with undo support
         case 'ai_instruction': {
           if (!arg || !arg.trim()) {
             showToast('Please state what you want to edit.');
@@ -1980,27 +2150,58 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           }
           showToast(`Applying: "${arg}"...`);
           setStatus('review', 'Applying Edit...');
-          if (editorFieldWrapper) editorFieldWrapper.classList.add('thinking');
+          if (editorWrapper) editorWrapper.classList.add('thinking');
           try {
             const res = await callAI(state.acceptedDraft, arg, false, signal);
-            if (thisOpId !== _currentOpId) return; // Interrupted by newer command!
+            if (thisOpId !== _currentOpId) return;
 
-            // Directly apply targeted edit!
-            state = VPEditorState.acceptDraft(state, res.revised);
+            const revisedHtml = markdownToHtml(res.revised);
+            state = VPEditorState.acceptDraft(state, revisedHtml);
             renderState();
             showToast(`✓ Applied: "${arg}"`);
             VPVoiceFeedback.speak('Edit applied');
           } catch (e) {
             if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
-            showToast(`Edit failed: ${e.message}`, 6500);
+            showToast(`Edit failed: ${e.message}`, 6000);
             setStatus('error', 'AI Edit Failed');
           } finally {
-            if (editorFieldWrapper) editorFieldWrapper.classList.remove('thinking');
+            if (editorWrapper) editorWrapper.classList.remove('thinking');
           }
           break;
         }
 
-        // Voice Selection: Option 2 (Accept Corrected)
+        // Voice Formatting Commands (Instant & Local)
+        case 'format_bold': {
+          formatDoc('bold');
+          showToast('Toggled Bold');
+          VPVoiceFeedback.speak('Bold');
+          break;
+        }
+
+        case 'format_italic': {
+          formatDoc('italic');
+          showToast('Toggled Italic');
+          VPVoiceFeedback.speak('Italic');
+          break;
+        }
+
+        case 'format_heading': {
+          const current = (document.queryCommandValue('formatBlock') || 'p').toLowerCase();
+          const target = current === 'h2' ? 'p' : 'h2';
+          formatDoc('formatBlock', target);
+          showToast(target === 'h2' ? 'Formatted as Heading' : 'Formatted as Paragraph');
+          VPVoiceFeedback.speak(target === 'h2' ? 'Heading' : 'Paragraph');
+          break;
+        }
+
+        case 'format_list': {
+          formatDoc('insertUnorderedList');
+          showToast('Toggled Bullet List');
+          VPVoiceFeedback.speak('List');
+          break;
+        }
+
+        // Accept Proposal (Option 2)
         case 'accept': {
           if (!state.pendingProposal) {
             showToast('No pending proposal to accept.');
@@ -2013,14 +2214,14 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           break;
         }
 
-        // Voice Selection: Option 1 (Keep Original / Decline)
+        // Decline Proposal (Option 1)
         case 'decline': {
           if (!state.pendingProposal) {
             showToast('No pending proposal to decline.');
           } else {
             state = VPEditorState.discardProposal(state);
             renderState();
-            showToast('✕ Proposal declined. Original draft kept.');
+            showToast('✕ Proposal declined. Original text kept.');
             VPVoiceFeedback.speak('Proposal declined. Original kept.');
           }
           break;
@@ -2053,16 +2254,16 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
         }
 
         case 'read': {
-          if (!state.acceptedDraft.trim()) {
-            showToast('Draft is empty.');
+          const text = draftEditor.innerText || '';
+          if (!text.trim()) {
+            showToast('Document is empty.');
           } else {
             showToast('Reading document aloud... (Say "Shazam, stop" to halt)');
-            setTimeout(() => VPVoiceFeedback.speak(state.acceptedDraft), 150);
+            setTimeout(() => VPVoiceFeedback.speak(text), 150);
           }
           break;
         }
 
-        // Halt speech synthesis playback
         case 'stop': {
           if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
@@ -2071,14 +2272,14 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           break;
         }
 
-        // Copy draft to clipboard
         case 'copy': {
           const textToCopy = state.pendingProposal ? state.pendingProposal.text : state.acceptedDraft;
-          if (!textToCopy.trim()) {
-            showToast('Nothing to copy. Draft is empty.');
+          const cleanText = textToCopy.replace(/<[^>]+>/g, ' ').trim();
+          if (!cleanText) {
+            showToast('Document is empty.');
           } else {
-            navigator.clipboard.writeText(textToCopy).then(() => {
-              showToast('📋 Copied draft to clipboard!');
+            navigator.clipboard.writeText(cleanText).then(() => {
+              showToast('📋 Copied to clipboard!');
               VPVoiceFeedback.speak('Copied to clipboard');
             }).catch(() => {
               showToast('Could not copy to clipboard.');
@@ -2087,39 +2288,23 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           break;
         }
 
-        // Clear draft with undo safety net
+        // Clear Draft with Undo Safety Net
         case 'clear': {
-          if (!state.acceptedDraft && !draftEditor.value) {
-            showToast('Draft is already empty.');
+          const currentText = draftEditor.innerText || '';
+          if (!state.acceptedDraft && !currentText.trim()) {
+            showToast('Document is already empty.');
             return;
           }
-          if (draftEditor.value && !state.acceptedDraft) {
-            state.acceptedDraft = draftEditor.value;
-          }
           state = VPEditorState.acceptDraft(state, '');
+          writeToEditor('');
           renderState();
-          showToast('Draft cleared. (Say "Shazam, undo" to restore)');
+          showToast('Document cleared. (Say "Shazam, undo" to restore)');
           VPVoiceFeedback.speak('Draft cleared');
           break;
         }
 
-        case 'separate_note': {
-          const lastUndo = state.undoStack.length > 0 ? state.undoStack[state.undoStack.length - 1] : '';
-          const movedText = state.acceptedDraft.slice(lastUndo.length).trim() || state.acceptedDraft.trim();
-          if (movedText) {
-            state.notes.push(movedText);
-            state = VPEditorState.undo(state);
-            renderState();
-            showToast('Moved text into Separate Notes.');
-            VPVoiceFeedback.speak('Moved to notes');
-          } else {
-            showToast('No recent text to move to notes.');
-          }
-          break;
-        }
-
         case 'empty_prompt': {
-          showToast('Wake word heard. Say any instruction (e.g. "Shazam, add commas" or "Shazam, review").');
+          showToast('Wake word heard. Say any command (e.g. "Shazam, bold", "Shazam, review").');
           VPVoiceFeedback.speak('Listening for command');
           break;
         }
@@ -2130,31 +2315,50 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
     }
 
     // ── Input & Segment Handling ──
-    async function handleSegment({ insertedText, insertStart, insertEnd }) {
+    function removeInsertedTextFromEditor(cmdText) {
+      if (!cmdText) return;
+      const clean = cmdText.trim();
+      // Search text nodes backward from last child to remove command text
+      const walker = document.createTreeWalker(draftEditor, NodeFilter.SHOW_TEXT, null, false);
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+      for (let i = textNodes.length - 1; i >= 0; i--) {
+        const node = textNodes[i];
+        const idx = node.nodeValue.lastIndexOf(clean);
+        if (idx !== -1) {
+          node.nodeValue = node.nodeValue.slice(0, idx) + node.nodeValue.slice(idx + clean.length);
+          if (node.nodeValue.endsWith(' ')) {
+            node.nodeValue = node.nodeValue.trimEnd() + ' ';
+          }
+          return;
+        }
+      }
+      // Fallback
+      draftEditor.innerHTML = draftEditor.innerHTML.replace(new RegExp('\\s*' + clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*', 'i'), ' ');
+    }
+
+    async function handleSegment({ insertedText }) {
       if (!insertedText || !insertedText.trim()) return;
 
       const trimmed = insertedText.trim();
       const parsed = VPCommandParser.parse(trimmed, catchword);
 
       if (parsed) {
-        // Shazam command detected: strip command text immediately from editor
-        const currentVal = draftEditor.value;
-        const before = currentVal.slice(0, insertStart);
-        const after = currentVal.slice(insertEnd);
-        const cleaned = (before + after).replace(/[ \t]{2,}/g, ' ');
-
-        state.acceptedDraft = cleaned;
-        writeToEditor(cleaned);
+        // Strip the Shazam command phrase from the editor DOM
+        removeInsertedTextFromEditor(trimmed);
+        state.acceptedDraft = draftEditor.innerHTML;
+        if (tracker) tracker.syncSnapshot();
 
         await executeCommand(parsed, insertedText);
       } else {
-        // Regular voice dictation
+        // Regular voice dictation from Wispr Flow
         if (state.pendingProposal) {
-          // If dictating while proposal is open, discard proposal and append
           state = VPEditorState.discardProposal(state);
         }
-        state = VPEditorState.acceptDraft(state, draftEditor.value);
-        renderState();
+        state = VPEditorState.acceptDraft(state, draftEditor.innerHTML);
+        updateStats();
+        triggerAutoSave();
       }
     }
 
@@ -2166,39 +2370,19 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
       });
     }
 
-    // ── UI Button Listeners ──
-    document.getElementById('btn-review').addEventListener('click', () => {
+    // ── Button Listeners ──
+    document.getElementById('btn-trigger-review').addEventListener('click', () => {
       executeCommand({ action: 'review', arg: null }, '');
     });
 
-    document.getElementById('btn-copy-draft').addEventListener('click', () => {
-      executeCommand({ action: 'copy', arg: null }, '');
-    });
-
-    document.getElementById('btn-sample-draft').addEventListener('click', () => {
-      const sampleText = "Hello, my name is Manish Reddy and I am studyng at RV University in Bangalore. voice pilot is an amazing handsfree tool that edits my writing when i say shazam.";
-      state = VPEditorState.acceptDraft(state, sampleText);
-      renderState();
-      showToast('🪄 Sample draft loaded! Try saying "Shazam, review" or "Shazam, read".');
-    });
-
-    document.getElementById('btn-undo').addEventListener('click', () => {
-      executeCommand({ action: 'undo', arg: null }, '');
-    });
-
-    document.getElementById('btn-redo').addEventListener('click', () => {
-      executeCommand({ action: 'redo', arg: null }, '');
-    });
-
-    document.getElementById('btn-read').addEventListener('click', () => {
+    document.getElementById('btn-trigger-read').addEventListener('click', () => {
       executeCommand({ action: 'read', arg: null }, '');
     });
 
-    document.getElementById('btn-clear-draft').addEventListener('click', () => {
+    document.getElementById('btn-clear-doc').addEventListener('click', () => {
       executeCommand({ action: 'clear', arg: null }, '');
     });
 
-    // Inline Proposal Accept / Decline Buttons
     document.getElementById('btn-inline-accept').addEventListener('click', () => {
       executeCommand({ action: 'accept', arg: null }, '');
     });
@@ -2209,22 +2393,76 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
 
     document.getElementById('btn-speak-proposal').addEventListener('click', () => {
       if (state.pendingProposal) {
-        VPVoiceFeedback.speak(state.pendingProposal.text);
+        VPVoiceFeedback.speak(state.pendingProposal.text.replace(/<[^>]+>/g, ' '));
       }
     });
 
-    // When diff display is clicked in proposal mode, keep focus in draftEditor for Wispr Flow
+    // Clicking diff display passes focus to editor for Wispr Flow
     draftDiffDisplay.addEventListener('click', () => {
       try { draftEditor.focus(); } catch (e) {}
     });
 
-    document.getElementById('btn-clear-notes').addEventListener('click', () => {
-      state.notes = [];
+    // Load Rich Sample Document
+    document.getElementById('btn-load-sample').addEventListener('click', () => {
+      const sampleHtml = `
+<h1>Welcome to VoicePilot</h1>
+<p>VoicePilot is a <strong>hands-free voice text editor</strong> built specifically for dictating with <em>Wispr Flow</em>.</p>
+<h2>Key Capabilities</h2>
+<ul>
+  <li><strong>Direct Voice Edits:</strong> Say <code>"Shazam, put a comma next to hello"</code> to make instant edits.</li>
+  <li><strong>Full AI Review:</strong> Say <code>"Shazam, review"</code> to polish phrasing with in-place diffs.</li>
+  <li><strong>Instant Formatting:</strong> Say <code>"Shazam, bold"</code> or <code>"Shazam, list"</code> without touching your keyboard.</li>
+</ul>
+<blockquote>"Speak freely at the speed of thought. Let AI handle the punctuation, formatting, and polish."</blockquote>
+<p>Try saying <em>"Shazam, review"</em> to see VoicePilot polish this document!</p>
+      `.trim();
+      state = VPEditorState.acceptDraft(state, sampleHtml);
+      writeToEditor(sampleHtml);
       renderState();
+      showToast('🪄 Sample document loaded! Try saying "Shazam, review".');
     });
 
-    // ── Dark / Light Mode Switcher ──
-    const themeToggleBtn = document.getElementById('theme-toggle');
+    // Document Title Auto-Save
+    docTitleInput.addEventListener('input', triggerAutoSave);
+
+    // ── Typography Selector ──
+    const fontDropdownMenu = document.getElementById('font-dropdown-menu');
+    const btnFontToggle = document.getElementById('btn-font-toggle');
+
+    btnFontToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fontDropdownMenu.classList.toggle('show');
+      exportDropdownMenu.classList.remove('show');
+    });
+
+    document.querySelectorAll('[data-font]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const font = btn.getAttribute('data-font');
+        docPaper.className = `font-${font}` + (docPaper.classList.contains('full-width') ? ' full-width' : '');
+        localStorage.setItem('vp_doc_font', font);
+        fontDropdownMenu.classList.remove('show');
+        showToast(`Font changed to ${font}`);
+      });
+    });
+
+    // Full Width Toggle
+    const btnWidthToggle = document.getElementById('btn-width-toggle');
+    const widthIcon = document.getElementById('width-icon');
+
+    function applyWidth(isFull) {
+      docPaper.classList.toggle('full-width', isFull);
+      widthIcon.textContent = isFull ? '][ ' : '↔';
+      localStorage.setItem('vp_doc_full_width', isFull ? '1' : '0');
+    }
+
+    btnWidthToggle.addEventListener('click', () => {
+      const isFull = !docPaper.classList.contains('full-width');
+      applyWidth(isFull);
+      showToast(isFull ? 'Switched to Full Width' : 'Switched to Reading Width');
+    });
+
+    // Theme Switcher (Dark / Light)
+    const btnThemeToggle = document.getElementById('btn-theme-toggle');
     const themeIcon = document.getElementById('theme-icon');
 
     function applyTheme(theme) {
@@ -2233,167 +2471,155 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
       themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
     }
 
-    themeToggleBtn.addEventListener('click', () => {
+    btnThemeToggle.addEventListener('click', () => {
       const current = document.documentElement.getAttribute('data-theme') || 'dark';
       applyTheme(current === 'dark' ? 'light' : 'dark');
     });
 
-    const savedTheme = localStorage.getItem('vp_theme') || 'dark';
-    applyTheme(savedTheme);
+    // Export Dropdown
+    const exportDropdownMenu = document.getElementById('export-dropdown-menu');
+    const btnExportToggle = document.getElementById('btn-export-toggle');
 
-    // ── Expandable Settings Modal ──
+    btnExportToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      exportDropdownMenu.classList.toggle('show');
+      fontDropdownMenu.classList.remove('show');
+    });
+
+    document.getElementById('export-copy-rich').addEventListener('click', () => {
+      const html = draftEditor.innerHTML;
+      const blob = new Blob([html], { type: 'text/html' });
+      const textBlob = new Blob([draftEditor.innerText], { type: 'text/plain' });
+      navigator.clipboard.write([
+        new ClipboardItem({ 'text/html': blob, 'text/plain': textBlob })
+      ]).then(() => {
+        showToast('📋 Rich text copied to clipboard!');
+      }).catch(() => {
+        navigator.clipboard.writeText(draftEditor.innerText);
+        showToast('📋 Text copied to clipboard!');
+      });
+      exportDropdownMenu.classList.remove('show');
+    });
+
+    document.getElementById('export-copy-markdown').addEventListener('click', () => {
+      const md = htmlToMarkdown(draftEditor.innerHTML);
+      navigator.clipboard.writeText(md).then(() => {
+        showToast('📝 Markdown copied to clipboard!');
+      });
+      exportDropdownMenu.classList.remove('show');
+    });
+
+    document.getElementById('export-download-md').addEventListener('click', () => {
+      const md = htmlToMarkdown(draftEditor.innerHTML);
+      const filename = (docTitleInput.value.trim() || 'document').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.md';
+      downloadFile(filename, md, 'text/markdown');
+      exportDropdownMenu.classList.remove('show');
+    });
+
+    document.getElementById('export-download-txt').addEventListener('click', () => {
+      const txt = draftEditor.innerText || '';
+      const filename = (docTitleInput.value.trim() || 'document').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.txt';
+      downloadFile(filename, txt, 'text/plain');
+      exportDropdownMenu.classList.remove('show');
+    });
+
+    document.getElementById('export-print').addEventListener('click', () => {
+      window.print();
+      exportDropdownMenu.classList.remove('show');
+    });
+
+    function downloadFile(filename, content, type) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([content], { type }));
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    // Close Dropdowns on Click Outside
+    window.addEventListener('click', () => {
+      fontDropdownMenu.classList.remove('show');
+      exportDropdownMenu.classList.remove('show');
+    });
+
+    // ── Voice Commands Guide Modal ──
+    const guideBackdrop = document.getElementById('guide-backdrop');
+    document.getElementById('btn-open-guide').addEventListener('click', () => guideBackdrop.classList.add('open'));
+    document.getElementById('btn-close-guide').addEventListener('click', () => guideBackdrop.classList.remove('open'));
+    guideBackdrop.addEventListener('click', (e) => {
+      if (e.target === guideBackdrop) guideBackdrop.classList.remove('open');
+    });
+
+    // ── Settings Modal ──
     const settingsBackdrop = document.getElementById('settings-backdrop');
-    const btnOpenSettings = document.getElementById('btn-open-settings');
-    const btnCloseSettings = document.getElementById('btn-close-settings');
+    const inputGeminiKey = document.getElementById('input-gemini-key');
+    const inputOpenaiKey = document.getElementById('input-openai-key');
 
-    function openSettingsModal() {
+    document.getElementById('btn-open-settings').addEventListener('click', () => {
+      inputGeminiKey.value = VP_GEMINI_KEY;
+      inputOpenaiKey.value = VP_OPENAI_KEY;
       settingsBackdrop.classList.add('open');
-    }
+    });
 
-    function closeSettingsModal() {
-      settingsBackdrop.classList.remove('open');
-    }
-
-    btnOpenSettings.addEventListener('click', openSettingsModal);
-    btnCloseSettings.addEventListener('click', closeSettingsModal);
-
+    document.getElementById('btn-close-settings').addEventListener('click', () => settingsBackdrop.classList.remove('open'));
     settingsBackdrop.addEventListener('click', (e) => {
-      if (e.target === settingsBackdrop) closeSettingsModal();
+      if (e.target === settingsBackdrop) settingsBackdrop.classList.remove('open');
+    });
+
+    document.getElementById('btn-save-gemini').addEventListener('click', () => {
+      const val = inputGeminiKey.value.trim();
+      VP_GEMINI_KEY = val;
+      localStorage.setItem('vp_gemini_key', val);
+      updateConnectionBadges();
+      showToast('✓ Gemini API key saved!');
+    });
+
+    document.getElementById('btn-save-openai').addEventListener('click', () => {
+      const val = inputOpenaiKey.value.trim();
+      VP_OPENAI_KEY = val;
+      localStorage.setItem('vp_openai_key', val);
+      updateConnectionBadges();
+      showToast('✓ OpenAI API key saved!');
     });
 
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && settingsBackdrop.classList.contains('open')) {
-        closeSettingsModal();
+      if (e.key === 'Escape') {
+        settingsBackdrop.classList.remove('open');
+        guideBackdrop.classList.remove('open');
       }
     });
 
-    // ── Segregated Settings Tabs ──
-    const tabBtns = document.querySelectorAll('.settings-tab-btn');
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        tabBtns.forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-        btn.classList.add('active');
-        const target = document.getElementById(btn.getAttribute('data-tab'));
-        if (target) target.classList.add('active');
-      });
-    });
+    // ── Initialization ──
+    function init() {
+      // 1. Theme
+      const savedTheme = localStorage.getItem('vp_theme') || 'dark';
+      applyTheme(savedTheme);
 
-    // ── Settings Save Listeners ──
-    const geminiInput = document.getElementById('gemini-key-input');
-    if (geminiInput) {
-      geminiInput.value = VP_GEMINI_KEY;
-    }
-    document.getElementById('btn-save-gemini').addEventListener('click', async () => {
-      const val = geminiInput.value.trim();
-      VP_GEMINI_KEY = val;
-      localStorage.setItem('vp_gemini_key', VP_GEMINI_KEY);
-      if (VP_GEMINI_KEY) {
-        showToast('Connecting to Google Gemini (3.5 Flash-Lite)...');
-        try {
-          await discoverBestGeminiModel(VP_GEMINI_KEY, null);
-          await callGemini('Hello world', 'Check connection', VP_GEMINI_KEY, null, false, null);
-          showToast(`🎉 Google Gemini connected! Model: ${_activeGeminiModel}`);
-          VPVoiceFeedback.speak('Google Gemini connected');
-        } catch (e) {
-          showToast(`Saved, but test call failed: ${e.message}`, 6500);
-        }
+      // 2. Font & Width
+      const savedFont = localStorage.getItem('vp_doc_font') || 'sans';
+      docPaper.className = `font-${savedFont}`;
+      const savedWidth = localStorage.getItem('vp_doc_full_width') === '1';
+      applyWidth(savedWidth);
+
+      // 3. Document Title & Content Restore
+      const savedTitle = localStorage.getItem('vp_doc_title');
+      if (savedTitle) docTitleInput.value = savedTitle;
+
+      const savedContent = localStorage.getItem('vp_doc_content');
+      if (savedContent && savedContent.trim()) {
+        state = VPEditorState.acceptDraft(state, savedContent);
+        writeToEditor(savedContent);
       } else {
-        showToast('Gemini Key removed.');
+        // Load default welcome document
+        document.getElementById('btn-load-sample').click();
       }
+
+      // 4. Attach Tracker
+      attachTracker();
       renderState();
-    });
-
-    const openaiInput = document.getElementById('openai-key-input');
-    if (openaiInput) {
-      openaiInput.value = VP_OPENAI_KEY;
-    }
-    document.getElementById('btn-save-openai').addEventListener('click', () => {
-      VP_OPENAI_KEY = openaiInput.value.trim();
-      localStorage.setItem('vp_openai_key', VP_OPENAI_KEY);
-      showToast(VP_OPENAI_KEY ? 'OpenAI key saved!' : 'OpenAI key cleared.');
-      renderState();
-    });
-
-    // Advanced Google Cloud OAuth
-    const googleClientInput = document.getElementById('google-client-id-input');
-    const oauthBtnContainer = document.getElementById('oauth-btn-container');
-    if (googleClientInput) {
-      googleClientInput.value = VP_GOOGLE_CLIENT_ID;
-      if (VP_GOOGLE_CLIENT_ID) oauthBtnContainer.style.display = 'block';
-      googleClientInput.addEventListener('change', function() {
-        VP_GOOGLE_CLIENT_ID = this.value.trim();
-        localStorage.setItem('vp_google_client_id', VP_GOOGLE_CLIENT_ID);
-        oauthBtnContainer.style.display = VP_GOOGLE_CLIENT_ID ? 'block' : 'none';
-        initGoogleOAuth();
-      });
     }
 
-    function initGoogleOAuth() {
-      if (!VP_GOOGLE_CLIENT_ID || typeof google === 'undefined' || !google.accounts) return;
-      try {
-        _googleTokenClient = google.accounts.oauth2.initTokenClient({
-          client_id: VP_GOOGLE_CLIENT_ID,
-          scope: 'https://www.googleapis.com/auth/generative-language',
-          callback: (response) => {
-            if (response.error) {
-              showToast(`Google Sign-In failed: ${response.error}`, 6000);
-              return;
-            }
-            VP_GOOGLE_TOKEN = response.access_token;
-            renderState();
-            showToast('🎉 Signed in with Google! Gemini AI is ready.');
-            VPVoiceFeedback.speak('Signed in with Google. AI ready.');
-          }
-        });
-      } catch (e) {
-        console.warn('OAuth init error:', e);
-      }
-    }
-
-    document.getElementById('btn-google-oauth-signin')?.addEventListener('click', () => {
-      if (!_googleTokenClient) initGoogleOAuth();
-      if (_googleTokenClient) {
-        _googleTokenClient.requestAccessToken({ prompt: 'consent' });
-      } else {
-        showToast('Please enter a valid Google OAuth Client ID first.');
-      }
-    });
-
-    // General Settings
-    document.getElementById('catchword-input').addEventListener('change', function() {
-      const val = this.value.trim();
-      if (val) {
-        catchword = val;
-        showToast(`Wake word set to "${catchword}"`);
-      }
-    });
-
-    document.getElementById('spoken-feedback-toggle').addEventListener('change', function() {
-      VPVoiceFeedback.setEnabled(this.checked);
-      showToast(this.checked ? 'Spoken feedback enabled.' : 'Spoken feedback muted.');
-    });
-
-    // Manual typing sync
-    draftEditor.addEventListener('input', () => {
-      if (_internalWrite) return;
-      updateWordCount();
-    });
-
-    draftEditor.addEventListener('blur', () => {
-      if (_internalWrite) return;
-      if (!state.pendingProposal && draftEditor.value !== state.acceptedDraft) {
-        state = VPEditorState.acceptDraft(state, draftEditor.value);
-        renderState();
-      }
-    });
-
-    // Init
-    attachTracker();
-    renderState();
-    if (VP_GOOGLE_CLIENT_ID) {
-      window.addEventListener('load', initGoogleOAuth);
-    }
+    window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
