@@ -13,7 +13,7 @@ const VPCommandParser = (() => {
     // 1. Review (full polish)
     { pattern: /^(?:review|polish|ai\s+review|check|proofread)$/i,                                             action: 'review',        hasArg: false },
     // 2. Accept (Option 2 / Corrected)
-    { pattern: /^(?:accept(?:\s+(?:this|that|it|proposal|changes?|edit))?|apply(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep\s+(?:new|corrected|changes?)|choose\s+(?:corrected|new|option\s+(?:two|2))|option\s+(?:two|2)|yes|confirm|looks\s+good)$/i, action: 'accept', hasArg: false },
+    { pattern: /^(?:accept(?:\s+(?:this|that|it|proposal|changes?|edit))?|apply(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep(?:\s+(?:this|that|it|new|corrected|changes?))?|choose\s+(?:corrected|new|option\s+(?:two|2))|option\s+(?:two|2)|yes|confirm|looks\s+good)$/i, action: 'accept', hasArg: false },
     // 3. Decline (Option 1 / Previous)
     { pattern: /^(?:decline(?:\s+(?:this|that|it|proposal|changes?|edit))?|discard(?:\s+(?:this|that|it|proposal|changes?|edit))?|reject(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep\s+(?:previous|old|original)|choose\s+(?:previous|old|original|option\s+(?:one|1))|option\s+(?:one|1)|no|cancel)$/i, action: 'decline', hasArg: false },
     // 4. Undo

@@ -115,6 +115,9 @@ assertEqual(acc5 && acc5.action, 'accept', 'Shazam, accept this works locally');
 const acc6 = VPCommandParser.parse('Shazam, apply changes');
 assertEqual(acc6 && acc6.action, 'accept', 'Shazam, apply changes works locally');
 
+const acc7 = VPCommandParser.parse('Shazam, keep');
+assertEqual(acc7 && acc7.action, 'accept', 'Shazam, keep works locally');
+
 const dec1 = VPCommandParser.parse('Shazam, decline');
 assertEqual(dec1 && dec1.action, 'decline', 'Shazam, decline works locally');
 

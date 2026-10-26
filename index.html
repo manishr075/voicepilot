@@ -19,9 +19,9 @@
        Merged: Professional SaaS Layout + Minimal Hands-Free Controls
        ══════════════════════════════════════════════════════════════ */
     :root {
-      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-serif: 'Merriweather', Georgia, Cambria, serif;
-      --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-serif: "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+      --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
       --radius-sm: 6px;
       --radius-md: 9px;
@@ -32,72 +32,73 @@
       --transition-base: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Dark Theme (Default) — Restrained Obsidian & Slate */
+    /* Modern Minimalist Dark Theme (Default) */
     html[data-theme="dark"] {
-      --bg-app: #0e1015;
-      --bg-paper: #15181f;
-      --bg-subtle: #1a1d26;
-      --bg-surface: #202430;
-      --bg-elevated: #262b3a;
+      --bg-app: #0e1013;
+      --bg-paper: #16181d;
+      --bg-subtle: #1e2128;
+      --bg-surface: #262933;
+      --bg-elevated: #2e323e;
 
-      --border-subtle: #1e222d;
-      --border-default: #282d3b;
-      --border-hover: #3d4458;
-      --border-focus: #6366f1;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-default: rgba(255, 255, 255, 0.14);
+      --border-hover: rgba(255, 255, 255, 0.25);
+      --border-focus: #3b82f6;
 
-      --text-main: #f3f5f8;
-      --text-muted: #9aa1b3;
-      --text-dim: #636a7e;
+      --text-main: #f4f4f6;
+      --text-muted: #9ba1b0;
+      --text-dim: #646a78;
 
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --primary-subtle: rgba(99, 102, 241, 0.12);
-      --primary-border: rgba(99, 102, 241, 0.3);
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-subtle: rgba(59, 130, 246, 0.12);
+      --primary-border: rgba(59, 130, 246, 0.3);
 
-      /* In-Place Diff Colors (Soft, accessible, no eye-strain) */
-      --diff-curr-bg: rgba(239, 68, 68, 0.18);
-      --diff-curr-border: rgba(239, 68, 68, 0.42);
-      --diff-curr-text: #fca5a5;
+      /* In-Place Diff Colors: Clean, accessible, NO strikethrough */
+      --diff-curr-bg: rgba(244, 63, 94, 0.15);
+      --diff-curr-border: rgba(244, 63, 94, 0.35);
+      --diff-curr-text: #fda4af;
 
-      --diff-prop-bg: rgba(16, 185, 129, 0.18);
-      --diff-prop-border: rgba(16, 185, 129, 0.42);
+      --diff-prop-bg: rgba(16, 185, 129, 0.15);
+      --diff-prop-border: rgba(16, 185, 129, 0.35);
       --diff-prop-text: #6ee7b7;
 
-      --paper-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-default);
+      --paper-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-subtle);
       --modal-backdrop: rgba(6, 8, 12, 0.75);
     }
 
-    /* Light Theme — Editorial Studio Paper */
+    /* Modern Minimalist Light Theme */
     html[data-theme="light"] {
-      --bg-app: #f5f6f9;
+      --bg-app: #f8f9fa;
       --bg-paper: #ffffff;
-      --bg-subtle: #f0f2f6;
-      --bg-surface: #e6e9f0;
+      --bg-subtle: #f1f3f5;
+      --bg-surface: #e9ecef;
       --bg-elevated: #ffffff;
 
-      --border-subtle: #eaecf1;
-      --border-default: #d9dce5;
-      --border-hover: #b4bac9;
-      --border-focus: #4f46e5;
+      --border-subtle: #e5e7eb;
+      --border-default: #d1d5db;
+      --border-hover: #9ca3af;
+      --border-focus: #2563eb;
 
-      --text-main: #121620;
-      --text-muted: #52596d;
-      --text-dim: #8c93a7;
+      --text-main: #111827;
+      --text-muted: #4b5563;
+      --text-dim: #9ca3af;
 
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --primary-subtle: rgba(79, 70, 229, 0.08);
-      --primary-border: rgba(79, 70, 229, 0.28);
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-subtle: rgba(37, 99, 235, 0.08);
+      --primary-border: rgba(37, 99, 235, 0.25);
 
-      --diff-curr-bg: #fee2e2;
-      --diff-curr-border: #fca5a5;
-      --diff-curr-text: #991b1b;
+      /* In-Place Diff Colors: Soft, clear, NO strikethrough */
+      --diff-curr-bg: #ffe4e6;
+      --diff-curr-border: #fecdd3;
+      --diff-curr-text: #9f1239;
 
-      --diff-prop-bg: #d1fae5;
-      --diff-prop-border: #86efac;
-      --diff-prop-text: #065f46;
+      --diff-prop-bg: #dcfce7;
+      --diff-prop-border: #bbf7d0;
+      --diff-prop-text: #166534;
 
-      --paper-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 20px 40px -15px rgba(0, 0, 0, 0.07), 0 0 0 1px var(--border-subtle);
+      --paper-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 16px 36px -12px rgba(0, 0, 0, 0.06), 0 0 0 1px var(--border-subtle);
       --modal-backdrop: rgba(15, 23, 42, 0.45);
     }
 
@@ -122,10 +123,10 @@
     }
 
     /* ══════════════════════════════════════════════════════════════
-       TOP APPLICATION HEADER (Sleek SaaS Nav, 52px)
+       TOP APPLICATION HEADER (Minimalist Text Editor Top Bar, 48px)
        ══════════════════════════════════════════════════════════════ */
     #app-header {
-      height: 52px;
+      height: 48px;
       background: var(--bg-paper);
       border-bottom: 1px solid var(--border-subtle);
       position: sticky;
@@ -141,15 +142,14 @@
     .header-left {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 0.75rem;
       min-width: 0;
-      flex: 1;
     }
 
     .brand-mark {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.55rem;
       text-decoration: none;
       color: inherit;
       user-select: none;
@@ -157,80 +157,82 @@
     }
 
     .brand-icon-box {
-      width: 28px;
-      height: 28px;
-      border-radius: 7px;
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-sm);
       background: var(--primary);
       color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
     }
 
     .brand-title {
-      font-size: 0.96rem;
+      font-size: 0.95rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       color: var(--text-main);
     }
 
-    .header-divider {
-      width: 1px;
-      height: 20px;
-      background: var(--border-default);
-      flex-shrink: 0;
-    }
-
-    /* Editable Document Title */
-    .doc-title-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      min-width: 0;
-      flex: 1;
-      max-width: 320px;
-    }
-
-    #doc-title-input {
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: var(--radius-sm);
-      color: var(--text-main);
-      font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 600;
-      padding: 0.25rem 0.5rem;
-      width: 100%;
-      outline: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: border-color var(--transition-fast), background var(--transition-fast);
-    }
-
-    #doc-title-input:hover {
-      background: var(--bg-subtle);
-    }
-
-    #doc-title-input:focus {
-      background: var(--bg-paper);
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 2px var(--primary-subtle);
-    }
-
-    .save-indicator {
+    .editor-mode-badge {
       font-size: 0.72rem;
+      font-weight: 500;
       color: var(--text-dim);
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      white-space: nowrap;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.02em;
     }
 
-    .save-indicator.saved {
-      color: #10b981;
+    .btn-text-action {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-default);
+      color: var(--text-main);
+      height: 30px;
+      padding: 0 0.7rem;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      user-select: none;
+    }
+
+    .btn-text-action:hover {
+      background: var(--bg-surface);
+      border-color: var(--border-hover);
+    }
+
+    .doc-title-input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-family: inherit;
+      font-size: 1.75rem;
+      font-weight: 750;
+      letter-spacing: -0.025em;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      padding: 0 0 0.5rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+      transition: border-color var(--transition-fast);
+    }
+
+    .doc-title-input:focus {
+      border-bottom-color: var(--border-focus);
+    }
+
+    .doc-title-input::placeholder {
+      color: var(--text-dim);
+      font-weight: 500;
     }
 
     /* Header Right Actions */
@@ -785,6 +787,30 @@
       gap: 0.75rem;
     }
 
+    .footer-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tip-pill {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+    .tip-pill em {
+      color: var(--text-main);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .t-btn-quiet {
+      font-size: 0.76rem;
+      color: var(--text-dim);
+    }
+    .t-btn-quiet:hover {
+      color: var(--text-main);
+    }
+
     .footer-right {
       display: flex;
       align-items: center;
@@ -1000,7 +1026,7 @@
     <div class="header-left">
       <a href="#" class="brand-mark" aria-label="VoicePilot Home">
         <div class="brand-icon-box" aria-hidden="true">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
             <path d="M19 10v1a7 7 0 0 1-14 0v-1"></path>
             <line x1="12" y1="18" x2="12" y2="22"></line>
@@ -1009,14 +1035,7 @@
         </div>
         <span class="brand-title">VoicePilot</span>
       </a>
-
-      <div class="header-divider" aria-hidden="true"></div>
-
-      <!-- Editable Document Title with Auto-Save -->
-      <div class="doc-title-wrapper">
-        <input type="text" id="doc-title-input" value="Untitled Document" placeholder="Document title..." aria-label="Document Title" spellcheck="false" />
-        <span id="save-status" class="save-indicator saved" title="Auto-saved to local browser storage">✓ Saved</span>
-      </div>
+      <span class="editor-mode-badge">Text Editor</span>
     </div>
 
     <div class="header-right">
@@ -1026,70 +1045,58 @@
         <span id="voice-status-text">Wispr Flow Ready</span>
       </div>
 
-      <!-- Typography Selector (Sans / Serif / Mono) -->
-      <div class="dropdown-container">
-        <button type="button" class="btn-icon" id="btn-font-toggle" title="Change Document Font" aria-label="Select Typography">
-          <span style="font-weight:700;font-size:0.85rem;">Aa</span>
-        </button>
-        <div class="dropdown-menu" id="font-dropdown-menu">
-          <button type="button" class="dropdown-item" data-font="sans">Modern Sans (Plus Jakarta)</button>
-          <button type="button" class="dropdown-item" data-font="serif">Editorial Serif (Merriweather)</button>
-          <button type="button" class="dropdown-item" data-font="mono">Technical Mono (JetBrains)</button>
-        </div>
-      </div>
-
-      <!-- Full-Width / Reading Width Toggle -->
-      <button type="button" class="btn-icon" id="btn-width-toggle" title="Toggle Reading / Full Width" aria-label="Toggle Document Width">
-        <span id="width-icon">↔</span>
+      <!-- 1-Click Copy Action -->
+      <button type="button" class="btn-text-action" id="btn-quick-copy" title="Copy entire document (or say 'Shazam, copy')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <span>Copy</span>
       </button>
 
       <!-- Theme Switcher (Dark / Light) -->
-      <button type="button" class="btn-icon" id="btn-theme-toggle" title="Toggle Dark / Light Theme" aria-label="Toggle Theme">
+      <button type="button" class="btn-icon" id="btn-theme-toggle" title="Toggle Light / Dark mode" aria-label="Toggle Theme">
         <span id="theme-icon">☀️</span>
       </button>
 
-      <!-- Export Dropdown -->
-      <div class="dropdown-container">
-        <button type="button" class="btn-icon" id="btn-export-toggle" title="Export Document" aria-label="Export Document">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-        </button>
-        <div class="dropdown-menu" id="export-dropdown-menu">
-          <button type="button" class="dropdown-item" id="export-copy-rich">📋 Copy Rich Text</button>
-          <button type="button" class="dropdown-item" id="export-copy-markdown">📝 Copy Markdown</button>
-          <button type="button" class="dropdown-item" id="export-download-md">💾 Download .md file</button>
-          <button type="button" class="dropdown-item" id="export-download-txt">📄 Download .txt file</button>
-          <button type="button" class="dropdown-item" id="export-print">🖨️ Print / Save PDF</button>
-        </div>
-      </div>
-
-      <!-- Settings Icon (⚙️) -->
-      <button type="button" class="btn-icon" id="btn-open-settings" title="Settings &amp; Speech Control" aria-label="Open Settings">
+      <!-- Voice Commands Guide Button -->
+      <button type="button" class="btn-icon" id="btn-open-guide" title="Voice Commands Guide" aria-label="Voice Commands Guide">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </button>
+
+      <!-- Preferences Icon (⚙️) -->
+      <button type="button" class="btn-icon" id="btn-open-settings" title="Preferences" aria-label="Open Preferences">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
       </button>
     </div>
   </header>
 
-  <!-- ════════════════════ STREAMLINED HANDS-FREE TOOLBAR ════════════════════ -->
+  <!-- ════════════════════ STREAMLINED TEXT EDITOR TOOLBAR ════════════════════ -->
   <nav id="formatting-toolbar" aria-label="Text formatting toolbar">
-    <!-- Primary AI Action -->
+    <!-- Primary AI Polish Action -->
     <div class="toolbar-group">
-      <button type="button" class="btn-ai-review" id="btn-trigger-review" title="Polish document (or say 'Shazam, review')">✨ AI Review</button>
+      <button type="button" class="btn-ai-review" id="btn-trigger-review" title="Polish document with AI (or say 'Shazam, polish')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+        </svg>
+        <span>Polish</span>
+      </button>
     </div>
 
     <div class="toolbar-sep" aria-hidden="true"></div>
 
-    <!-- Essential Formatting (Minimal, Voice-Friendly) -->
+    <!-- Essential Formatting (Text Editor Essentials) -->
     <div class="toolbar-group">
       <button type="button" class="t-btn" id="t-bold" title="Bold (Ctrl+B or 'Shazam, bold')" aria-label="Bold"><strong>B</strong></button>
       <button type="button" class="t-btn" id="t-italic" title="Italic (Ctrl+I or 'Shazam, italic')" aria-label="Italic"><em>I</em></button>
-      <button type="button" class="t-btn" id="t-heading" title="Toggle Heading (or 'Shazam, heading')" aria-label="Heading">H</button>
+      <button type="button" class="t-btn" id="t-heading" title="Heading (or 'Shazam, heading')" aria-label="Heading">H</button>
       <button type="button" class="t-btn" id="t-bullet-list" title="Bullet List (or 'Shazam, list')" aria-label="Bullet List">• List</button>
     </div>
 
@@ -1102,8 +1109,8 @@
     </div>
 
     <div class="toolbar-group" style="margin-left:auto;">
-      <button type="button" class="t-btn" id="btn-load-sample" title="Load sample document" style="font-size:0.78rem;color:var(--text-dim);">Sample</button>
-      <button type="button" class="t-btn" id="btn-clear-doc" title="Clear canvas (or 'Shazam, clear')" style="font-size:0.78rem;color:var(--text-dim);">Clear</button>
+      <button type="button" class="t-btn t-btn-quiet" id="btn-load-sample" title="Load sample document">Sample</button>
+      <button type="button" class="t-btn t-btn-quiet" id="btn-clear-doc" title="Clear canvas (or 'Shazam, clear')">Clear</button>
     </div>
   </nav>
 
@@ -1111,24 +1118,24 @@
   <main id="document-viewport">
     <div id="doc-paper" class="font-sans">
 
-      <!-- AI Review Reason Banner (Only shown during Review proposals) -->
+      <!-- AI Polish Suggestion Banner (Only shown during proposals) -->
       <div id="proposal-reason-banner">
         <div class="proposal-reason-left">
-          <span class="proposal-tag">✨ AI Polish</span>
-          <div>
-            <strong>Reason: </strong>
-            <span id="proposal-reason-text" class="proposal-reason-text">Improved structure, clarity, and phrasing.</span>
-          </div>
+          <span class="proposal-tag">✨ Suggestion</span>
+          <span id="proposal-reason-text" class="proposal-reason-text">Improved grammar and phrasing.</span>
         </div>
         <div class="proposal-reason-actions">
-          <button type="button" class="btn-action btn-action-accept" id="btn-inline-accept" title="Say 'Shazam, accept'">✓ Accept (Shazam, accept)</button>
-          <button type="button" class="btn-action btn-action-decline" id="btn-inline-decline" title="Say 'Shazam, decline'">✕ Decline (Shazam, decline)</button>
-          <button type="button" class="btn-action" id="btn-speak-proposal" style="background:var(--bg-paper);color:var(--text-main);border-color:var(--border-default);">🔊 Hear</button>
+          <button type="button" class="btn-action btn-action-accept" id="btn-inline-accept" title="Say 'Shazam, keep'">✓ Keep</button>
+          <button type="button" class="btn-action btn-action-decline" id="btn-inline-decline" title="Say 'Shazam, discard'">✕ Discard</button>
+          <button type="button" class="btn-action btn-action-listen" id="btn-speak-proposal" title="Say 'Shazam, read'">🔊 Listen</button>
         </div>
       </div>
 
       <!-- Editable Document Surface -->
       <div class="editor-wrapper" id="editor-wrapper">
+        <!-- Optional Note Title (Notion/Bear style) -->
+        <input type="text" id="doc-title-input" class="doc-title-input" value="Untitled Note" placeholder="Untitled Note" spellcheck="false" />
+
         <!-- Live Rich Text Contenteditable Editor -->
         <div
           id="draft-editor"
@@ -1136,7 +1143,7 @@
           role="textbox"
           aria-multiline="true"
           aria-label="Rich Voice Document Editor"
-          data-placeholder="Start typing or speaking freely with Wispr Flow...&#10;&#10;• Use toolbar buttons or voice commands for Bold, Italic, Headings, and Lists.&#10;• Say 'Shazam, put a comma next to hello' for instant targeted edits.&#10;• Say 'Shazam, review' for full comprehensive polish."
+          data-placeholder="Start typing or speak freely with Wispr Flow...&#10;&#10;• Format by voice: Say 'Shazam, bold', 'Shazam, heading', or 'Shazam, list'&#10;• Edit by voice: Say 'Shazam, put a comma next to hello'&#10;• Polish by voice: Say 'Shazam, polish'&#10;• Undo anytime: Say 'Shazam, undo'"
           spellcheck="true"
         ></div>
 
@@ -1150,12 +1157,15 @@
   <!-- ════════════════════ FOOTER / STATUS BAR ════════════════════ -->
   <footer id="app-footer">
     <div class="footer-left">
-      <span id="doc-stats">0 words · 0 characters · ~0 min read</span>
+      <span id="doc-stats">0 words · 0 characters</span>
       <span id="history-counter" style="color:var(--primary);font-weight:600;"></span>
     </div>
+    <div class="footer-center">
+      <span class="tip-pill">Tip: Say <em>"Shazam, bold"</em> or <em>"Shazam, polish"</em></span>
+    </div>
     <div class="footer-right">
-      <button type="button" class="btn-link" id="btn-open-guide">
-        🎙️ Voice Commands Guide
+      <button type="button" class="btn-link" id="btn-open-guide-footer">
+        🎙️ Voice Commands
       </button>
     </div>
   </footer>
@@ -1165,38 +1175,38 @@
   <div class="modal-backdrop" id="guide-backdrop">
     <div class="modal-sheet">
       <div class="modal-sheet-header">
-        <h2>🎙️ Hands-Free Voice Commands</h2>
+        <h2>🎙️ Voice Commands Guide</h2>
         <button type="button" class="btn-icon" id="btn-close-guide" aria-label="Close Guide">✕</button>
       </div>
       <div class="modal-sheet-body">
         <div class="cmd-grid">
           <div class="cmd-card">
             <span class="cmd-phrase">"Shazam, bold"</span>
-            <span class="cmd-desc">Toggles bold styling on selected text or current paragraph.</span>
+            <span class="cmd-desc">Toggles bold styling on selected text or current sentence.</span>
           </div>
           <div class="cmd-card">
             <span class="cmd-phrase">"Shazam, italic"</span>
-            <span class="cmd-desc">Toggles italic styling on selected text or current paragraph.</span>
+            <span class="cmd-desc">Toggles italic styling on selected text or current sentence.</span>
           </div>
           <div class="cmd-card">
             <span class="cmd-phrase">"Shazam, heading"</span>
-            <span class="cmd-desc">Toggles between Heading 2 and regular Paragraph.</span>
+            <span class="cmd-desc">Toggles between Heading and regular text.</span>
           </div>
           <div class="cmd-card">
             <span class="cmd-phrase">"Shazam, list"</span>
-            <span class="cmd-desc">Creates or toggles a bullet point list item.</span>
+            <span class="cmd-desc">Creates or toggles a bullet list item.</span>
           </div>
           <div class="cmd-card">
             <span class="cmd-phrase">"Shazam, put a comma next to hello"</span>
-            <span class="cmd-desc">Instant targeted AI edit directly applied to your document.</span>
+            <span class="cmd-desc">Instant targeted edit directly applied to your text.</span>
           </div>
           <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, review"</span>
-            <span class="cmd-desc">Full AI review for flow, tone, and grammar with in-place diff.</span>
+            <span class="cmd-phrase">"Shazam, polish"</span>
+            <span class="cmd-desc">Full polish for flow, tone, and grammar with clean preview.</span>
           </div>
           <div class="cmd-card">
-            <span class="cmd-phrase">"Shazam, accept" / "Shazam, decline"</span>
-            <span class="cmd-desc">Choose to keep or discard proposed AI edits.</span>
+            <span class="cmd-phrase">"Shazam, keep" / "Shazam, discard"</span>
+            <span class="cmd-desc">Choose to keep or discard proposed polish edits.</span>
           </div>
           <div class="cmd-card">
             <span class="cmd-phrase">"Shazam, undo" / "Shazam, redo"</span>
@@ -1204,7 +1214,11 @@
           </div>
           <div class="cmd-card">
             <span class="cmd-phrase">"Shazam, read" / "Shazam, stop"</span>
-            <span class="cmd-desc">Read draft aloud using browser text-to-speech or stop playback.</span>
+            <span class="cmd-desc">Read draft aloud or stop playback anytime.</span>
+          </div>
+          <div class="cmd-card">
+            <span class="cmd-phrase">"Shazam, copy"</span>
+            <span class="cmd-desc">Copies your entire text to clipboard instantly.</span>
           </div>
           <div class="cmd-card">
             <span class="cmd-phrase">"Shazam, clear"</span>
@@ -1215,48 +1229,42 @@
     </div>
   </div>
 
-  <!-- Settings Modal -->
+  <!-- Preferences Modal -->
   <div class="modal-backdrop" id="settings-backdrop">
     <div class="modal-sheet">
       <div class="modal-sheet-header">
-        <h2>⚙️ VoicePilot Settings</h2>
-        <button type="button" class="btn-icon" id="btn-close-settings" aria-label="Close Settings">✕</button>
+        <h2>⚙️ Editor Preferences</h2>
+        <button type="button" class="btn-icon" id="btn-close-settings" aria-label="Close Preferences">✕</button>
       </div>
       <div class="modal-sheet-body">
         <div class="service-card">
           <div class="service-card-title">
-            <span>Speech Wake Word</span>
+            <span>Voice Wake Word</span>
           </div>
           <div class="form-group">
-            <label for="catchword-input">Wake Word / Catchphrase</label>
+            <label for="catchword-input">Wake Word</label>
             <input type="text" id="catchword-input" class="form-input" value="Shazam" placeholder="Shazam" />
           </div>
-          <span style="font-size:0.75rem;color:var(--text-dim);">Trigger word spoken before voice commands (e.g. "Shazam, bold", "Shazam, review").</span>
+          <span style="font-size:0.75rem;color:var(--text-dim);">Trigger word spoken before voice commands (e.g. "Shazam, bold", "Shazam, polish").</span>
         </div>
 
         <div class="service-card">
           <div class="service-card-title">
-            <span>Spoken Voice Feedback</span>
+            <span>Voice Confirmation</span>
           </div>
           <div style="display:flex;align-items:center;gap:0.75rem;">
             <input type="checkbox" id="spoken-feedback-toggle" checked style="accent-color:var(--primary);width:16px;height:16px;" />
-            <span style="font-size:0.82rem;color:var(--text-main);">Speak voice confirmation after edits</span>
+            <span style="font-size:0.82rem;color:var(--text-main);">Speak audio confirmation after edits</span>
           </div>
         </div>
 
-        <div class="service-card">
+        <div class="service-card" style="background:var(--bg-paper);">
           <div class="service-card-title">
-            <span>Google Gemini AI (Optional Key Override)</span>
-            <span id="gemini-status-badge" class="badge-status connected">✓ Gemini 3.5 Flash-Lite</span>
+            <span>About VoicePilot</span>
           </div>
-          <div class="form-group">
-            <label for="input-gemini-key">API Key</label>
-            <input type="password" id="input-gemini-key" class="form-input" placeholder="AIza..." />
-          </div>
-          <span style="font-size:0.75rem;color:var(--text-dim);">All local formatting (bold, heading, list, undo, redo, read, clear) works 100% locally with zero setup.</span>
-          <div style="text-align:right;">
-            <button type="button" class="btn-action" id="btn-save-gemini" style="background:var(--primary);color:#fff;">Save Key</button>
-          </div>
+          <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">
+            VoicePilot is a minimalist text editor built for <strong>Wispr Flow</strong> voice dictation. All hands-free formatting (bold, italic, headings, bullet lists, undo, redo, read aloud, clear) works 100% locally with zero setup required.
+          </p>
         </div>
       </div>
     </div>
@@ -1276,7 +1284,7 @@ const VPCommandParser = (() => {
     // 1. Review (full polish)
     { pattern: /^(?:review|polish|ai\s+review|check|proofread)$/i,                                             action: 'review',        hasArg: false },
     // 2. Accept (Option 2 / Corrected)
-    { pattern: /^(?:accept(?:\s+(?:this|that|it|proposal|changes?|edit))?|apply(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep\s+(?:new|corrected|changes?)|choose\s+(?:corrected|new|option\s+(?:two|2))|option\s+(?:two|2)|yes|confirm|looks\s+good)$/i, action: 'accept', hasArg: false },
+    { pattern: /^(?:accept(?:\s+(?:this|that|it|proposal|changes?|edit))?|apply(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep(?:\s+(?:this|that|it|new|corrected|changes?))?|choose\s+(?:corrected|new|option\s+(?:two|2))|option\s+(?:two|2)|yes|confirm|looks\s+good)$/i, action: 'accept', hasArg: false },
     // 3. Decline (Option 1 / Previous)
     { pattern: /^(?:decline(?:\s+(?:this|that|it|proposal|changes?|edit))?|discard(?:\s+(?:this|that|it|proposal|changes?|edit))?|reject(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep\s+(?:previous|old|original)|choose\s+(?:previous|old|original|option\s+(?:one|1))|option\s+(?:one|1)|no|cancel)$/i, action: 'decline', hasArg: false },
     // 4. Undo
@@ -1790,22 +1798,24 @@ const VPEditorState = (() => {
       const text = draftEditor.innerText || '';
       const words = (text.trim().match(/\S+/g) || []).length;
       const chars = text.length;
-      const readMin = Math.max(1, Math.ceil(words / 200));
-
-      docStatsEl.textContent = `${words} word${words === 1 ? '' : 's'} · ${chars} char${chars === 1 ? '' : 's'} · ~${readMin} min read`;
+      docStatsEl.textContent = `${words} word${words === 1 ? '' : 's'} · ${chars} char${chars === 1 ? '' : 's'}`;
     }
 
     let _saveTimer = null;
     function triggerAutoSave() {
-      saveStatusEl.textContent = 'Saving...';
-      saveStatusEl.className = 'save-indicator';
+      if (saveStatusEl) {
+        saveStatusEl.textContent = 'Saving...';
+        saveStatusEl.className = 'save-indicator';
+      }
       clearTimeout(_saveTimer);
       _saveTimer = setTimeout(() => {
         try {
           localStorage.setItem('vp_doc_content', draftEditor.innerHTML);
-          localStorage.setItem('vp_doc_title', docTitleInput.value);
-          saveStatusEl.textContent = '✓ Saved';
-          saveStatusEl.className = 'save-indicator saved';
+          if (docTitleInput) localStorage.setItem('vp_doc_title', docTitleInput.value);
+          if (saveStatusEl) {
+            saveStatusEl.textContent = '✓ Saved';
+            saveStatusEl.className = 'save-indicator saved';
+          }
         } catch (e) {
           console.warn('Auto-save failed', e);
         }
@@ -1986,7 +1996,7 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
         if (e.name === 'AbortError') throw e;
       }
 
-      throw lastError || new Error('Could not connect to Gemini. Please check your API key in Settings.');
+      throw lastError || new Error('Could not polish text right now. Please try again or continue writing!');
     }
 
     // ── Unified AI Router ──
@@ -1998,7 +2008,7 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
 
       const activeKey = PERMANENT_GEMINI_KEY || VP_GEMINI_KEY;
       if (!activeKey) {
-        throw new Error('No AI key found. Add your Gemini key in Settings (⚙) to enable cloud edits, or use hands-free formatting (bold, heading, list, undo, redo, read) which works 100% locally!');
+        throw new Error('Cloud AI polish is currently unavailable. All voice formatting (Bold, Italic, Headings, Lists, Undo, Redo, Read aloud, Clear) works 100% locally with zero setup!');
       }
 
       const markdown = htmlToMarkdown(content);
@@ -2328,59 +2338,45 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
 <p>VoicePilot is a <strong>hands-free voice text editor</strong> built specifically for dictating with <em>Wispr Flow</em>.</p>
 <h2>Key Capabilities</h2>
 <ul>
-  <li><strong>Direct Voice Edits:</strong> Say <code>"Shazam, put a comma next to hello"</code> to make instant edits.</li>
-  <li><strong>Full AI Review:</strong> Say <code>"Shazam, review"</code> to polish phrasing with in-place diffs.</li>
-  <li><strong>Instant Formatting:</strong> Say <code>"Shazam, bold"</code> or <code>"Shazam, list"</code> without touching your keyboard.</li>
+  <li><strong>Voice Edits:</strong> Say <code>"Shazam, put a comma next to hello"</code> to make instant edits.</li>
+  <li><strong>Voice Polish:</strong> Say <code>"Shazam, polish"</code> to polish phrasing with clean in-place diffs.</li>
+  <li><strong>Voice Formatting:</strong> Say <code>"Shazam, bold"</code> or <code>"Shazam, list"</code> without touching your keyboard.</li>
 </ul>
-<blockquote>"Speak freely at the speed of thought. Let AI handle the punctuation, formatting, and polish."</blockquote>
-<p>Try saying <em>"Shazam, review"</em> to see VoicePilot polish this document!</p>
+<blockquote>"Speak freely at the speed of thought. Let voice handle the punctuation, formatting, and polish."</blockquote>
+<p>Try saying <em>"Shazam, polish"</em> or click the Polish button above!</p>
       `.trim();
       state = VPEditorState.acceptDraft(state, sampleHtml);
       writeToEditor(sampleHtml);
       renderState();
-      showToast('🪄 Sample document loaded! Try saying "Shazam, review".');
+      showToast('🪄 Sample text loaded! Try saying "Shazam, polish".');
     }
 
     document.getElementById('btn-load-sample').addEventListener('click', loadSampleDocument);
 
     // Document Title Auto-Save
-    docTitleInput.addEventListener('input', triggerAutoSave);
-
-    // ── Typography Selector ──
-    const fontDropdownMenu = document.getElementById('font-dropdown-menu');
-    const btnFontToggle = document.getElementById('btn-font-toggle');
-
-    btnFontToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      fontDropdownMenu.classList.toggle('show');
-      exportDropdownMenu.classList.remove('show');
-    });
-
-    document.querySelectorAll('[data-font]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const font = btn.getAttribute('data-font');
-        docPaper.className = `font-${font}` + (docPaper.classList.contains('full-width') ? ' full-width' : '');
-        localStorage.setItem('vp_doc_font', font);
-        fontDropdownMenu.classList.remove('show');
-        showToast(`Font changed to ${font}`);
-      });
-    });
-
-    // Full Width Toggle
-    const btnWidthToggle = document.getElementById('btn-width-toggle');
-    const widthIcon = document.getElementById('width-icon');
-
-    function applyWidth(isFull) {
-      docPaper.classList.toggle('full-width', isFull);
-      widthIcon.textContent = isFull ? '][ ' : '↔';
-      localStorage.setItem('vp_doc_full_width', isFull ? '1' : '0');
+    if (docTitleInput) {
+      docTitleInput.addEventListener('input', triggerAutoSave);
     }
 
-    btnWidthToggle.addEventListener('click', () => {
-      const isFull = !docPaper.classList.contains('full-width');
-      applyWidth(isFull);
-      showToast(isFull ? 'Switched to Full Width' : 'Switched to Reading Width');
-    });
+    // 1-Click Quick Copy Action
+    const btnQuickCopy = document.getElementById('btn-quick-copy');
+    if (btnQuickCopy) {
+      btnQuickCopy.addEventListener('click', () => {
+        const plain = (draftEditor.innerText || '').trim();
+        if (!plain) {
+          showToast('Text is empty.');
+          return;
+        }
+        navigator.clipboard.writeText(plain).then(() => {
+          showToast('📋 Copied to clipboard!');
+          const orig = btnQuickCopy.innerHTML;
+          btnQuickCopy.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Copied!</span>';
+          setTimeout(() => { btnQuickCopy.innerHTML = orig; }, 1800);
+        }).catch(() => {
+          showToast('Could not copy to clipboard.');
+        });
+      });
+    }
 
     // Theme Switcher (Dark / Light)
     const btnThemeToggle = document.getElementById('btn-theme-toggle');
@@ -2389,131 +2385,81 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('vp_theme', theme);
-      themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+      if (themeIcon) themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
     }
 
-    btnThemeToggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      applyTheme(current === 'dark' ? 'light' : 'dark');
-    });
-
-    // Export Dropdown
-    const exportDropdownMenu = document.getElementById('export-dropdown-menu');
-    const btnExportToggle = document.getElementById('btn-export-toggle');
-
-    btnExportToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      exportDropdownMenu.classList.toggle('show');
-      fontDropdownMenu.classList.remove('show');
-    });
-
-    document.getElementById('export-copy-rich').addEventListener('click', () => {
-      const html = draftEditor.innerHTML;
-      const blob = new Blob([html], { type: 'text/html' });
-      const textBlob = new Blob([draftEditor.innerText], { type: 'text/plain' });
-      navigator.clipboard.write([
-        new ClipboardItem({ 'text/html': blob, 'text/plain': textBlob })
-      ]).then(() => {
-        showToast('📋 Rich text copied to clipboard!');
-      }).catch(() => {
-        navigator.clipboard.writeText(draftEditor.innerText);
-        showToast('📋 Text copied to clipboard!');
+    if (btnThemeToggle) {
+      btnThemeToggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        applyTheme(current === 'dark' ? 'light' : 'dark');
       });
-      exportDropdownMenu.classList.remove('show');
-    });
-
-    document.getElementById('export-copy-markdown').addEventListener('click', () => {
-      const md = htmlToMarkdown(draftEditor.innerHTML);
-      navigator.clipboard.writeText(md).then(() => {
-        showToast('📝 Markdown copied to clipboard!');
-      });
-      exportDropdownMenu.classList.remove('show');
-    });
-
-    document.getElementById('export-download-md').addEventListener('click', () => {
-      const md = htmlToMarkdown(draftEditor.innerHTML);
-      const filename = (docTitleInput.value.trim() || 'document').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.md';
-      downloadFile(filename, md, 'text/markdown');
-      exportDropdownMenu.classList.remove('show');
-    });
-
-    document.getElementById('export-download-txt').addEventListener('click', () => {
-      const txt = draftEditor.innerText || '';
-      const filename = (docTitleInput.value.trim() || 'document').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.txt';
-      downloadFile(filename, txt, 'text/plain');
-      exportDropdownMenu.classList.remove('show');
-    });
-
-    document.getElementById('export-print').addEventListener('click', () => {
-      window.print();
-      exportDropdownMenu.classList.remove('show');
-    });
-
-    function downloadFile(filename, content, type) {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([content], { type }));
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(a.href);
     }
-
-    // Close Dropdowns on Click Outside
-    window.addEventListener('click', () => {
-      fontDropdownMenu.classList.remove('show');
-      exportDropdownMenu.classList.remove('show');
-    });
 
     // ── Voice Commands Guide Modal ──
     const guideBackdrop = document.getElementById('guide-backdrop');
-    document.getElementById('btn-open-guide').addEventListener('click', () => guideBackdrop.classList.add('open'));
-    document.getElementById('btn-close-guide').addEventListener('click', () => guideBackdrop.classList.remove('open'));
-    guideBackdrop.addEventListener('click', (e) => {
-      if (e.target === guideBackdrop) guideBackdrop.classList.remove('open');
-    });
+    const btnOpenGuide = document.getElementById('btn-open-guide');
+    const btnOpenGuideFooter = document.getElementById('btn-open-guide-footer');
+    const btnCloseGuide = document.getElementById('btn-close-guide');
 
-    // ── Settings Modal ──
+    if (btnOpenGuide && guideBackdrop) {
+      btnOpenGuide.addEventListener('click', () => guideBackdrop.classList.add('open'));
+    }
+    if (btnOpenGuideFooter && guideBackdrop) {
+      btnOpenGuideFooter.addEventListener('click', () => guideBackdrop.classList.add('open'));
+    }
+    if (btnCloseGuide && guideBackdrop) {
+      btnCloseGuide.addEventListener('click', () => guideBackdrop.classList.remove('open'));
+    }
+    if (guideBackdrop) {
+      guideBackdrop.addEventListener('click', (e) => {
+        if (e.target === guideBackdrop) guideBackdrop.classList.remove('open');
+      });
+    }
+
+    // ── Settings / Preferences Modal ──
     const settingsBackdrop = document.getElementById('settings-backdrop');
-    const inputGeminiKey = document.getElementById('input-gemini-key');
     const catchwordInput = document.getElementById('catchword-input');
 
-    document.getElementById('btn-open-settings').addEventListener('click', () => {
-      inputGeminiKey.value = VP_GEMINI_KEY;
-      catchwordInput.value = catchword;
-      const geminiBadge = document.getElementById('gemini-status-badge');
-      if (geminiBadge) geminiBadge.textContent = `✓ ${_activeGeminiModel}`;
-      settingsBackdrop.classList.add('open');
-    });
+    const btnOpenSettings = document.getElementById('btn-open-settings');
+    if (btnOpenSettings && settingsBackdrop) {
+      btnOpenSettings.addEventListener('click', () => {
+        if (catchwordInput) catchwordInput.value = catchword;
+        settingsBackdrop.classList.add('open');
+      });
+    }
 
-    document.getElementById('btn-close-settings').addEventListener('click', () => settingsBackdrop.classList.remove('open'));
-    settingsBackdrop.addEventListener('click', (e) => {
-      if (e.target === settingsBackdrop) settingsBackdrop.classList.remove('open');
-    });
+    const btnCloseSettings = document.getElementById('btn-close-settings');
+    if (btnCloseSettings && settingsBackdrop) {
+      btnCloseSettings.addEventListener('click', () => settingsBackdrop.classList.remove('open'));
+    }
+    if (settingsBackdrop) {
+      settingsBackdrop.addEventListener('click', (e) => {
+        if (e.target === settingsBackdrop) settingsBackdrop.classList.remove('open');
+      });
+    }
 
-    document.getElementById('btn-save-gemini').addEventListener('click', () => {
-      const val = inputGeminiKey.value.trim();
-      VP_GEMINI_KEY = val;
-      localStorage.setItem('vp_gemini_key', val);
-      showToast('✓ Gemini API key saved!');
-      settingsBackdrop.classList.remove('open');
-    });
+    if (catchwordInput) {
+      catchwordInput.addEventListener('change', () => {
+        const val = catchwordInput.value.trim();
+        if (val) {
+          catchword = val;
+          showToast(`Wake word set to "${catchword}"`);
+        }
+      });
+    }
 
-    catchwordInput.addEventListener('change', () => {
-      const val = catchwordInput.value.trim();
-      if (val) {
-        catchword = val;
-        showToast(`Wake word set to "${catchword}"`);
-      }
-    });
-
-    document.getElementById('spoken-feedback-toggle').addEventListener('change', (e) => {
-      VPVoiceFeedback.setEnabled(e.target.checked);
-      showToast(e.target.checked ? 'Spoken feedback enabled' : 'Spoken feedback muted');
-    });
+    const spokenToggle = document.getElementById('spoken-feedback-toggle');
+    if (spokenToggle) {
+      spokenToggle.addEventListener('change', (e) => {
+        VPVoiceFeedback.setEnabled(e.target.checked);
+        showToast(e.target.checked ? 'Spoken feedback enabled' : 'Spoken feedback muted');
+      });
+    }
 
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        settingsBackdrop.classList.remove('open');
-        guideBackdrop.classList.remove('open');
+        if (settingsBackdrop) settingsBackdrop.classList.remove('open');
+        if (guideBackdrop) guideBackdrop.classList.remove('open');
         if (_activeAbortController) {
           _activeAbortController.abort();
           _activeAbortController = null;
@@ -2532,15 +2478,9 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
       const savedTheme = localStorage.getItem('vp_theme') || 'dark';
       applyTheme(savedTheme);
 
-      // 2. Font & Width
-      const savedFont = localStorage.getItem('vp_doc_font') || 'sans';
-      docPaper.className = `font-${savedFont}`;
-      const savedWidth = localStorage.getItem('vp_doc_full_width') === '1';
-      applyWidth(savedWidth);
-
-      // 3. Document Title & Content Restore
+      // 2. Document Title & Content Restore
       const savedTitle = localStorage.getItem('vp_doc_title');
-      if (savedTitle) docTitleInput.value = savedTitle;
+      if (savedTitle && docTitleInput) docTitleInput.value = savedTitle;
 
       const savedContent = localStorage.getItem('vp_doc_content');
       if (savedContent && savedContent.trim()) {
@@ -2553,6 +2493,11 @@ Return ONLY the final revised document text. Preserve all formatting (bold, head
       // 4. Attach Tracker
       attachTracker();
       renderState();
+
+      // Auto-focus editor so dictation starts immediately
+      setTimeout(() => {
+        moveCaretToEnd(draftEditor);
+      }, 120);
     }
 
     window.addEventListener('DOMContentLoaded', init);
