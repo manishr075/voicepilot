@@ -12,9 +12,9 @@ const VPCommandParser = (() => {
     // 1. Review (full polish)
     { pattern: /^(?:review|polish|ai\s+review|check|proofread)$/i,                                             action: 'review',        hasArg: false },
     // 2. Accept (Option 2 / Corrected)
-    { pattern: /^(?:accept|apply|keep\s+(?:new|corrected)|choose\s+corrected|option\s+(?:two|2)|yes|confirm|looks\s+good)$/i, action: 'accept', hasArg: false },
+    { pattern: /^(?:accept(?:\s+(?:this|that|it|proposal|changes?|edit))?|apply(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep\s+(?:new|corrected|changes?)|choose\s+(?:corrected|new|option\s+(?:two|2))|option\s+(?:two|2)|yes|confirm|looks\s+good)$/i, action: 'accept', hasArg: false },
     // 3. Decline (Option 1 / Previous)
-    { pattern: /^(?:decline|discard|reject|keep\s+(?:previous|old|original)|choose\s+(?:previous|original)|option\s+(?:one|1)|no|cancel)$/i, action: 'decline', hasArg: false },
+    { pattern: /^(?:decline(?:\s+(?:this|that|it|proposal|changes?|edit))?|discard(?:\s+(?:this|that|it|proposal|changes?|edit))?|reject(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep\s+(?:previous|old|original)|choose\s+(?:previous|old|original|option\s+(?:one|1))|option\s+(?:one|1)|no|cancel)$/i, action: 'decline', hasArg: false },
     // 4. Undo
     { pattern: /^(?:undo|undo\s+that|revert|revert\s+that|go\s+back)$/i,                                       action: 'undo',          hasArg: false },
     // 5. Redo
@@ -26,7 +26,7 @@ const VPCommandParser = (() => {
     // 8. Copy to Clipboard
     { pattern: /^(?:copy|copy\s+all|copy\s+draft|copy\s+to\s+clipboard|clipboard)$/i,                         action: 'copy',          hasArg: false },
     // 9. Clear Draft
-    { pattern: /^(?:clear\s+draft|delete\s+all|clear\s+all)$/i,                                                action: 'clear',         hasArg: false },
+    { pattern: /^(?:clear|clear\s+(?:draft|all|text|document)|delete\s+all)$/i,                             action: 'clear',         hasArg: false },
     // 10. Separate Note
     { pattern: /^(?:make\s+that\s+a\s+separate\s+note|separate\s+note|move\s+to\s+notes?)$/i,                 action: 'separate_note', hasArg: false },
     // 11. Explicit "edit" instruction

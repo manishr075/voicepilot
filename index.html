@@ -39,13 +39,13 @@
       --primary-glow: rgba(99, 102, 241, 0.25);
       --accent: #06b6d4;
 
-      --diff-curr-bg: rgba(244, 63, 94, 0.12);
-      --diff-curr-border: rgba(244, 63, 94, 0.28);
-      --diff-curr-text: #fda4af;
+      --diff-curr-bg: rgba(239, 68, 68, 0.22);
+      --diff-curr-border: rgba(239, 68, 68, 0.45);
+      --diff-curr-text: #fca5a5;
 
-      --diff-prop-bg: rgba(16, 185, 129, 0.14);
-      --diff-prop-border: rgba(16, 185, 129, 0.3);
-      --diff-prop-text: #a7f3d0;
+      --diff-prop-bg: rgba(16, 185, 129, 0.22);
+      --diff-prop-border: rgba(16, 185, 129, 0.45);
+      --diff-prop-text: #6ee7b7;
 
       --input-bg: rgba(0, 0, 0, 0.4);
       --header-bg: rgba(9, 13, 22, 0.88);
@@ -414,28 +414,47 @@
       flex: 1;
     }
 
-    /* Faded removed text (strike-through) */
-    .diff-removed-faded {
-      text-decoration: line-through;
-      opacity: 0.55;
+    /* When proposal is active, textarea overlays invisibly so Wispr Flow can still type into it! */
+    .editor-field-wrapper.has-proposal #draft-diff-display {
+      display: block;
+    }
+
+    .editor-field-wrapper.has-proposal #draft-editor {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.01;
+      z-index: 10;
+      background: transparent;
+      color: transparent;
+      caret-color: var(--primary);
+    }
+
+    /* Removed text: highlighted in red WITHOUT scratch-off / strikethrough */
+    .diff-removed-highlight {
       background: var(--diff-curr-bg);
       color: var(--diff-curr-text);
-      padding: 0.12rem 0.35rem;
+      border: 1px solid var(--diff-curr-border);
       border-radius: 4px;
-      margin: 0 0.1rem;
+      padding: 0.15rem 0.45rem;
+      margin: 0 0.15rem;
+      font-weight: 500;
+      text-decoration: none !important;
       display: inline;
     }
 
-    /* Faded proposed edit text */
-    .diff-added-faded {
-      opacity: 0.95;
+    /* Proposed new text: highlighted in green */
+    .diff-added-highlight {
       background: var(--diff-prop-bg);
       color: var(--diff-prop-text);
-      border-bottom: 2px solid var(--diff-prop-border);
-      padding: 0.12rem 0.35rem;
+      border: 1px solid var(--diff-prop-border);
       border-radius: 4px;
-      margin: 0 0.1rem;
+      padding: 0.15rem 0.45rem;
+      margin: 0 0.15rem;
       font-weight: 500;
+      text-decoration: none !important;
       display: inline;
     }
 
@@ -963,7 +982,8 @@
       <div style="flex:1;">
         <strong>Hands-Free Workflow:</strong> Speak freely using <strong>Wispr Flow</strong> (<kbd>Ctrl+Win</kbd> or <kbd>Fn</kbd>).
         To edit directly, say <strong>"Shazam, &lt;any instruction&gt;"</strong> (e.g. <em>"Shazam, put a comma next to hello"</em>).
-        To polish, say <strong>"Shazam, review"</strong> — the proposed changes show right on the same field with the AI's reason. Select hands-free with <strong>"Shazam, accept"</strong> or <strong>"Shazam, decline"</strong>!
+        To polish, say <strong>"Shazam, review"</strong> — proposed changes are highlighted with AI reasoning and accepted/declined hands-free with <strong>"Shazam, accept"</strong> or <strong>"Shazam, decline"</strong>!
+        To clear, say <strong>"Shazam, clear"</strong> (always backed up to undo).
       </div>
     </div>
 
@@ -1042,19 +1062,23 @@
         <div class="command-grid">
           <div class="command-item">
             <span class="cmd-phrase">Shazam, &lt;any instruction&gt;</span>
-            <span class="cmd-desc">Say ANY targeted edit (e.g. "Shazam, add a comma after hello"). The proposed change is displayed in faded text right on the field!</span>
+            <span class="cmd-desc">Say ANY targeted edit (e.g. "Shazam, put a comma next to hello"). Applied directly to your draft and saved to undo history.</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, review</span>
-            <span class="cmd-desc">Full comprehensive polish. Displays the proposed edit on the field along with the AI's reason.</span>
+            <span class="cmd-desc">Full comprehensive polish. Highlights proposed additions in green and removals in red on the field with the AI's reason.</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, accept / keep new</span>
-            <span class="cmd-desc">Accepts the proposed edit into your draft. Also works with "option two" or "yes".</span>
+            <span class="cmd-desc">Accepts the proposed review changes into your document. Also works with "option two" or "yes".</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, decline / keep previous</span>
-            <span class="cmd-desc">Declines the proposed edit and keeps your original text. Also works with "option one" or "no".</span>
+            <span class="cmd-desc">Declines the proposed review changes and keeps your original text. Also works with "option one" or "no".</span>
+          </div>
+          <div class="command-item">
+            <span class="cmd-phrase">Shazam, clear</span>
+            <span class="cmd-desc">Clears the draft document. Automatically saved to undo history so you can say "Shazam, undo" to restore anytime.</span>
           </div>
           <div class="command-item">
             <span class="cmd-phrase">Shazam, undo</span>
@@ -1220,9 +1244,9 @@ const VPCommandParser = (() => {
     // 1. Review (full polish)
     { pattern: /^(?:review|polish|ai\s+review|check|proofread)$/i,                                             action: 'review',        hasArg: false },
     // 2. Accept (Option 2 / Corrected)
-    { pattern: /^(?:accept|apply|keep\s+(?:new|corrected)|choose\s+corrected|option\s+(?:two|2)|yes|confirm|looks\s+good)$/i, action: 'accept', hasArg: false },
+    { pattern: /^(?:accept(?:\s+(?:this|that|it|proposal|changes?|edit))?|apply(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep\s+(?:new|corrected|changes?)|choose\s+(?:corrected|new|option\s+(?:two|2))|option\s+(?:two|2)|yes|confirm|looks\s+good)$/i, action: 'accept', hasArg: false },
     // 3. Decline (Option 1 / Previous)
-    { pattern: /^(?:decline|discard|reject|keep\s+(?:previous|old|original)|choose\s+(?:previous|original)|option\s+(?:one|1)|no|cancel)$/i, action: 'decline', hasArg: false },
+    { pattern: /^(?:decline(?:\s+(?:this|that|it|proposal|changes?|edit))?|discard(?:\s+(?:this|that|it|proposal|changes?|edit))?|reject(?:\s+(?:this|that|it|proposal|changes?|edit))?|keep\s+(?:previous|old|original)|choose\s+(?:previous|old|original|option\s+(?:one|1))|option\s+(?:one|1)|no|cancel)$/i, action: 'decline', hasArg: false },
     // 4. Undo
     { pattern: /^(?:undo|undo\s+that|revert|revert\s+that|go\s+back)$/i,                                       action: 'undo',          hasArg: false },
     // 5. Redo
@@ -1234,7 +1258,7 @@ const VPCommandParser = (() => {
     // 8. Copy to Clipboard
     { pattern: /^(?:copy|copy\s+all|copy\s+draft|copy\s+to\s+clipboard|clipboard)$/i,                         action: 'copy',          hasArg: false },
     // 9. Clear Draft
-    { pattern: /^(?:clear\s+draft|delete\s+all|clear\s+all)$/i,                                                action: 'clear',         hasArg: false },
+    { pattern: /^(?:clear|clear\s+(?:draft|all|text|document)|delete\s+all)$/i,                             action: 'clear',         hasArg: false },
     // 10. Separate Note
     { pattern: /^(?:make\s+that\s+a\s+separate\s+note|separate\s+note|move\s+to\s+notes?)$/i,                 action: 'separate_note', hasArg: false },
     // 11. Explicit "edit" instruction
@@ -1346,7 +1370,11 @@ const VPSegmentTracker = (() => {
       textarea.removeEventListener('input', checkDiff);
     }
 
-    return { detach, setGuard };
+    function syncSnapshot() {
+      _snapshot = textarea.value;
+    }
+
+    return { detach, setGuard, syncSnapshot };
   }
 
   return { attach };
@@ -1539,7 +1567,10 @@ const VPEditorState = (() => {
       _internalWrite = true;
       if (tracker) tracker.setGuard(true);
       draftEditor.value = val;
-      if (tracker) tracker.setGuard(false);
+      if (tracker) {
+        tracker.syncSnapshot();
+        tracker.setGuard(false);
+      }
       _internalWrite = false;
       updateWordCount();
     }
@@ -1554,14 +1585,14 @@ const VPEditorState = (() => {
       }
     }
 
-    // ── Generate In-Place Faded Diff HTML ──
+    // ── Generate In-Place Diff HTML (Highlight in Red, NO scratch-off / strikethrough) ──
     function renderInPlaceDiff(oldText, newText) {
       if (!oldText && !newText) return '';
       if (!oldText) {
-        return `<span class="diff-added-faded">${escapeHtml(newText)}</span>`;
+        return `<span class="diff-added-highlight">${escapeHtml(newText)}</span>`;
       }
       if (!newText) {
-        return `<span class="diff-removed-faded">${escapeHtml(oldText)}</span>`;
+        return `<span class="diff-removed-highlight">${escapeHtml(oldText)}</span>`;
       }
 
       let prefixLen = 0;
@@ -1582,8 +1613,8 @@ const VPEditorState = (() => {
 
       let html = '';
       if (commonPrefix) html += `<span>${escapeHtml(commonPrefix)}</span>`;
-      if (removedPart) html += `<span class="diff-removed-faded">${escapeHtml(removedPart)}</span>`;
-      if (addedPart) html += `<span class="diff-added-faded">${escapeHtml(addedPart)}</span>`;
+      if (removedPart) html += `<span class="diff-removed-highlight">${escapeHtml(removedPart)}</span>`;
+      if (addedPart) html += `<span class="diff-added-highlight">${escapeHtml(addedPart)}</span>`;
       if (commonSuffix) html += `<span>${escapeHtml(commonSuffix)}</span>`;
       return html;
     }
@@ -1613,8 +1644,9 @@ const VPEditorState = (() => {
     function renderState() {
       if (state.pendingProposal) {
         // Show inline in-place diff on the same field!
-        draftEditor.style.display = 'none';
-        draftDiffDisplay.style.display = 'block';
+        editorFieldWrapper.classList.add('has-proposal');
+        draftEditor.style.display = '';
+        draftDiffDisplay.style.display = '';
         draftDiffDisplay.innerHTML = renderInPlaceDiff(state.acceptedDraft, state.pendingProposal.text);
 
         proposalActivePill.style.display = 'inline-flex';
@@ -1624,15 +1656,18 @@ const VPEditorState = (() => {
           proposalReasonBanner.classList.add('visible');
           proposalReasonText.textContent = state.pendingProposal.reason || 'Polished grammar, flow, and clarity.';
         } else {
-          proposalReasonBanner.classList.add('visible');
-          proposalReasonText.textContent = `Targeted edit: "${state.pendingProposal.instruction}"`;
+          proposalReasonBanner.classList.remove('visible');
         }
 
         setStatus('review', 'Proposed Edit Active (Say Shazam, accept/decline)');
+        setTimeout(() => {
+          try { draftEditor.focus(); } catch (e) {}
+        }, 50);
       } else {
         // Normal editable field
-        draftEditor.style.display = 'block';
-        draftDiffDisplay.style.display = 'none';
+        editorFieldWrapper.classList.remove('has-proposal');
+        draftEditor.style.display = '';
+        draftDiffDisplay.style.display = '';
         proposalActivePill.style.display = 'none';
         proposalReasonBanner.classList.remove('visible');
 
@@ -1950,24 +1985,24 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
           break;
         }
 
-        // Targeted Edit Instruction: Shows proposed edit in faded text on the SAME FIELD!
+        // Targeted Edit Instruction: Applied DIRECTLY to the draft with undo support
         case 'ai_instruction': {
           if (!arg || !arg.trim()) {
             showToast('Please state what you want to edit.');
             break;
           }
           showToast(`Applying: "${arg}"...`);
-          setStatus('review', 'Editing...');
+          setStatus('review', 'Applying Edit...');
           if (editorFieldWrapper) editorFieldWrapper.classList.add('thinking');
           try {
             const res = await callAI(state.acceptedDraft, arg, false, signal);
             if (thisOpId !== _currentOpId) return; // Interrupted by newer command!
 
-            // Show proposed edit in faded text on the exact same field!
-            state = VPEditorState.setProposal(state, res.revised, arg, '', false);
+            // Directly apply targeted edit!
+            state = VPEditorState.acceptDraft(state, res.revised);
             renderState();
-            showToast(`Proposal ready for: "${arg}". Say "Shazam, accept" or "Shazam, decline".`);
-            VPVoiceFeedback.speak('Proposal ready. Say Shazam accept or decline.');
+            showToast(`✓ Applied: "${arg}"`);
+            VPVoiceFeedback.speak('Edit applied');
           } catch (e) {
             if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
             showToast(`Edit failed: ${e.message}`, 6500);
@@ -2067,7 +2102,13 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
 
         // Clear draft with undo safety net
         case 'clear': {
-          if (!state.acceptedDraft) return;
+          if (!state.acceptedDraft && !draftEditor.value) {
+            showToast('Draft is already empty.');
+            return;
+          }
+          if (draftEditor.value && !state.acceptedDraft) {
+            state.acceptedDraft = draftEditor.value;
+          }
           state = VPEditorState.acceptDraft(state, '');
           renderState();
           showToast('Draft cleared. (Say "Shazam, undo" to restore)');
@@ -2167,10 +2208,7 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
     });
 
     document.getElementById('btn-clear-draft').addEventListener('click', () => {
-      if (!state.acceptedDraft) return;
-      state = VPEditorState.acceptDraft(state, '');
-      renderState();
-      showToast('Draft cleared.');
+      executeCommand({ action: 'clear', arg: null }, '');
     });
 
     // Inline Proposal Accept / Decline Buttons
@@ -2186,6 +2224,11 @@ Return ONLY the final revised draft. Do not wrap in markdown code blocks, backti
       if (state.pendingProposal) {
         VPVoiceFeedback.speak(state.pendingProposal.text);
       }
+    });
+
+    // When diff display is clicked in proposal mode, keep focus in draftEditor for Wispr Flow
+    draftDiffDisplay.addEventListener('click', () => {
+      try { draftEditor.focus(); } catch (e) {}
     });
 
     document.getElementById('btn-clear-notes').addEventListener('click', () => {

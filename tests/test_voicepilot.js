@@ -74,15 +74,27 @@ assertEqual(st1 && st1.action, 'stop', 'Shazam, stop works locally');
 const st2 = VPCommandParser.parse('Shazam, silence.');
 assertEqual(st2 && st2.action, 'stop', 'Shazam, silence. works locally');
 
-// 5. Local Copy & Clear
+// 5. Local Copy & Clear (Shazam, clear)
 const cp1 = VPCommandParser.parse('Shazam, copy');
 assertEqual(cp1 && cp1.action, 'copy', 'Shazam, copy works locally');
 
 const cp2 = VPCommandParser.parse('Shazam, copy to clipboard.');
 assertEqual(cp2 && cp2.action, 'copy', 'Shazam, copy to clipboard. works locally');
 
+const cl0 = VPCommandParser.parse('Shazam, clear');
+assertEqual(cl0 && cl0.action, 'clear', 'Shazam, clear works locally');
+
 const cl1 = VPCommandParser.parse('Shazam, clear draft.');
 assertEqual(cl1 && cl1.action, 'clear', 'Shazam, clear draft. works locally');
+
+const cl2 = VPCommandParser.parse('Shazam, clear all');
+assertEqual(cl2 && cl2.action, 'clear', 'Shazam, clear all works locally');
+
+const cl3 = VPCommandParser.parse('Shazam, clear text.');
+assertEqual(cl3 && cl3.action, 'clear', 'Shazam, clear text. works locally');
+
+const cl4 = VPCommandParser.parse('Shazam, clear document');
+assertEqual(cl4 && cl4.action, 'clear', 'Shazam, clear document works locally');
 
 // 6. Local Accept & Decline (MUST work locally with all natural variations)
 const acc1 = VPCommandParser.parse('Shazam, accept');
@@ -97,6 +109,12 @@ assertEqual(acc3 && acc3.action, 'accept', 'Shazam, keep new. works locally');
 const acc4 = VPCommandParser.parse('Shazam, option two.');
 assertEqual(acc4 && acc4.action, 'accept', 'Shazam, option two. works locally');
 
+const acc5 = VPCommandParser.parse('Shazam, accept this');
+assertEqual(acc5 && acc5.action, 'accept', 'Shazam, accept this works locally');
+
+const acc6 = VPCommandParser.parse('Shazam, apply changes');
+assertEqual(acc6 && acc6.action, 'accept', 'Shazam, apply changes works locally');
+
 const dec1 = VPCommandParser.parse('Shazam, decline');
 assertEqual(dec1 && dec1.action, 'decline', 'Shazam, decline works locally');
 
@@ -108,6 +126,12 @@ assertEqual(dec3 && dec3.action, 'decline', 'Shazam, keep previous. works locall
 
 const dec4 = VPCommandParser.parse('Shazam, option one.');
 assertEqual(dec4 && dec4.action, 'decline', 'Shazam, option one. works locally');
+
+const dec5 = VPCommandParser.parse('Shazam, reject');
+assertEqual(dec5 && dec5.action, 'decline', 'Shazam, reject works locally');
+
+const dec6 = VPCommandParser.parse('Shazam, discard');
+assertEqual(dec6 && dec6.action, 'decline', 'Shazam, discard works locally');
 
 // 7. Natural AI instructions (Only actual instructions are sent to AI)
 const ai1 = VPCommandParser.parse('Shazam, put a comma next to hello');
