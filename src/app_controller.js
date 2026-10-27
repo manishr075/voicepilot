@@ -8,7 +8,23 @@
 let state = VPEditorState.createState();
 let tracker = null;
 let catchword = localStorage.getItem('vp_catchword') || 'Shazam';
-let backendUrl = localStorage.getItem('vp_backend_url') || 'http://localhost:5000';
+
+function resolveInitialBackendUrl() {
+  const saved = localStorage.getItem('vp_backend_url');
+  if (saved && saved.trim()) return saved.trim().replace(/\/+$/, '');
+
+  if (typeof window !== 'undefined' && window.location) {
+    const origin = window.location.origin;
+    const hostname = window.location.hostname;
+    // When running on Vercel or any custom HTTPS server (except GitHub Pages), use origin
+    if (hostname.endsWith('.vercel.app') || (hostname !== 'localhost' && hostname !== '127.0.0.1' && !hostname.endsWith('.github.io') && window.location.protocol === 'https:')) {
+      return origin;
+    }
+  }
+  return 'http://localhost:5000';
+}
+
+let backendUrl = resolveInitialBackendUrl();
 let _currentOpId = 0;
 let _activeAbortController = null;
 
@@ -237,6 +253,15 @@ async function checkBackendConnectivity() {
   backendStatusIndicator.textContent = 'Checking connectivity...';
   backendStatusIndicator.style.color = 'var(--text-dim)';
 
+  const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  const isLocalBackend = backendUrl.startsWith('http://localhost') || backendUrl.startsWith('http://127.0.0.1');
+
+  if (isHttps && isLocalBackend) {
+    backendStatusIndicator.textContent = '⚠️ On GitHub Pages: HTTP localhost is blocked by browsers. Paste your HTTPS Vercel URL above (from your aurora project).';
+    backendStatusIndicator.style.color = '#f59e0b';
+    return false;
+  }
+
   try {
     const resp = await fetch(backendUrl + '/api/health', { method: 'GET' });
     if (resp.ok) {
@@ -245,8 +270,8 @@ async function checkBackendConnectivity() {
       if (data.gemini_configured) providers.push('Gemini');
       if (data.openai_configured) providers.push('OpenAI');
       if (data.anthropic_configured) providers.push('Anthropic');
-      const provStr = providers.length ? ' (' + providers.join(', ') + ')' : ' (No keys configured on server)';
-      backendStatusIndicator.textContent = '✓ Connected to ' + data.service + provStr;
+      const provStr = providers.length ? ' (' + providers.join(', ') + ')' : ' (Set GEMINI_API_KEY in Vercel/server env)';
+      backendStatusIndicator.textContent = '✓ Connected: ' + data.service + provStr;
       backendStatusIndicator.style.color = '#10b981';
       return true;
     } else {
@@ -255,7 +280,7 @@ async function checkBackendConnectivity() {
       return false;
     }
   } catch (e) {
-    backendStatusIndicator.textContent = '⚠️ Backend offline (' + backendUrl + '). Local commands active.';
+    backendStatusIndicator.textContent = '⚠️ Backend offline (' + backendUrl + '). Local voice commands active.';
     backendStatusIndicator.style.color = '#f59e0b';
     return false;
   }
@@ -359,8 +384,15 @@ async function callAI(draftText, instruction, isReview = false, signal) {
     });
   } catch (err) {
     if (err.name === 'AbortError') throw err;
+    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const isLocalBackend = backendUrl.startsWith('http://localhost') || backendUrl.startsWith('http://127.0.0.1');
+    if (isHttps && isLocalBackend) {
+      throw new Error(
+        'AI Backend unreachable: Browsers block http://localhost requests from HTTPS (GitHub Pages). Paste your Vercel deployment URL (e.g. from your aurora project) into ⚙️ Settings, or open VoicePilot on Vercel.'
+      );
+    }
     throw new Error(
-      'AI Backend unavailable (' + backendUrl + '). Run \'python backend/voicepilot_server.py\' with GEMINI_API_KEY. Document text was preserved untouched.'
+      'AI Backend unavailable (' + backendUrl + '). Ensure your server is running or set your Vercel URL in ⚙️ Settings. Document text was preserved.'
     );
   }
 
