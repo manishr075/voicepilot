@@ -198,6 +198,23 @@ const ai2 = VPCommandParser.parse('Shazam, put a comma next to hello');
 assertEqual(ai2 && ai2.action, 'ai_instruction', 'Imperative instruction routes to ai_instruction');
 assertEqual(ai2 && ai2.arg, 'put a comma next to hello', 'Imperative argument captured cleanly');
 
+// Comma after edit: "Shazam edit, put a comma next to hello."
+const ai3 = VPCommandParser.parse('Shazam edit, put a comma next to hello.');
+assertEqual(ai3 && ai3.action, 'ai_instruction', 'Shazam edit, ... (with comma) routes to ai_instruction');
+assertEqual(ai3 && ai3.arg, 'put a comma next to hello', 'Captured argument without edit prefix');
+
+// Imperative variations: "Shazam, make N capital in my name."
+const ai4 = VPCommandParser.parse('Shazam, make N capital in my name.');
+assertEqual(ai4 && ai4.action, 'ai_instruction', 'Shazam, make N capital... routes to ai_instruction');
+
+// Imperative variations: "Shazam, make a capital in the name."
+const ai5 = VPCommandParser.parse('Shazam, make a capital in the name.');
+assertEqual(ai5 && ai5.action, 'ai_instruction', 'Shazam, make a capital... routes to ai_instruction');
+
+// Greeting check: "Shazam, hello."
+const greet1 = VPCommandParser.parse('Shazam, hello.');
+assertEqual(greet1 && greet1.action, 'greeting', 'Shazam, hello. routes to greeting check');
+
 // Speech burst followed by command
 const burst1 = VPCommandParser.parse('This was a great meeting. Shazam, bold');
 assertEqual(burst1 && burst1.action, 'format_bold', 'Speech burst + command recognized');

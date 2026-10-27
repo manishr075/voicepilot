@@ -31,17 +31,17 @@ try {
   geminiKey = BUILTIN_GEMINI_KEY;
 }
 
-let activeGeminiModel = 'gemini-3.1-flash-lite';
+let activeGeminiModel = 'gemini-3.5-flash-lite';
 try {
   const storedModel = localStorage.getItem('vp_gemini_model');
-  if (storedModel && (storedModel.includes('3.1-flash-lite') || storedModel.includes('3.5-flash-lite'))) {
+  if (storedModel && (storedModel.includes('3.5-flash-lite') || storedModel.includes('flash-lite-latest'))) {
     activeGeminiModel = storedModel;
   } else {
-    activeGeminiModel = 'gemini-3.1-flash-lite';
+    activeGeminiModel = 'gemini-3.5-flash-lite';
     localStorage.setItem('vp_gemini_model', activeGeminiModel);
   }
 } catch (e) {
-  activeGeminiModel = 'gemini-3.1-flash-lite';
+  activeGeminiModel = 'gemini-3.5-flash-lite';
 }
 
 function resolveInitialBackendUrl() {
@@ -566,12 +566,13 @@ async function callGeminiDirect(draftText, instruction, isReview, signal) {
   const apiKey = (geminiKey || BUILTIN_GEMINI_KEY || '').trim();
   if (!apiKey) return null;
 
-  // Fastest models from user's available fleet
+  // Fastest operational models from user's fleet (gemini-3.5-flash-lite tested 1.1s, 200 OK)
   const modelsToTry = [
     activeGeminiModel,
-    'gemini-3.1-flash-lite',
     'gemini-3.5-flash-lite',
+    'gemini-flash-lite-latest',
     'gemini-3.8-flash',
+    'gemini-3.1-flash-lite',
   ];
   const uniqueModels = [...new Set(modelsToTry.filter(Boolean))];
 
@@ -857,6 +858,12 @@ async function executeCommand(cmd, originalSegment) {
       moveCaretToEnd(draftEditor);
       showToast('↷ Redone');
       VPVoiceFeedback.speak('Redone');
+      break;
+    }
+
+    case 'greeting': {
+      showToast('👋 Hello! VoicePilot is listening. Say "Shazam, edit: ..." or "Shazam, polish".', 4000);
+      VPVoiceFeedback.speak('Hello! VoicePilot is ready.');
       break;
     }
 

@@ -274,6 +274,8 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      white-space: nowrap !important;
+      flex-shrink: 0;
       font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
@@ -921,17 +923,29 @@
       border-color: var(--border-default);
       background: var(--bg-subtle);
     }
+    #btn-toggle-notes {
+      position: relative;
+    }
     .badge-count {
+      position: absolute;
+      top: -4px;
+      right: -5px;
+      min-width: 17px;
+      height: 17px;
+      padding: 0 4px;
+      background: #25D366; /* Authentic WhatsApp notification badge green */
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 800;
+      border-radius: 9999px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: var(--accent-pill-bg);
-      color: var(--accent-pill-text);
-      font-size: 10px;
-      font-weight: 700;
-      border-radius: var(--radius-pill);
-      padding: 1px 5px;
-      margin-left: 3px;
+      line-height: 1;
+      border: 1.5px solid var(--bg-surface);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+      z-index: 5;
     }
   </style>
 </head>
@@ -944,12 +958,7 @@
       <div class="brand-group" id="btn-brand-home" title="VoicePilot Voice Editor">
         <img src="assets/logo.png" alt="VoicePilot Logo" class="brand-logo-img" />
         <span class="brand-title">VoicePilot</span>
-        <span class="brand-badge-pill" title="Live Hands-Free Voice Editor">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.9;margin-right:4px;flex-shrink:0;">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm-1 17.93V22h2v-2.07A8.001 8.001 0 0 0 20 12h-2a6 6 0 0 1-12 0H4a8.001 8.001 0 0 0 7 7.93Z"/>
-          </svg>
-          Voice Editor
-        </span>
+        <span class="brand-badge-pill" title="Live Hands-Free Voice Editor">Voice Editor</span>
         <div class="wave-bars" aria-hidden="true" title="Listening equalizer">
           <span class="w-bar bar-1"></span>
           <span class="w-bar bar-2"></span>
@@ -971,7 +980,7 @@
       <button type="button" class="tool-btn" id="t-bold" title="Bold (Ctrl+B or 'Shazam, bold')"><strong>B</strong></button>
       <button type="button" class="tool-btn" id="t-italic" title="Italic (Ctrl+I or 'Shazam, italic')"><em>I</em></button>
       <button type="button" class="tool-btn" id="t-heading" title="Heading (or 'Shazam, heading')">H1</button>
-      <button type="button" class="tool-btn" id="t-list" title="Bullet List (or 'Shazam, list')">• List</button>
+      <button type="button" class="tool-btn" id="t-list" title="Bullet List (or 'Shazam, list')" style="display:inline-flex;align-items:center;gap:3px;white-space:nowrap;"><span style="font-size:13px;line-height:1;">•</span><span>List</span></button>
 
       <div class="v-sep"></div>
 

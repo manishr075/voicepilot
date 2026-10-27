@@ -45,13 +45,15 @@ const VPCommandParser = (() => {
     { pattern: /^(?:resume|resume\s+listening)$/i,                                                              action: 'resume',        hasArg: false },
     // 15. Editor Width Toggle (Narrow reading / Full width)
     { pattern: /^(?:toggle\s+width|expand(?:\s+width)?|narrow(?:\s+width)?|full\s+width)$/i,                  action: 'toggle_width',  hasArg: false },
+    // 16. Greeting / Presence Check
+    { pattern: /^(?:hello|hi|hey|test|ping)$/i,                                                                action: 'greeting',      hasArg: false },
   ];
 
-  // Explicit edit keywords (e.g. "Shazam, edit: make it concise")
-  const EXPLICIT_EDIT_RE = /^(?:edit|revise|change|rewrite|polish)(?:\s*:\s*|\s+)(.+)/is;
+  // Explicit edit keywords (e.g. "Shazam, edit: make it concise", "Shazam edit, put a comma...")
+  const EXPLICIT_EDIT_RE = /^(?:edit|revise|change|rewrite|polish|improve)(?:[:;,.\s]+|\s*)(.+)/is;
 
-  // Natural imperative edit directives (e.g. "put a comma next to hello", "make it more formal")
-  const IMPERATIVE_ACTION_RE = /^(?:put\b|add\b|remove\b|delete\b|replace\b|insert\b|capitalize\b|format\b|make\s+it\b|make\s+this\b|make\s+the\b|fix\b|correct\b|shorten\b|expand\b|translate\b)(.+)/is;
+  // Natural imperative edit directives (e.g. "put a comma next to hello", "make N capital", "capitalize my name")
+  const IMPERATIVE_ACTION_RE = /^(?:make\b|put\b|add\b|remove\b|delete\b|replace\b|insert\b|capitalize\b|format\b|fix\b|correct\b|shorten\b|expand\b|translate\b|convert\b|turn\b|rephrase\b|rewrite\b|check\b|spell\b|punctuate\b|highlight\b|set\b|clean\b|update\b|simplify\b|summarize\b)(.+)/is;
 
   // Declarative words that indicate ordinary speech rather than an instruction
   const DECLARATIVE_LEAD_RE = /^(?:is\b|was\b|are\b|were\b|has\b|had\b|have\b|appears?\b|can\b|could\b|will\b|would\b|shall\b|should\b|says?\b|said\b|told\b|sounds?\b|means?\b|stands?\s+for\b|yesterday\b|today\b|tomorrow\b|tracks?\b|songs?\b|app\b|application\b)/i;
@@ -98,8 +100,8 @@ const VPCommandParser = (() => {
       }
     }
 
-    // 2. Check explicit edit directives (e.g. "edit: make it concise")
-    const explicitMatch = EXPLICIT_EDIT_RE.exec(cleanBody);
+    // 2. Check explicit edit directives (e.g. "edit: make it concise", "edit, put a comma...")
+    const explicitMatch = EXPLICIT_EDIT_RE.exec(cleanBody) || EXPLICIT_EDIT_RE.exec(rawBody);
     if (explicitMatch) {
       return {
         action: 'ai_instruction',
@@ -114,7 +116,7 @@ const VPCommandParser = (() => {
       return null; // Ordinary speech: keep as text!
     }
 
-    // 4. Check for natural imperative edit directives (e.g. "put a comma next to hello")
+    // 4. Check for natural imperative edit directives (e.g. "make N capital", "put a comma next to hello")
     if (IMPERATIVE_ACTION_RE.test(cleanBody)) {
       return {
         action: 'ai_instruction',
@@ -123,7 +125,18 @@ const VPCommandParser = (() => {
       };
     }
 
-    // If the catchword is followed by words but not matching any command pattern or imperative directive,
+    // 5. If addressed with a wake word delimiter (e.g. "Shazam, <phrase>"),
+    // and it is not declarative speech, treat as AI instruction
+    const hasDelimiter = /^[,\-—:]/.test(rawBody) || new RegExp('^' + catchword.trim() + '[\\s]*[,.:;\\-—]', 'i').test(fullCommand);
+    if (hasDelimiter && cleanBody.length > 0) {
+      return {
+        action: 'ai_instruction',
+        arg: cleanBody,
+        commandText: fullCommand,
+      };
+    }
+
+    // If the catchword is mentioned inside text without delimiter or command pattern,
     // treat as ordinary speech to prevent accidental triggering (e.g. "I heard Shazam yesterday")
     return null;
   }
