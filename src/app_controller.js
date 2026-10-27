@@ -121,11 +121,17 @@ btnToggleWidth?.addEventListener('click', () => {
 
 function formatTextAsHtml(text) {
   if (!text) return '';
-  if (/<[a-z][\s\S]*>/i.test(text)) {
-    return text;
+  let formatted = text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/__(.+?)__/g, '<strong>$1</strong>')
+    .replace(/_(.+?)_/g, '<em>$1</em>');
+
+  if (/<(?:p|div|h[1-6]|ul|ol|li|blockquote)[>\s]/i.test(formatted)) {
+    return formatted;
   }
-  const paragraphs = text.split(/\n\s*\n/);
-  return paragraphs.map(p => `<p>${VPSanitizer.escapeHtml(p).replace(/\n/g, '<br>')}</p>`).join('');
+  const paragraphs = formatted.split(/\n\s*\n/);
+  return paragraphs.map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
 }
 
 // ── Status Pill ──
@@ -228,22 +234,38 @@ function writeToEditor(html, syncState = false) {
   triggerAutoSave();
 }
 
-// ── Render State (Diff & Proposal Banner) ──
+// ── Render State (Comparison Diff & Proposal Banner) ──
 function renderState() {
   if (state.pendingProposal) {
     editorWrapper.classList.add('has-proposal');
-    draftEditor.style.display = '';
-    draftDiffDisplay.style.display = '';
-    draftDiffDisplay.innerHTML = VPSanitizer.renderInPlaceDiff(state.acceptedDraft, state.pendingProposal.text);
+    draftEditor.style.display = 'none';
+    draftDiffDisplay.style.display = 'block';
+    draftDiffDisplay.innerHTML = VPSanitizer.renderComparisonView(state.acceptedDraft, state.pendingProposal.text);
 
     proposalReasonBanner.classList.add('visible');
-    proposalReasonText.textContent = state.pendingProposal.reason ||
-      (state.pendingProposal.isReview ? 'AI grammar & clarity polish proposal' : 'Voice edit proposal');
+    const isReview = !!state.pendingProposal.isReview;
+    const badgeTag = document.getElementById('proposal-badge-tag');
+
+    if (isReview) {
+      // For Shazam review / polish: SHOW REASON!
+      if (badgeTag) badgeTag.textContent = '✨ AI Polish';
+      if (proposalReasonText) {
+        proposalReasonText.style.display = '';
+        proposalReasonText.textContent = state.pendingProposal.reason || 'AI grammar & clarity polish proposal';
+      }
+    } else {
+      // For direct edit commands: NO REASON! Simple Old vs Corrected view
+      if (badgeTag) badgeTag.textContent = 'Proposal';
+      if (proposalReasonText) {
+        proposalReasonText.style.display = 'none';
+      }
+    }
   } else {
     editorWrapper.classList.remove('has-proposal');
     draftDiffDisplay.style.display = 'none';
     draftEditor.style.display = '';
     proposalReasonBanner.classList.remove('visible');
+    if (proposalReasonText) proposalReasonText.style.display = '';
   }
   updateStats();
 }
@@ -580,7 +602,13 @@ async function callGeminiDirect(draftText, instruction, isReview, signal) {
   if (isReview) {
     prompt = `You are an expert writing editor in VoicePilot. Proofread and polish this draft text for clarity, conciseness, flow, and natural English grammar. Eliminate awkward phrasing, inverted grammatical errors (such as "My is goal" -> "My goal is"), stutter repetitions, and duplicate redundant sentences. Preserve the author's meaning and natural voice. Return ONLY a valid JSON object with {"revised": "polished draft text", "reason": "brief 1-sentence summary of improvements"}. Do NOT include markdown code fences or any other commentary.\n\nDraft:\n${draftText}`;
   } else {
-    prompt = `You are an expert editor in VoicePilot. Apply this instruction to the draft text:\nInstruction: ${instruction}\n\nDraft:\n${draftText}\n\nReturn ONLY the final revised document text. Preserve all formatting (bold, headings, lists). No preamble, no quotes, no markdown code fence blocks.`;
+    prompt = `You are an expert editor in VoicePilot. Apply this instruction to the draft text:
+Instruction: ${instruction}
+
+Draft:
+${draftText}
+
+Return ONLY the final revised document text. If formatting like bold or italic is requested, apply it using markdown **bold** or *italic*. Do not include preamble, explanations, quotes, or markdown code fence blocks.`;
   }
 
   for (const model of uniqueModels) {
@@ -842,12 +870,21 @@ async function executeCommand(cmd, originalSegment) {
     }
 
     case 'undo': {
-      state = VPEditorState.undo(state);
-      writeToEditor(formatTextAsHtml(state.acceptedDraft), true);
-      renderState();
-      moveCaretToEnd(draftEditor);
-      showToast('↶ Undone');
-      VPVoiceFeedback.speak('Undone');
+      if (state.pendingProposal) {
+        state = VPEditorState.discardProposal(state);
+        writeToEditor(formatTextAsHtml(state.acceptedDraft), true);
+        renderState();
+        moveCaretToEnd(draftEditor);
+        showToast('↶ Proposal dismissed (Restored original text)');
+        VPVoiceFeedback.speak('Restored original text');
+      } else {
+        state = VPEditorState.undo(state);
+        writeToEditor(formatTextAsHtml(state.acceptedDraft), true);
+        renderState();
+        moveCaretToEnd(draftEditor);
+        showToast('↶ Undone');
+        VPVoiceFeedback.speak('Undone');
+      }
       break;
     }
 

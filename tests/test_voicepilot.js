@@ -283,6 +283,14 @@ const cleaned = VPSanitizer.sanitize(dirty);
 assert(!cleaned.includes('<script>'), 'Sanitizer strips script tags');
 assert(!cleaned.includes('onclick'), 'Sanitizer strips inline event handlers');
 
+// Side-by-side comparison view (Original vs Corrected text)
+const compHtml = VPSanitizer.renderComparisonView('Hello, my name is Manish Reddy.', 'Hello, my name is MaNish Reddy.');
+assert(compHtml.includes('diff-comparison-grid'), 'Generates side-by-side comparison grid');
+assert(compHtml.includes('Original Text'), 'Contains clear Original Text panel');
+assert(compHtml.includes('Corrected Text'), 'Contains clear Corrected Text panel');
+assert(compHtml.includes('diff-removed-highlight'), 'Highlights old text differences in soft red');
+assert(compHtml.includes('diff-added-highlight'), 'Highlights corrected text differences in soft green');
+
 
 // ── 5. AI REVISION WORKFLOW & EDITOR STATE (Critical Requirement 5 & 7) ──
 process.stdout.write('\n5. AI Revision Workflow & State Model:\n');

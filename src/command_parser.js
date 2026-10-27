@@ -116,29 +116,13 @@ const VPCommandParser = (() => {
       return null; // Ordinary speech: keep as text!
     }
 
-    // 4. Check for natural imperative edit directives (e.g. "make N capital", "put a comma next to hello")
-    if (IMPERATIVE_ACTION_RE.test(cleanBody)) {
-      return {
-        action: 'ai_instruction',
-        arg: cleanBody,
-        commandText: fullCommand,
-      };
-    }
-
-    // 5. If addressed with a wake word delimiter (e.g. "Shazam, <phrase>"),
-    // and it is not declarative speech, treat as AI instruction
-    const hasDelimiter = /^[,\-—:]/.test(rawBody) || new RegExp('^' + catchword.trim() + '[\\s]*[,.:;\\-—]', 'i').test(fullCommand);
-    if (hasDelimiter && cleanBody.length > 0) {
-      return {
-        action: 'ai_instruction',
-        arg: cleanBody,
-        commandText: fullCommand,
-      };
-    }
-
-    // If the catchword is mentioned inside text without delimiter or command pattern,
-    // treat as ordinary speech to prevent accidental triggering (e.g. "I heard Shazam yesterday")
-    return null;
+    // 4. Truly open-ended AI assistant: Any instruction, request, or directive following the catchword
+    // routes directly to AI. The user can give ANYTHING to Shazam!
+    return {
+      action: 'ai_instruction',
+      arg: cleanBody,
+      commandText: fullCommand,
+    };
   }
 
   return { parse };

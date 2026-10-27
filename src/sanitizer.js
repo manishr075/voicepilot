@@ -216,10 +216,101 @@ const VPSanitizer = (() => {
     return out;
   }
 
+  /**
+   * Render side-by-side comparison view:
+   * Left: Original Text (with removed/altered parts highlighted in soft red)
+   * Right: Corrected Text (with added/altered parts highlighted in soft green)
+   */
+  function renderComparisonView(oldText, newText) {
+    const oldStr = normalizeTextForDiff(oldText);
+    const newStr = normalizeTextForDiff(newText);
+
+    if (!oldStr && !newStr) return '';
+
+    // Convert markdown bold/italic in strings for visual fidelity
+    const mdToHtml = text => (text || '')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+    // Tokenize into words, whitespace, and punctuation tokens
+    const tokenize = s => s.match(/([A-Za-z0-9_'-]+|\s+|[^\s\w])/g) || [];
+    const a = tokenize(oldStr);
+    const b = tokenize(newStr);
+    const m = a.length;
+    const n = b.length;
+
+    let oldHtml = '';
+    let newHtml = '';
+
+    if (oldStr === newStr) {
+      oldHtml = escapeHtml(oldStr);
+      newHtml = escapeHtml(newStr);
+    } else {
+      // DP LCS
+      const dp = Array.from({ length: m + 1 }, () => new Uint16Array(n + 1));
+      for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+          if (a[i] === b[j]) {
+            dp[i + 1][j + 1] = dp[i][j] + 1;
+          } else {
+            dp[i + 1][j + 1] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+          }
+        }
+      }
+
+      let i = m, j = n;
+      const ops = [];
+      while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && a[i - 1] === b[j - 1]) {
+          ops.push({ type: 0, text: a[i - 1] });
+          i--; j--;
+        } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+          ops.push({ type: 1, text: b[j - 1] });
+          j--;
+        } else {
+          ops.push({ type: -1, text: a[i - 1] });
+          i--;
+        }
+      }
+      ops.reverse();
+
+      for (const op of ops) {
+        if (op.type === 0) {
+          oldHtml += escapeHtml(op.text);
+          newHtml += escapeHtml(op.text);
+        } else if (op.type === -1) {
+          oldHtml += '<span class="diff-removed-highlight">' + escapeHtml(op.text) + '</span>';
+        } else if (op.type === 1) {
+          newHtml += '<span class="diff-added-highlight">' + escapeHtml(op.text) + '</span>';
+        }
+      }
+    }
+
+    const formatP = html => html.split(/\n\s*\n/).map(p => '<p>' + mdToHtml(p.replace(/\n/g, '<br>')) + '</p>').join('');
+
+    return `
+      <div class="diff-comparison-grid">
+        <div class="diff-panel diff-panel-old">
+          <div class="diff-panel-header">
+            <span class="diff-panel-title">Original Text</span>
+          </div>
+          <div class="diff-panel-body">${formatP(oldHtml)}</div>
+        </div>
+        <div class="diff-panel diff-panel-new">
+          <div class="diff-panel-header">
+            <span class="diff-panel-title">Corrected Text</span>
+          </div>
+          <div class="diff-panel-body">${formatP(newHtml)}</div>
+        </div>
+      </div>
+    `;
+  }
+
   return {
     escapeHtml,
     sanitize,
     renderInPlaceDiff,
+    renderComparisonView,
   };
 })();
 

@@ -690,6 +690,86 @@
       100% { opacity: 1; transform: scale(1); }
     }
 
+    /* ── SIMPLE, CLEAR SIDE-BY-SIDE COMPARISON (Old vs Corrected) ── */
+    .diff-comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+      margin: 8px 0 20px;
+    }
+    @media (max-width: 768px) {
+      .diff-comparison-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+    .diff-panel {
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      padding: 16px 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+    .diff-panel-old {
+      border-color: rgba(244, 63, 94, 0.35);
+    }
+    .diff-panel-new {
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .diff-panel-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .diff-panel-old .diff-panel-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #fda4af;
+      background: rgba(244, 63, 94, 0.16);
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .diff-panel-new .diff-panel-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #6ee7b7;
+      background: rgba(16, 185, 129, 0.16);
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .diff-panel-body {
+      font-size: 15.5px;
+      line-height: 1.8;
+      color: var(--text-main);
+      word-break: break-word;
+    }
+    .diff-panel-body p {
+      margin: 0 0 10px;
+    }
+    .diff-panel-body p:last-child {
+      margin-bottom: 0;
+    }
+    .diff-panel-body strong {
+      font-weight: 800;
+      color: var(--text-bold);
+    }
+    .diff-panel-body em {
+      font-style: italic;
+    }
+
     /* ════════════════════ STATUS BAR ════════════════════ */
     #statusbar {
       height: 28px;
