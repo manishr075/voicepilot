@@ -130,6 +130,15 @@ assertEqual(note1 && note1.action, 'separate_note', 'Shazam, make that a separat
 const note2 = VPCommandParser.parse('Shazam, separate note.');
 assertEqual(note2 && note2.action, 'separate_note', 'Shazam, separate note. routes to separate_note');
 
+const note3 = VPCommandParser.parse('Hello, my name is Manish Reddy, and I am studying at RV University. My goal is to become a software engineer and win this hackathon. Shazam, make the whole a separate note.');
+assertEqual(note3 && note3.action, 'separate_note', 'Dictated paragraph ending with "Shazam, make the whole a separate note." routes to separate_note');
+
+const note4 = VPCommandParser.parse('Shazam, make this a separate note');
+assertEqual(note4 && note4.action, 'separate_note', 'Shazam, make this a separate note routes to separate_note');
+
+const note5 = VPCommandParser.parse('Shazam, save to notes.');
+assertEqual(note5 && note5.action, 'separate_note', 'Shazam, save to notes. routes to separate_note');
+
 const rem1 = VPCommandParser.parse('Shazam, remove last insertion');
 assertEqual(rem1 && rem1.action, 'remove_last', 'Shazam, remove last insertion routes to remove_last');
 
@@ -215,6 +224,12 @@ assertEqual(slicedRepeat, 'I really like the movie Shazam.',
 const rangePunct = VPDomRangeRemover.findCommandRange('Good morning. Shazam, review.', 'Shazam, review', 'Shazam');
 assert(rangePunct && rangePunct.end >= 28,
   'Swallows trailing dictation punctuation');
+
+// Partial / split catchword prefix ("Shaz") safety
+const splitText = 'Draft text. Shaz am, edit: make it concise.';
+const rangeSplit = VPDomRangeRemover.findCommandRange(splitText, 'am, edit: make it concise.', 'Shazam');
+assert(rangeSplit && rangeSplit.start <= splitText.indexOf('Shaz'),
+  'Swallows preceding partial catchword "Shaz" so no fragments remain');
 
 // Ambiguous or missing boundaries
 const rangeAmbiguous = VPDomRangeRemover.findCommandRange('Text without match', 'Shazam, bold', 'Shazam');

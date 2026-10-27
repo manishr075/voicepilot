@@ -96,21 +96,18 @@ const btnCheckBackend         = document.getElementById('btn-check-backend');
 const backendStatusIndicator  = document.getElementById('backend-status-indicator');
 const spokenFeedbackToggle    = document.getElementById('spoken-feedback-toggle');
 
-// Width Toggle (Narrow reading / Full width)
+// Width Toggle (Narrow reading / Full width - Icon only)
 const btnToggleWidth = document.getElementById('btn-toggle-width');
 const widthBtnIcon   = document.getElementById('width-btn-icon');
-const widthBtnText   = document.getElementById('width-btn-text');
 
 function applyWidth(isWide) {
   if (isWide) {
     editorWrapper?.classList.add('wide');
     if (widthBtnIcon) widthBtnIcon.textContent = '><';
-    if (widthBtnText) widthBtnText.textContent = 'Narrow';
     if (btnToggleWidth) btnToggleWidth.title = 'Narrow text area (Reading focus)';
   } else {
     editorWrapper?.classList.remove('wide');
     if (widthBtnIcon) widthBtnIcon.textContent = '↔';
-    if (widthBtnText) widthBtnText.textContent = 'Expand';
     if (btnToggleWidth) btnToggleWidth.title = 'Expand text area (Full width)';
   }
   localStorage.setItem('vp_doc_wide', isWide ? '1' : '0');
@@ -864,10 +861,15 @@ async function executeCommand(cmd, originalSegment) {
     }
 
     case 'separate_note': {
-      // Identify segment to move: selected text > lastSegment > last paragraph
+      // Identify segment to move: selected text > whole draft (if requested) > lastSegment > last paragraph
       let noteText = '';
       const sel = window.getSelection();
-      if (sel && !sel.isCollapsed && sel.toString().trim()) {
+      const isWhole = cmd.commandText && /whole|all|entire/i.test(cmd.commandText);
+
+      if (isWhole) {
+        noteText = (draftEditor.innerText || '').trim();
+        writeToEditor('', true);
+      } else if (sel && !sel.isCollapsed && sel.toString().trim()) {
         noteText = sel.toString().trim();
         document.execCommand('delete');
       } else if (state.lastSegment && state.lastSegment.text) {
@@ -1013,7 +1015,10 @@ async function executeCommand(cmd, originalSegment) {
 
 // ── Wispr Segment Router ──
 function handleSegment(insertedText, fullText) {
-  const cmd = VPCommandParser.parse(insertedText, catchword);
+  let cmd = VPCommandParser.parse(insertedText, catchword);
+  if (!cmd && fullText) {
+    cmd = VPCommandParser.parse(fullText, catchword);
+  }
   if (!cmd) {
     // Ordinary speech
     state = VPEditorState.recordSegment(state, insertedText);

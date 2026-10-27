@@ -30,7 +30,7 @@ const VPCommandParser = (() => {
     // 9. Clear Draft
     { pattern: /^(?:clear|clear\s+(?:draft|all|text|document)|delete\s+all)$/i,                               action: 'clear',         hasArg: false },
     // 10. Separate Note
-    { pattern: /^(?:make\s+that\s+a\s+separate\s+note|separate\s+note|move\s+to\s+notes?|save\s+to\s+notes?)$/i, action: 'separate_note', hasArg: false },
+    { pattern: /^(?:make\s+(?:that|this|it|all|everything|the\s+(?:whole|entire)(?:\s+(?:draft|thing|text))?|all\s+this)?\s*a?\s*separate\s+note|separate\s+note|(?:move|save|send)\s+(?:that|this|it|all|everything|the\s+(?:whole|entire)(?:\s+(?:draft|thing|text))?|all\s+this)?\s*(?:in|as|to)\s+(?:a\s+)?notes?|note\s+(?:this|that|the\s+whole|whole|all)?|(?:create|add)\s+(?:a\s+)?note)$/i, action: 'separate_note', hasArg: false },
     // 11. Remove last insertion
     { pattern: /^(?:remove\s+last(?:\s+insertion)?|remove\s+that|delete\s+last(?:\s+insertion)?|scratch\s+that)$/i, action: 'remove_last', hasArg: false },
     // 12. Keep that segment
@@ -51,7 +51,7 @@ const VPCommandParser = (() => {
   const EXPLICIT_EDIT_RE = /^(?:edit|revise|change|rewrite|polish)(?:\s*:\s*|\s+)(.+)/is;
 
   // Natural imperative edit directives (e.g. "put a comma next to hello", "make it more formal")
-  const IMPERATIVE_ACTION_RE = /^(?:put\b|add\b|remove\b|delete\b|replace\b|insert\b|capitalize\b|format\b|make\s+it\b|make\s+this\b|fix\b|correct\b|shorten\b|expand\b|translate\b)(.+)/is;
+  const IMPERATIVE_ACTION_RE = /^(?:put\b|add\b|remove\b|delete\b|replace\b|insert\b|capitalize\b|format\b|make\s+it\b|make\s+this\b|make\s+the\b|fix\b|correct\b|shorten\b|expand\b|translate\b)(.+)/is;
 
   // Declarative words that indicate ordinary speech rather than an instruction
   const DECLARATIVE_LEAD_RE = /^(?:is\b|was\b|are\b|were\b|has\b|had\b|have\b|appears?\b|can\b|could\b|will\b|would\b|shall\b|should\b|says?\b|said\b|told\b|sounds?\b|means?\b|stands?\s+for\b|yesterday\b|today\b|tomorrow\b|tracks?\b|songs?\b|app\b|application\b)/i;

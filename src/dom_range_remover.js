@@ -103,6 +103,13 @@ const VPDomRangeRemover = (() => {
     let start = idx;
     let end = idx + trimmedCmd.length;
 
+    // Safety check: if a truncated catchword prefix (e.g. "Shaz" or "Shazam") immediately precedes `start`, expand start backward
+    const preText = fullText.slice(0, start);
+    const prefixCatchMatch = preText.match(/(?:^|[\s.,;:!?"'—])(Shaz[a-z]*)\s*$/i);
+    if (prefixCatchMatch) {
+      start = preText.lastIndexOf(prefixCatchMatch[1]);
+    }
+
     // Swallow trailing punctuation if the command utterance ended with it
     while (end < fullText.length && /[.,;:!?"'—\s]/.test(fullText[end])) {
       end++;

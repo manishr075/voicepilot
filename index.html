@@ -161,6 +161,7 @@
       cursor: pointer;
       text-decoration: none;
       padding-right: 4px;
+      flex-shrink: 0;
     }
 
     .brand-logo-img {
@@ -177,19 +178,26 @@
       font-weight: 700;
       letter-spacing: -0.02em;
       color: var(--text-main);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
-    /* Pill badge styled exactly as shown in screenshot */
+    /* Pill badge styled cleanly with no wrapping */
     .brand-badge-pill {
       background: var(--accent-pill-bg);
       color: var(--accent-pill-text);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      padding: 2.5px 9px;
+      padding: 3px 8px;
       border-radius: var(--radius-pill);
       letter-spacing: -0.01em;
       display: inline-flex;
       align-items: center;
+      white-space: nowrap !important;
+      flex-shrink: 0;
+      line-height: 1;
+      height: 22px;
+      box-sizing: border-box;
       margin-left: 2px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
@@ -200,8 +208,9 @@
       align-items: center;
       gap: 2.5px;
       height: 16px;
-      margin-left: 3px;
-      opacity: 0.85;
+      margin-left: 4px;
+      flex-shrink: 0;
+      opacity: 0.9;
     }
     .w-bar {
       width: 2.5px;
@@ -935,7 +944,12 @@
       <div class="brand-group" id="btn-brand-home" title="VoicePilot Voice Editor">
         <img src="assets/logo.png" alt="VoicePilot Logo" class="brand-logo-img" />
         <span class="brand-title">VoicePilot</span>
-        <span class="brand-badge-pill">Voice Editor</span>
+        <span class="brand-badge-pill" title="Live Hands-Free Voice Editor">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.9;margin-right:4px;flex-shrink:0;">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm-1 17.93V22h2v-2.07A8.001 8.001 0 0 0 20 12h-2a6 6 0 0 1-12 0H4a8.001 8.001 0 0 0 7 7.93Z"/>
+          </svg>
+          Voice Editor
+        </span>
         <div class="wave-bars" aria-hidden="true" title="Listening equalizer">
           <span class="w-bar bar-1"></span>
           <span class="w-bar bar-2"></span>
@@ -990,10 +1004,9 @@
         📝 Notes <span id="notes-badge" class="badge-count" style="display:none;">0</span>
       </button>
 
-      <!-- Narrow / Expand Editor Width Toggle -->
-      <button type="button" class="tool-btn" id="btn-toggle-width" title="Toggle text area width (Narrow reading focus / Full width)">
-        <span id="width-btn-icon">↔</span>
-        <span id="width-btn-text" style="font-size:11px;margin-left:2px;">Expand</span>
+      <!-- Narrow / Expand Editor Width Toggle (Icon only) -->
+      <button type="button" class="tool-btn" id="btn-toggle-width" title="Toggle text area width (Focused narrow / Full width)" aria-label="Toggle width">
+        <span id="width-btn-icon" style="font-size:14px;line-height:1;display:inline-flex;align-items:center;">↔</span>
       </button>
 
       <!-- Theme Switcher -->
