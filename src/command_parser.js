@@ -49,8 +49,9 @@ const VPCommandParser = (() => {
     { pattern: /^(?:hello|hi|hey|test|ping)$/i,                                                                action: 'greeting',      hasArg: false },
   ];
 
-  // Explicit edit keywords (e.g. "Shazam, edit: make it concise", "Shazam edit, put a comma...")
-  const EXPLICIT_EDIT_RE = /^(?:edit|revise|change|rewrite|polish|improve)(?:[:;,.\s]+|\s*)(.+)/is;
+  // Explicit edit prefix keywords (e.g. "Shazam, edit: make it concise", "Shazam edit, put a comma...")
+  // Note: Only strip meta-prefixes like "edit:" or "instruction:". Do NOT strip action verbs like "change", "rewrite", or "improve"!
+  const EXPLICIT_EDIT_PREFIX_RE = /^(?:edit|instruction|directive)(?:[:;,\s]+|\s+)(.+)/is;
 
   // Natural imperative edit directives (e.g. "put a comma next to hello", "make N capital", "capitalize my name")
   const IMPERATIVE_ACTION_RE = /^(?:make\b|put\b|add\b|remove\b|delete\b|replace\b|insert\b|capitalize\b|format\b|fix\b|correct\b|shorten\b|expand\b|translate\b|convert\b|turn\b|rephrase\b|rewrite\b|check\b|spell\b|punctuate\b|highlight\b|set\b|clean\b|update\b|simplify\b|summarize\b)(.+)/is;
@@ -101,7 +102,7 @@ const VPCommandParser = (() => {
     }
 
     // 2. Check explicit edit directives (e.g. "edit: make it concise", "edit, put a comma...")
-    const explicitMatch = EXPLICIT_EDIT_RE.exec(cleanBody) || EXPLICIT_EDIT_RE.exec(rawBody);
+    const explicitMatch = EXPLICIT_EDIT_PREFIX_RE.exec(cleanBody) || EXPLICIT_EDIT_PREFIX_RE.exec(rawBody);
     if (explicitMatch) {
       return {
         action: 'ai_instruction',

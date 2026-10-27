@@ -119,6 +119,47 @@ btnToggleWidth?.addEventListener('click', () => {
   showToast(isWide ? 'Editor expanded (Full width)' : 'Editor narrowed (Reading focus)');
 });
 
+// ── User Guide Modal ──
+const guideBackdrop = document.getElementById('guide-backdrop');
+const btnOpenGuide  = document.getElementById('btn-open-guide');
+const btnCloseGuide = document.getElementById('btn-close-guide');
+const btnGuideGotIt = document.getElementById('btn-guide-got-it');
+
+function openGuide() {
+  if (guideBackdrop) guideBackdrop.classList.add('open');
+}
+
+function closeGuide() {
+  if (guideBackdrop) guideBackdrop.classList.remove('open');
+}
+
+btnOpenGuide?.addEventListener('click', openGuide);
+btnCloseGuide?.addEventListener('click', closeGuide);
+btnGuideGotIt?.addEventListener('click', closeGuide);
+guideBackdrop?.addEventListener('click', (e) => {
+  if (e.target === guideBackdrop) closeGuide();
+});
+
+// ── Live Revisions Counter (Bottom Right) ──
+const revisionCountNumEl = document.getElementById('revision-count-num');
+let revisionCount = parseInt(localStorage.getItem('vp_doc_revisions') || '0', 10) || 0;
+
+function updateRevisionCounter() {
+  if (revisionCountNumEl) {
+    const countToDisplay = Math.max(revisionCount, (state && state.undoStack) ? state.undoStack.length : 0);
+    revisionCountNumEl.textContent = countToDisplay;
+  }
+}
+
+function incrementRevisionCount() {
+  const stackLen = (state && state.undoStack) ? state.undoStack.length : 0;
+  revisionCount = Math.max(revisionCount + 1, stackLen + 1);
+  try {
+    localStorage.setItem('vp_doc_revisions', String(revisionCount));
+  } catch (e) {}
+  updateRevisionCounter();
+}
+
 function formatTextAsHtml(text) {
   if (!text) return '';
   let formatted = text
@@ -234,40 +275,39 @@ function writeToEditor(html, syncState = false) {
   triggerAutoSave();
 }
 
-// ── Render State (Comparison Diff & Proposal Banner) ──
+// ── Render State (Single Text Area In-Place Diff & Proposal Banner) ──
 function renderState() {
   if (state.pendingProposal) {
     editorWrapper.classList.add('has-proposal');
-    draftEditor.style.display = 'none';
-    draftDiffDisplay.style.display = 'block';
-    draftDiffDisplay.innerHTML = VPSanitizer.renderComparisonView(state.acceptedDraft, state.pendingProposal.text);
+    // Ensure draftEditor is ALWAYS visible and focused - NEVER display: none!
+    draftEditor.style.display = '';
+    if (draftDiffDisplay) draftDiffDisplay.style.display = 'none';
+
+    // In-place diff inside the same draftEditor: deletions in red, additions in green
+    const diffHtml = VPSanitizer.renderInPlaceDiff(state.acceptedDraft, state.pendingProposal.text);
+    if (tracker) tracker.setGuard(true);
+    draftEditor.innerHTML = diffHtml;
+    if (tracker) {
+      tracker.syncSnapshot();
+      tracker.setGuard(false);
+    }
 
     proposalReasonBanner.classList.add('visible');
-    const isReview = !!state.pendingProposal.isReview;
     const badgeTag = document.getElementById('proposal-badge-tag');
-
-    if (isReview) {
-      // For Shazam review / polish: SHOW REASON!
-      if (badgeTag) badgeTag.textContent = '✨ AI Polish';
-      if (proposalReasonText) {
-        proposalReasonText.style.display = '';
-        proposalReasonText.textContent = state.pendingProposal.reason || 'AI grammar & clarity polish proposal';
-      }
-    } else {
-      // For direct edit commands: NO REASON! Simple Old vs Corrected view
-      if (badgeTag) badgeTag.textContent = 'Proposal';
-      if (proposalReasonText) {
-        proposalReasonText.style.display = 'none';
-      }
+    if (badgeTag) badgeTag.textContent = '✨ AI Polish';
+    if (proposalReasonText) {
+      proposalReasonText.style.display = '';
+      proposalReasonText.textContent = state.pendingProposal.reason || 'AI grammar & clarity polish proposal';
     }
   } else {
     editorWrapper.classList.remove('has-proposal');
-    draftDiffDisplay.style.display = 'none';
+    if (draftDiffDisplay) draftDiffDisplay.style.display = 'none';
     draftEditor.style.display = '';
     proposalReasonBanner.classList.remove('visible');
     if (proposalReasonText) proposalReasonText.style.display = '';
   }
   updateStats();
+  updateRevisionCounter();
 }
 
 // ── Separate Notes Management ──
@@ -580,7 +620,8 @@ function smartEditText(draftText, instruction) {
     return cleanDraft + ' ' + addition;
   }
 
-  return smartPolishText(cleanDraft);
+  // Return null so open-ended instructions route directly to Gemini AI
+  return null;
 }
 
 // ── Direct Google Gemini Cloud AI Caller ──
@@ -782,6 +823,7 @@ async function executeCommand(cmd, originalSegment) {
 
         state = VPEditorState.proposeEdit(state, result.revised.trim(), result.reason, true);
         renderState();
+        moveCaretToEnd(draftEditor);
         setStatus('ready', 'Wispr Ready');
         showToast('✨ Polish ready: Review in-place diff');
         VPVoiceFeedback.speak('Polish ready. Say Shazam, keep, or Shazam, discard.');
@@ -796,18 +838,13 @@ async function executeCommand(cmd, originalSegment) {
     }
 
     case 'ai_instruction': {
-      // If a proposal is pending, refine against the proposal text or accepted draft
-      let baseDraft = state.pendingProposal
-        ? state.pendingProposal.text
-        : (draftEditor.innerText || draftEditor.textContent || '').trim();
+      let baseDraft = (draftEditor.innerText || draftEditor.textContent || '').trim();
       baseDraft = baseDraft.replace(/&nbsp;/gi, ' ').replace(/\u00a0/g, ' ').replace(/[ \t]+/g, ' ');
       if (!baseDraft) {
         showToast('Draft is empty — dictate some text first.');
         return;
       }
-      if (!state.pendingProposal) {
-        state.acceptedDraft = baseDraft;
-      }
+      state.acceptedDraft = baseDraft;
 
       if (_activeAbortController) {
         _activeAbortController.abort();
@@ -826,12 +863,17 @@ async function executeCommand(cmd, originalSegment) {
         const result = await callAI(baseDraft, cmd.arg, false, signal);
         if (thisOpId !== _currentOpId) return;
 
-        // Propose the edit for user review (satisfies Section 5 & 7 requirement!)
-        state = VPEditorState.proposeEdit(state, result.revised.trim(), result.reason || 'Edit: ' + cmd.arg, false);
+        // Implement directly into draft editor!
+        const revisedText = result.revised.trim();
+        state = VPEditorState.acceptDraft(state, revisedText);
+        writeToEditor(formatTextAsHtml(revisedText), true);
         renderState();
+        incrementRevisionCount();
+        moveCaretToEnd(draftEditor);
+
         setStatus('ready', 'Wispr Ready');
-        showToast('Edit proposal ready: Say Shazam, keep, or Shazam, discard.');
-        VPVoiceFeedback.speak('Edit proposal ready. Say Shazam, keep, or Shazam, discard.');
+        showToast('✓ Applied: ' + cmd.arg);
+        VPVoiceFeedback.speak('Applied: ' + cmd.arg);
       } catch (e) {
         if (e.name === 'AbortError' || thisOpId !== _currentOpId) return;
         showToast('Notice: ' + e.message, 6000);
@@ -849,6 +891,7 @@ async function executeCommand(cmd, originalSegment) {
         state = VPEditorState.applyProposal(state);
         writeToEditor(formatTextAsHtml(state.acceptedDraft), true);
         renderState();
+        incrementRevisionCount();
         moveCaretToEnd(draftEditor);
         showToast('✓ Proposal kept.');
         VPVoiceFeedback.speak('Proposal kept');
@@ -861,6 +904,7 @@ async function executeCommand(cmd, originalSegment) {
         showToast('No pending proposal to discard.');
       } else {
         state = VPEditorState.discardProposal(state);
+        writeToEditor(formatTextAsHtml(state.acceptedDraft), true);
         renderState();
         moveCaretToEnd(draftEditor);
         showToast('✕ Proposal discarded. Original text kept.');
@@ -1065,6 +1109,12 @@ function handleSegment(insertedText, fullText) {
   }
   if (!cmd) {
     // Ordinary speech
+    if (state.pendingProposal) {
+      // If a review proposal was pending and user dictated ordinary speech, finalize proposal first
+      state = VPEditorState.applyProposal(state);
+      writeToEditor(formatTextAsHtml(state.acceptedDraft), true);
+      renderState();
+    }
     state = VPEditorState.recordSegment(state, insertedText);
     state.acceptedDraft = draftEditor.innerHTML;
     updateStats();
@@ -1079,9 +1129,13 @@ function handleSegment(insertedText, fullText) {
   tracker?.setGuard(false);
 
   if (!removalResult.success) {
-    // If boundaries cannot be resolved reliably, leave text untouched and notify user
-    showToast('⚠️ Could not isolate command boundary; draft left untouched.', 3500);
-    return;
+    // If a proposal is pending and user said keep/discard/undo, proceed safely because the entire editor will be cleanly overwritten
+    if (state.pendingProposal && (cmd.action === 'accept' || cmd.action === 'decline' || cmd.action === 'undo')) {
+      // Proceed to execute command
+    } else {
+      showToast('⚠️ Could not isolate command boundary; draft left untouched.', 3500);
+      return;
+    }
   }
 
   state.acceptedDraft = draftEditor.innerHTML;
@@ -1255,6 +1309,7 @@ spokenFeedbackToggle?.addEventListener('change', (e) => {
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     settingsBackdrop?.classList.remove('open');
+    guideBackdrop?.classList.remove('open');
     toggleNotesDrawer(false);
     if (_activeAbortController) {
       _activeAbortController.abort();

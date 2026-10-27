@@ -189,7 +189,7 @@ assertEqual(fmt3 && fmt3.action, 'format_heading', 'Shazam, heading routes to fo
 const fmt4 = VPCommandParser.parse('Shazam, bullet point');
 assertEqual(fmt4 && fmt4.action, 'format_list', 'Shazam, bullet point routes to format_list');
 
-// AI Instructions
+// AI Instructions (Action verbs like change, rewrite, improve are preserved as instructions)
 const ai1 = VPCommandParser.parse('Shazam, edit: make it concise');
 assertEqual(ai1 && ai1.action, 'ai_instruction', 'Shazam, edit: ... routes to ai_instruction');
 assertEqual(ai1 && ai1.arg, 'make it concise', 'Edit argument captured cleanly');
@@ -197,6 +197,25 @@ assertEqual(ai1 && ai1.arg, 'make it concise', 'Edit argument captured cleanly')
 const ai2 = VPCommandParser.parse('Shazam, put a comma next to hello');
 assertEqual(ai2 && ai2.action, 'ai_instruction', 'Imperative instruction routes to ai_instruction');
 assertEqual(ai2 && ai2.arg, 'put a comma next to hello', 'Imperative argument captured cleanly');
+
+// Preservation of action verbs in instructions:
+const aiChange = VPCommandParser.parse('Shazam change 5pm to 6pm');
+assertEqual(aiChange && aiChange.action, 'ai_instruction', 'Shazam change 5pm to 6pm routes to ai_instruction');
+assertEqual(aiChange && aiChange.arg, 'change 5pm to 6pm', 'Preserves action verb "change" in instruction');
+
+const aiRewrite = VPCommandParser.parse('Shazam rewrite this to sound professional');
+assertEqual(aiRewrite && aiRewrite.action, 'ai_instruction', 'Shazam rewrite... routes to ai_instruction');
+assertEqual(aiRewrite && aiRewrite.arg, 'rewrite this to sound professional', 'Preserves action verb "rewrite" in instruction');
+
+const aiImprove = VPCommandParser.parse('Shazam improve clarity');
+assertEqual(aiImprove && aiImprove.action, 'ai_instruction', 'Shazam improve... routes to ai_instruction');
+assertEqual(aiImprove && aiImprove.arg, 'improve clarity', 'Preserves action verb "improve" in instruction');
+
+// Words behind Shazam as context, words next to Shazam as instructions
+const contextCmd = VPCommandParser.parse('Our meeting is at 5pm Shazam change 5pm to 6pm');
+assertEqual(contextCmd && contextCmd.action, 'ai_instruction', 'Burst with context behind Shazam parsed');
+assertEqual(contextCmd && contextCmd.arg, 'change 5pm to 6pm', 'Words next to Shazam captured as instruction');
+assertEqual(contextCmd && contextCmd.commandText, 'Shazam change 5pm to 6pm', 'Command text isolates Shazam instruction from context');
 
 // Comma after edit: "Shazam edit, put a comma next to hello."
 const ai3 = VPCommandParser.parse('Shazam edit, put a comma next to hello.');
@@ -206,6 +225,7 @@ assertEqual(ai3 && ai3.arg, 'put a comma next to hello', 'Captured argument with
 // Imperative variations: "Shazam, make N capital in my name."
 const ai4 = VPCommandParser.parse('Shazam, make N capital in my name.');
 assertEqual(ai4 && ai4.action, 'ai_instruction', 'Shazam, make N capital... routes to ai_instruction');
+assertEqual(ai4 && ai4.arg, 'make N capital in my name', 'Imperative argument captured cleanly');
 
 // Imperative variations: "Shazam, make a capital in the name."
 const ai5 = VPCommandParser.parse('Shazam, make a capital in the name.');
@@ -326,6 +346,25 @@ assertEqual(undone.redoStack.length, 1, 'Undo populates redo stack');
 // Redo
 const redone = VPEditorState.redo(undone);
 assertEqual(redone.acceptedDraft, 'Polished draft text.', 'Redo restores draft');
+
+// Direct Edit Workflow (Instant direct edit without proposal banner)
+let directSt = VPEditorState.createState('Meeting at 5pm.');
+directSt = VPEditorState.acceptDraft(directSt, 'Meeting at 6pm.');
+assertEqual(directSt.acceptedDraft, 'Meeting at 6pm.', 'Direct edit modifies acceptedDraft immediately');
+assertNull(directSt.pendingProposal, 'Direct edit does not create pending proposal');
+assertEqual(directSt.undoStack.length, 1, 'Direct edit creates undo history entry');
+
+// Direct edit undo
+const directUndone = VPEditorState.undo(directSt);
+assertEqual(directUndone.acceptedDraft, 'Meeting at 5pm.', 'Undo restores draft prior to direct edit');
+
+// Single-box in-place diff for review mode
+const inPlaceHtml = VPSanitizer.renderInPlaceDiff('Hello world at 5pm', 'Hello universe at 5pm');
+assert(inPlaceHtml.includes('diff-removed-highlight'), 'In-place diff includes red removed highlight');
+assert(inPlaceHtml.includes('world'), 'Removed highlight contains old word');
+assert(inPlaceHtml.includes('diff-added-highlight'), 'In-place diff includes green added highlight');
+assert(inPlaceHtml.includes('universe'), 'Added highlight contains new word');
+assert(!inPlaceHtml.includes('diff-comparison-grid'), 'In-place diff stays in single container (not split grid)');
 
 // Separate Notes Management
 let stNotes = VPEditorState.createState('Paragraph one.\nIdea for note.');
