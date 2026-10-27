@@ -43,6 +43,8 @@ const VPCommandParser = (() => {
     // 14. Pause and Resume
     { pattern: /^(?:pause|pause\s+listening)$/i,                                                               action: 'pause',         hasArg: false },
     { pattern: /^(?:resume|resume\s+listening)$/i,                                                              action: 'resume',        hasArg: false },
+    // 15. Editor Width Toggle (Narrow reading / Full width)
+    { pattern: /^(?:toggle\s+width|expand(?:\s+width)?|narrow(?:\s+width)?|full\s+width)$/i,                  action: 'toggle_width',  hasArg: false },
   ];
 
   // Explicit edit keywords (e.g. "Shazam, edit: make it concise")

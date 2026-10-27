@@ -18,8 +18,31 @@ function _resolveBuiltinKey() {
   }
 }
 const BUILTIN_GEMINI_KEY = _resolveBuiltinKey();
-let geminiKey = localStorage.getItem('vp_gemini_key') || BUILTIN_GEMINI_KEY;
-let activeGeminiModel = localStorage.getItem('vp_gemini_model') || 'gemini-3.1-flash-lite';
+let geminiKey = BUILTIN_GEMINI_KEY;
+try {
+  const storedKey = localStorage.getItem('vp_gemini_key');
+  if (storedKey && storedKey.trim() && storedKey.startsWith('AQ.')) {
+    geminiKey = storedKey.trim();
+  } else {
+    geminiKey = BUILTIN_GEMINI_KEY;
+    localStorage.setItem('vp_gemini_key', BUILTIN_GEMINI_KEY);
+  }
+} catch (e) {
+  geminiKey = BUILTIN_GEMINI_KEY;
+}
+
+let activeGeminiModel = 'gemini-3.1-flash-lite';
+try {
+  const storedModel = localStorage.getItem('vp_gemini_model');
+  if (storedModel && (storedModel.includes('3.1-flash-lite') || storedModel.includes('3.5-flash-lite'))) {
+    activeGeminiModel = storedModel;
+  } else {
+    activeGeminiModel = 'gemini-3.1-flash-lite';
+    localStorage.setItem('vp_gemini_model', activeGeminiModel);
+  }
+} catch (e) {
+  activeGeminiModel = 'gemini-3.1-flash-lite';
+}
 
 function resolveInitialBackendUrl() {
   const saved = localStorage.getItem('vp_backend_url');
@@ -72,6 +95,41 @@ const backendUrlInput         = document.getElementById('backend-url-input');
 const btnCheckBackend         = document.getElementById('btn-check-backend');
 const backendStatusIndicator  = document.getElementById('backend-status-indicator');
 const spokenFeedbackToggle    = document.getElementById('spoken-feedback-toggle');
+
+// Width Toggle (Narrow reading / Full width)
+const btnToggleWidth = document.getElementById('btn-toggle-width');
+const widthBtnIcon   = document.getElementById('width-btn-icon');
+const widthBtnText   = document.getElementById('width-btn-text');
+
+function applyWidth(isWide) {
+  if (isWide) {
+    editorWrapper?.classList.add('wide');
+    if (widthBtnIcon) widthBtnIcon.textContent = '><';
+    if (widthBtnText) widthBtnText.textContent = 'Narrow';
+    if (btnToggleWidth) btnToggleWidth.title = 'Narrow text area (Reading focus)';
+  } else {
+    editorWrapper?.classList.remove('wide');
+    if (widthBtnIcon) widthBtnIcon.textContent = '↔';
+    if (widthBtnText) widthBtnText.textContent = 'Expand';
+    if (btnToggleWidth) btnToggleWidth.title = 'Expand text area (Full width)';
+  }
+  localStorage.setItem('vp_doc_wide', isWide ? '1' : '0');
+}
+
+btnToggleWidth?.addEventListener('click', () => {
+  const isWide = !editorWrapper?.classList.contains('wide');
+  applyWidth(isWide);
+  showToast(isWide ? 'Editor expanded (Full width)' : 'Editor narrowed (Reading focus)');
+});
+
+function formatTextAsHtml(text) {
+  if (!text) return '';
+  if (/<[a-z][\s\S]*>/i.test(text)) {
+    return text;
+  }
+  const paragraphs = text.split(/\n\s*\n/);
+  return paragraphs.map(p => `<p>${VPSanitizer.escapeHtml(p).replace(/\n/g, '<br>')}</p>`).join('');
+}
 
 // ── Status Pill ──
 function setStatus(type, message) {
@@ -339,13 +397,20 @@ function formatDoc(cmd, val = null) {
 // ── Built-in High-Accuracy Grammar, Tone & Proofreading Engine ──
 function smartPolishText(text) {
   if (!text || typeof text !== 'string') return text || '';
-  let s = text.trim();
+  let s = text
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\u00a0/g, ' ')
+    .replace(/[ \t]+/g, ' ')
+    .trim();
 
-  // 1. Common greetings followed by missing comma
+  // 1. Inverted verb errors common in dictation (e.g. "My is goal" -> "My goal is", "My is dream" -> "My dream is")
+  s = s.replace(/\b(my|our|his|her|their)\s+is\s+([a-zA-Z]+)\b/gi, '$1 $2 is');
+
+  // 2. Common greetings followed by missing comma
   s = s.replace(/\b(Hello|Hi|Hey|Dear)\s+(my\s+name\s+is\b)/gi, '$1, $2');
   s = s.replace(/\b(Hello|Hi|Hey)\s+(everyone|there|team|all)\b/gi, '$1, $2');
 
-  // 2. Preposition fixes
+  // 3. Preposition fixes
   s = s.replace(/\b(studying|working|enrolled)\s+in\s+([A-Z][a-zA-Z0-9\s]*University)\b/g, '$1 at $2');
   s = s.replace(/\b(graduated)\s+in\s+([A-Z][a-zA-Z0-9\s]*University)\b/g, '$1 from $2');
 
@@ -515,7 +580,7 @@ async function callGeminiDirect(draftText, instruction, isReview, signal) {
 
   let prompt;
   if (isReview) {
-    prompt = `You are an expert editor in VoicePilot. Proofread and polish this draft text for clarity, conciseness, flow, and grammar. Return ONLY a valid JSON object with {"revised": "polished draft text", "reason": "brief 1-sentence summary of improvements"}. Do NOT include markdown code fences or any other text.\n\nDraft:\n${draftText}`;
+    prompt = `You are an expert writing editor in VoicePilot. Proofread and polish this draft text for clarity, conciseness, flow, and natural English grammar. Eliminate awkward phrasing, inverted grammatical errors (such as "My is goal" -> "My goal is"), stutter repetitions, and duplicate redundant sentences. Preserve the author's meaning and natural voice. Return ONLY a valid JSON object with {"revised": "polished draft text", "reason": "brief 1-sentence summary of improvements"}. Do NOT include markdown code fences or any other commentary.\n\nDraft:\n${draftText}`;
   } else {
     prompt = `You are an expert editor in VoicePilot. Apply this instruction to the draft text:\nInstruction: ${instruction}\n\nDraft:\n${draftText}\n\nReturn ONLY the final revised document text. Preserve all formatting (bold, headings, lists). No preamble, no quotes, no markdown code fence blocks.`;
   }
@@ -664,11 +729,13 @@ async function executeCommand(cmd, originalSegment) {
     }
 
     case 'review': {
-      let currentDraft = (draftEditor.innerText || '').trim();
+      let currentDraft = (draftEditor.innerText || draftEditor.textContent || '').trim();
+      currentDraft = currentDraft.replace(/&nbsp;/gi, ' ').replace(/\u00a0/g, ' ').replace(/[ \t]+/g, ' ');
       if (!currentDraft) {
         showToast('Draft is empty — nothing to polish.');
         return;
       }
+      state.acceptedDraft = currentDraft;
 
       if (_activeAbortController) {
         _activeAbortController.abort();
@@ -704,10 +771,16 @@ async function executeCommand(cmd, originalSegment) {
 
     case 'ai_instruction': {
       // If a proposal is pending, refine against the proposal text or accepted draft
-      let baseDraft = state.pendingProposal ? state.pendingProposal.text : (draftEditor.innerText || '').trim();
+      let baseDraft = state.pendingProposal
+        ? state.pendingProposal.text
+        : (draftEditor.innerText || draftEditor.textContent || '').trim();
+      baseDraft = baseDraft.replace(/&nbsp;/gi, ' ').replace(/\u00a0/g, ' ').replace(/[ \t]+/g, ' ');
       if (!baseDraft) {
         showToast('Draft is empty — dictate some text first.');
         return;
+      }
+      if (!state.pendingProposal) {
+        state.acceptedDraft = baseDraft;
       }
 
       if (_activeAbortController) {
@@ -748,7 +821,7 @@ async function executeCommand(cmd, originalSegment) {
         showToast('No pending proposal to keep.');
       } else {
         state = VPEditorState.applyProposal(state);
-        writeToEditor(state.acceptedDraft, true);
+        writeToEditor(formatTextAsHtml(state.acceptedDraft), true);
         renderState();
         moveCaretToEnd(draftEditor);
         showToast('✓ Proposal kept.');
@@ -772,7 +845,7 @@ async function executeCommand(cmd, originalSegment) {
 
     case 'undo': {
       state = VPEditorState.undo(state);
-      writeToEditor(state.acceptedDraft, true);
+      writeToEditor(formatTextAsHtml(state.acceptedDraft), true);
       renderState();
       moveCaretToEnd(draftEditor);
       showToast('↶ Undone');
@@ -782,7 +855,7 @@ async function executeCommand(cmd, originalSegment) {
 
     case 'redo': {
       state = VPEditorState.redo(state);
-      writeToEditor(state.acceptedDraft, true);
+      writeToEditor(formatTextAsHtml(state.acceptedDraft), true);
       renderState();
       moveCaretToEnd(draftEditor);
       showToast('↷ Redone');
@@ -875,6 +948,14 @@ async function executeCommand(cmd, originalSegment) {
       formatDoc('insertUnorderedList');
       showToast('Toggled Bullet List');
       VPVoiceFeedback.speak('List');
+      break;
+    }
+
+    case 'toggle_width': {
+      const isWide = !editorWrapper?.classList.contains('wide');
+      applyWidth(isWide);
+      showToast(isWide ? 'Editor expanded (Full width)' : 'Editor narrowed (Reading focus)');
+      VPVoiceFeedback.speak(isWide ? 'Expanded' : 'Narrowed');
       break;
     }
 
@@ -1164,6 +1245,9 @@ function loadSampleDraft() {
 function init() {
   const savedTheme = localStorage.getItem('vp_theme') || 'dark';
   applyTheme(savedTheme);
+
+  const savedWide = localStorage.getItem('vp_doc_wide') === '1';
+  applyWidth(savedWide);
 
   const savedTitle = localStorage.getItem('vp_doc_title');
   if (savedTitle && docTitleInput) docTitleInput.value = savedTitle;

@@ -161,6 +161,12 @@ assertEqual(cl1 && cl1.action, 'clear', 'Shazam, clear routes to clear');
 const cl2 = VPCommandParser.parse('Shazam, clear draft.');
 assertEqual(cl2 && cl2.action, 'clear', 'Shazam, clear draft. routes to clear');
 
+const tw1 = VPCommandParser.parse('Shazam, expand');
+assertEqual(tw1 && tw1.action, 'toggle_width', 'Shazam, expand routes to toggle_width');
+
+const tw2 = VPCommandParser.parse('Shazam, toggle width.');
+assertEqual(tw2 && tw2.action, 'toggle_width', 'Shazam, toggle width. routes to toggle_width');
+
 // Formatting Commands
 const fmt1 = VPCommandParser.parse('Shazam, bold');
 assertEqual(fmt1 && fmt1.action, 'format_bold', 'Shazam, bold routes to format_bold');
