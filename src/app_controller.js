@@ -653,13 +653,13 @@ async function callGeminiDirect(draftText, instruction, isReview, signal) {
   const apiKey = (geminiKey || BUILTIN_GEMINI_KEY || '').trim();
   if (!apiKey) return null;
 
-  // Fastest operational models from user's fleet (gemini-3.5-flash-lite tested 1.1s, 200 OK)
+  // Prioritize Gemini Flash-Lite Latest (matches Flash-Lite in gemini.google.com)
   const modelsToTry = [
-    activeGeminiModel,
-    'gemini-3.5-flash-lite',
     'gemini-flash-lite-latest',
+    'gemini-3.5-flash-lite',
+    'gemini-2.5-flash-lite',
+    activeGeminiModel,
     'gemini-3.8-flash',
-    'gemini-3.1-flash-lite',
   ];
   const uniqueModels = [...new Set(modelsToTry.filter(Boolean))];
 
@@ -667,13 +667,7 @@ async function callGeminiDirect(draftText, instruction, isReview, signal) {
   if (isReview) {
     prompt = `You are an expert writing editor in VoicePilot. Proofread and polish this draft text for clarity, conciseness, flow, and natural English grammar. Eliminate awkward phrasing, inverted grammatical errors (such as "My is goal" -> "My goal is"), stutter repetitions, and duplicate redundant sentences. Preserve the author's meaning and natural voice. Return ONLY a valid JSON object with {"revised": "polished draft text", "reason": "brief 1-sentence summary of improvements"}. Do NOT include markdown code fences or any other commentary.\n\nDraft:\n${draftText}`;
   } else {
-    prompt = `You are an expert editor in VoicePilot. Apply this instruction to the draft text:
-Instruction: ${instruction}
-
-Draft:
-${draftText}
-
-Return ONLY the final revised document text. If formatting like bold or italic is requested, apply it using markdown **bold** or *italic*. Do not include preamble, explanations, quotes, or markdown code fence blocks.`;
+    prompt = `Instruction: ${instruction} and just return the corrected context. Context: ${draftText}`;
   }
 
   for (const model of uniqueModels) {
