@@ -198,6 +198,10 @@ const ai2 = VPCommandParser.parse('Shazam, put a comma next to hello');
 assertEqual(ai2 && ai2.action, 'ai_instruction', 'Imperative instruction routes to ai_instruction');
 assertEqual(ai2 && ai2.arg, 'put a comma next to hello', 'Imperative argument captured cleanly');
 
+const aiRemComma = VPCommandParser.parse('Shazam, remove the comma next to hello');
+assertEqual(aiRemComma && aiRemComma.action, 'ai_instruction', 'Remove comma routes to ai_instruction');
+assertEqual(aiRemComma && aiRemComma.arg, 'remove the comma next to hello', 'Remove comma argument captured cleanly');
+
 // Preservation of action verbs in instructions:
 const aiChange = VPCommandParser.parse('Shazam change 5pm to 6pm');
 assertEqual(aiChange && aiChange.action, 'ai_instruction', 'Shazam change 5pm to 6pm routes to ai_instruction');

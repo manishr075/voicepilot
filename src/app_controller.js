@@ -21,7 +21,7 @@ const BUILTIN_GEMINI_KEY = _resolveBuiltinKey();
 let geminiKey = BUILTIN_GEMINI_KEY;
 try {
   const storedKey = localStorage.getItem('vp_gemini_key');
-  if (storedKey && storedKey.trim() && storedKey.startsWith('AQ.')) {
+  if (storedKey && storedKey.trim() && storedKey.startsWith('AQ.') && localStorage.getItem('vp_gemini_custom_saved') === '1') {
     geminiKey = storedKey.trim();
   } else {
     geminiKey = BUILTIN_GEMINI_KEY;
@@ -533,13 +533,37 @@ function smartEditText(draftText, instruction) {
   const cleanDraft = draftText.trim();
   const lowerInst = instruction.toLowerCase().trim();
 
-  // "put a comma next to / after hello"
+  // 1. "remove the comma next to / after / before [word]" / "delete comma after [word]"
+  const remCommaMatch = lowerInst.match(/(?:remove|delete)\s+(?:the\s+)?comma\s+(?:next\s+to|after|before)\s+([a-zA-Z0-9_-]+)/);
+  if (remCommaMatch) {
+    const targetWord = remCommaMatch[1];
+    const reAfter = new RegExp('(\\b' + targetWord + '),', 'i');
+    if (reAfter.test(cleanDraft)) {
+      return cleanDraft.replace(reAfter, (m, p1) => p1);
+    }
+    const reBefore = new RegExp(',(\\s*' + targetWord + '\\b)', 'i');
+    if (reBefore.test(cleanDraft)) {
+      return cleanDraft.replace(reBefore, (m, p1) => p1);
+    }
+  }
+
+  // 2. "put a comma next to / after hello"
   const commaMatch = lowerInst.match(/put\s+a\s+comma\s+(?:next\s+to|after)\s+([a-zA-Z0-9_-]+)/);
   if (commaMatch) {
     const targetWord = commaMatch[1];
     const re = new RegExp('(\\b' + targetWord + ')(?!,)', 'i');
     if (re.test(cleanDraft)) {
-      return cleanDraft.replace(re, '$1,');
+      return cleanDraft.replace(re, (m, p1) => p1 + ',');
+    }
+  }
+
+  // 3. "remove the period / dot next to / after [word]"
+  const remPeriodMatch = lowerInst.match(/(?:remove|delete)\s+(?:the\s+)?(?:period|dot)\s+(?:next\s+to|after)\s+([a-zA-Z0-9_-]+)/);
+  if (remPeriodMatch) {
+    const targetWord = remPeriodMatch[1];
+    const re = new RegExp('(\\b' + targetWord + ')\\.', 'i');
+    if (re.test(cleanDraft)) {
+      return cleanDraft.replace(re, (m, p1) => p1);
     }
   }
 
@@ -780,10 +804,14 @@ async function callAI(draftText, instruction, isReview = false, signal) {
   }
 
   const edited = smartEditText(draftText, instruction || '');
-  return {
-    revised: edited,
-    reason: 'Applied: ' + (instruction || 'voice edit'),
-  };
+  if (edited && edited !== draftText.trim()) {
+    return {
+      revised: edited,
+      reason: 'Applied: ' + (instruction || 'voice edit'),
+    };
+  }
+
+  throw new Error('AI service did not return changes. Draft preserved.');
 }
 
 // ── Command Dispatcher ──
@@ -862,6 +890,12 @@ async function executeCommand(cmd, originalSegment) {
       try {
         const result = await callAI(baseDraft, cmd.arg, false, signal);
         if (thisOpId !== _currentOpId) return;
+
+        if (!result || !result.revised) {
+          showToast('⚠️ Could not apply edit. Draft preserved.', 4000);
+          setStatus('ready', 'Wispr Ready');
+          return;
+        }
 
         // Implement directly into draft editor!
         const revisedText = result.revised.trim();
