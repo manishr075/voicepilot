@@ -1107,29 +1107,10 @@
           <p class="form-help">Spoken voice confirmation after edits (e.g. "Bold", "Proposal kept", "Stopped").</p>
         </div>
 
-        <div class="form-group">
-          <label for="backend-url-input">AI Backend Server URL (Vercel or Local)</label>
-          <p class="form-help">Secure VoicePilot backend endpoint. Paste your Vercel deployment URL (e.g. from your <code>aurora</code> project on Vercel) or local <code>http://localhost:5000</code>. On Vercel, this is auto-connected.</p>
-          <div style="display:flex;gap:6px;">
-            <input type="text" id="backend-url-input" class="form-input" value="http://localhost:5000" placeholder="https://your-aurora-deployment.vercel.app" />
-            <button type="button" class="tool-btn" id="btn-check-backend" style="white-space:nowrap;padding:0 10px;font-size:11.5px;">Check</button>
-          </div>
-          <div id="backend-status-indicator" style="margin-top:6px;font-size:11.5px;color:var(--text-dim);">
-            Backend: Checking connectivity...
-          </div>
-        </div>
-
-        <div class="form-group" style="padding-top:6px;border-top:1px solid var(--border-subtle);">
-          <label>Privacy & Key Security</label>
-          <p class="form-help" style="margin-bottom:0;">
-            VoicePilot stores <strong>zero</strong> permanent API keys in your browser or localStorage. Permanent keys (<code>GEMINI_API_KEY</code>, <code>OPENAI_API_KEY</code>, or <code>ANTHROPIC_API_KEY</code>) belong exclusively in your local backend environment. Document text is transmitted only when you speak an AI revision command. Formatting, undo/redo, read aloud, notes, and local edits operate 100% locally.
-          </p>
-        </div>
-
         <div class="form-group" style="padding-top:6px;border-top:1px solid var(--border-subtle);">
           <label>About VoicePilot</label>
           <p class="form-help" style="margin-bottom:0;">
-            A hands-free, distraction-free voice text editor built for Wispr Flow. Bold, italic, headings, lists, undo, redo, read, notes, and proposal-based AI polish run with fluid, hands-free voice controls.
+            A hands-free, distraction-free voice text editor built for Wispr Flow. Bold, italic, headings, lists, undo, redo, read, notes, and proposal-based polish run with fluid, hands-free voice controls on GitHub Pages.
           </p>
         </div>
       </div>

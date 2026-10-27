@@ -117,7 +117,7 @@ Start the server:
 ```bash
 python backend/voicepilot_server.py
 ```
-The server runs on `http://localhost:5000`. In VoicePilot's Settings modal, verify connectivity via the **Check** button.
+The server runs on `http://localhost:5000`. VoicePilot automatically connects to the local server if running, or uses the built-in instant proofreading engine when running standalone on GitHub Pages (`https://manishr075.github.io/voicepilot/`).
 
 ---
 
